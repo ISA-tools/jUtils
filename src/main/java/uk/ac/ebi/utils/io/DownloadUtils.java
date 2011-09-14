@@ -39,8 +39,6 @@ package uk.ac.ebi.utils.io;
  * This work has been funded mainly by the EU Carcinogenomics (http://www.carcinogenomics.eu) [PL 037712] and in partby the EU NuGO [NoE 503630](http://www.nugo.org/everyone) projects and in part by EMBL-EBI.
  */
 
-import org.apache.log4j.Logger;
-
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -51,8 +49,6 @@ import java.net.URLConnection;
  *
  */
 public class DownloadUtils {
-
-    private static Logger log = Logger.getLogger(DownloadUtils.class.getName());
 
     public static final String TMP_LOCATION = System.getProperty("java.io.tmpdir");
 
@@ -91,18 +87,18 @@ public class DownloadUtils {
 
             return true;
         } catch (MalformedURLException e) {
-            log.error("url malformed: " + e.getMessage());
+            e.printStackTrace();
             return false;
         } catch (FileNotFoundException e) {
-            log.error("file not found" + e.getMessage());
+            e.printStackTrace();
             return false;
         } catch (IOException e) {
-            log.error("io exception caught" + e.getMessage());
+            e.printStackTrace();
             // we allow one retry attempt due to problems with BioPortal not always serving
             // back results on the first attempt!
             return false;
         } catch (Exception e) {
-            log.error(e.getMessage());
+            e.printStackTrace();
             return false;
         } finally {
             try {
@@ -114,7 +110,7 @@ public class DownloadUtils {
                     is.close();
                 }
             } catch (IOException ioe) {
-                log.error("io exception caught: " + ioe.getMessage());
+                ioe.printStackTrace();
 
             }
         }
