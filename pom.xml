@@ -3,7 +3,7 @@
   
   <groupId>uk.ac.ebi</groupId>
   <artifactId>jutils</artifactId>
-  <version>1.1.1</version>
+  <version>1.2</version>
   
   <name>JUtils - Miscellanea of Java Utils</name>
   <description>
