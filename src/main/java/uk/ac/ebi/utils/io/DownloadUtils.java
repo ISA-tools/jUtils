@@ -39,7 +39,8 @@ package uk.ac.ebi.utils.io;
  * This work has been funded mainly by the EU Carcinogenomics (http://www.carcinogenomics.eu) [PL 037712] and in partby the EU NuGO [NoE 503630](http://www.nugo.org/everyone) projects and in part by EMBL-EBI.
  */
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -52,7 +53,7 @@ import java.net.URLConnection;
  */
 public class DownloadUtils {
 
-    private static Logger log = Logger.getLogger(DownloadUtils.class.getName());
+    private static Logger log = LoggerFactory.getLogger ( DownloadUtils.class );
 
     public static final String TMP_LOCATION = System.getProperty("java.io.tmpdir");
 
