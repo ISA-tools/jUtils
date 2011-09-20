@@ -1,0 +1,11 @@
+REVISION HISTORY
+- 1.0 
+	First version published as stand-alone package in Git
+
+- 1.1
+	StringBufferReader added, ISAPair added.
+
+- 1.2
+	StringBufferReader removed, Apache commons has CharSequenceReader in its place.
+	ISAPair renamed to Pair, to reflect its general-purpose nature.
+
