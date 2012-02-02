@@ -9,3 +9,5 @@ REVISION HISTORY
 	StringBufferReader removed, Apache commons has CharSequenceReader in its place.
 	ISAPair renamed to Pair, to reflect its general-purpose nature.
 
+- 1.3
+  uk.ac.ebi.utils.test.junit.TestOutputDecorator added.

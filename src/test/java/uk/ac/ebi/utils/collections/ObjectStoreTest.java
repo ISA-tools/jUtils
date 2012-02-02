@@ -25,7 +25,7 @@
  * To contact the developers: isatools@googlegroups.com
  *
  * To report bugs: http://sourceforge.net/tracker/?group_id=215183&atid=1032649
- * To request enhancements: Êhttp://sourceforge.net/tracker/?group_id=215183&atid=1032652
+ * To request enhancements: ï¿½http://sourceforge.net/tracker/?group_id=215183&atid=1032652
  *
  *
  * __________
@@ -78,14 +78,10 @@ public class ObjectStoreTest
 	@Test
 	public void testGet ()
 	{
-		out.println ( "\n\n\n________ Testing ObjectStore: get ______" );
-
 		Object o = store.get ( "type2", 1 );
 		assertNotNull ( "Could not retrieve the original object!",  o );
 		assertEquals ( "Retrieved object is not the same!", o, testObj );
 		out.println ( "Retrieved Object: " + o );
-
-		out.println ( "________ /end: Testing ObjectStore: get ______\n\n" );
 	}
 
 
@@ -95,8 +91,6 @@ public class ObjectStoreTest
 	@Test
 	public void testRemove ()
 	{
-		out.println ( "\n\n\n________ Testing ObjectStore: remove ______" );
-
 		Object o = store.get ( "type1", 2 );
 		assertNotNull ( "Could not retrieve the original object!",  o );
 		assertTrue ( "Retrieved object is wrong!", "Object 1.2".equals ( o ) );
@@ -107,15 +101,12 @@ public class ObjectStoreTest
 		assertNull ( "Could not delete the entry '" + o + "'", o1 );
 		out.println ( "Entry '" + o + "' successfully deleted" );
 
-		out.println ( "________ /end: Testing ObjectStore: remove ______\n\n" );
 	}
 
 
 	@Test
 	public void testSize ()
 	{
-		out.println ( "\n\n\n________ Testing ObjectStore: size ______" );
-
 		// Addition
 		int sz = store.size ();
 		assertEquals ( "Wrong size: " + sz, sz, 3 );
@@ -151,17 +142,12 @@ public class ObjectStoreTest
 		sz = store1.size ();
 		assertEquals ( "Wrong size: " + sz, sz, 0 );
 		out.println ( "OK, size is 0 after removal of an empty key" );
-
-		out.println ( "________ /end: Testing ObjectStore: size ______\n\n" );
-
 	}
 
 
 	@Test
 	public void testGetAll ()
 	{
-		out.println ( "\n\n\n________ Testing ObjectStore: getAll ______" );
-
 		int ct = 0, sz = store.size ();
 		for ( String type: store.types () )
 			for ( int id: store.typeKeys ( type )) {
@@ -174,9 +160,6 @@ public class ObjectStoreTest
 			"Uh?! I've printed the wrong number of items", ct, sz
 		), ct, sz );
 		out.println ( "I've printed " + sz + " values, as expected" );
-
-		out.println ( "________ /end: Testing ObjectStore: getAll ______\n\n" );
-
 	}
 
 }

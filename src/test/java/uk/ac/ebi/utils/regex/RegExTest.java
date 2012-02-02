@@ -12,13 +12,11 @@ public class RegExTest
 	@Test
 	public void testMatchesAny ()
 	{
-		out.println ( "\n\n\n________ Testing RegEx.testMatchesAny() ______" );
 		assertTrue ( "Wrong result for matchesAny()!", 
 			RegEx.matchesAny ( 
 				"A test String", 
 				Pattern.compile ( "foo" ), 
 				Pattern.compile ( "^.*TEST.*$", Pattern.CASE_INSENSITIVE ) )
 		);
-		out.println ( "\n\n___________ /end: Testing RegEx.testMatchesAny() _________" );
 	}
 }
