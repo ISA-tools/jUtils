@@ -7,7 +7,7 @@
   
   <groupId>uk.ac.ebi</groupId>
   <artifactId>jutils</artifactId>
-  <version>1.2</version>
+  <version>1.3</version>
   
   <name>JUtils - Miscellanea of Java Utils</name>
   <description>
@@ -48,15 +48,14 @@
       <version>2.4</version>
     </dependency>
 
-
-		<!-- TEST -->
-			
 	  <dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
 	    <version>4.8.2</version>
-	    <scope>test</scope>
 	  </dependency>
+
+
+		<!-- TEST -->
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -90,6 +89,20 @@
 		      </execution>
 		    </executions>
 	    </plugin>
+
+		  <plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-surefire-plugin</artifactId>
+		    <configuration>
+		      <properties>
+		        <property>
+		        	<!-- Prints out spaces and test name before/after every test method and automatically -->
+		          <name>listener</name>
+		          <value>uk.ac.ebi.utils.test.junit.TestOutputDecorator</value>
+		        </property>
+		       </properties>
+		    </configuration>
+		  </plugin>
 		
     </plugins>
 	

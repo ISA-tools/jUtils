@@ -81,7 +81,6 @@ public class ReflectionUtilsTest
 		Class<?> t1 = args.get ( 1 );
 		assertNotNull ( "getTypeArguments() with wrong result (arg 1 is null)!", t1 );
 		assertTrue ( "getTypeArguments() with wrong result (arg 1)! :-(",  List.class.isAssignableFrom ( t1 ) );
-		
 	}
 
 
