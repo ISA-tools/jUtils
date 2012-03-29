@@ -156,9 +156,7 @@ public class ObjectStoreTest
 				ct++;
 		}
 
-		assertEquals ( String.format (
-			"Uh?! I've printed the wrong number of items", ct, sz
-		), ct, sz );
+		assertEquals ( "Uh?! I've printed the wrong number of items", ct, sz );
 		out.println ( "I've printed " + sz + " values, as expected" );
 	}
 
