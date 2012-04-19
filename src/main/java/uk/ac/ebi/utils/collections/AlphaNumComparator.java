@@ -56,8 +56,15 @@ import java.util.Comparator;
  * "compare(Object o1, Object o2)" to "compare(String s1, String s2)" - Remove the type checking and casting in
  * compare().<p/>
  * 
- * To use this class: Use the static "sort" method from the java.util.Collections class: Collections.sort(your list, new
- * AlphanumComparator());
+ * To use this class: for example, use the static "sort" method from the {@link java.util.Collections} class: 
+ * Collections.sort(your list, new AlphanumComparator()); See {@link AlphaNumComparatorTest} for examples.
+ * 
+ * <h3>Notes</h3>
+ * <ul> 
+ *   <li>null is considered lower than anything else.</li>
+ *   <li>"Item 3" comes before "Item 01", when you have zero-padding, it is taken into account.</li>
+ * </ul> 
+ * 
  */
 public class AlphaNumComparator<T> implements Comparator<T>
 {
@@ -105,9 +112,14 @@ public class AlphaNumComparator<T> implements Comparator<T>
 
 	public int compare ( T o1, T o2 )
 	{
-
+		if ( o1 == null ) return o2 == null ? 0 : -1; 
+		if ( o2 == null ) return +1; // o1 != null here
+				
 		String s1 = o1.toString ();
 		String s2 = o2.toString ();
+
+		if ( s1 == null ) return s2 == null ? 0 : -1; 
+		if ( s2 == null ) return +1; // s1 != null here
 
 		int thisMarker = 0;
 		int thatMarker = 0;
