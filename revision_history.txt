@@ -19,5 +19,5 @@ REVISION HISTORY
   in case you already have many other classes with the same functionality already implemented.
 
 - 1.4
-  Minor changed made. Version upgraded to reflect the policy of increasing the second revision number upon whole class
-  or method additions or non-trivial changes to existing code.
+  Minor changes made. Version upgraded to reflect the policy of increasing the second revision number upon whole classes
+  or methods additions or non-trivial changes to existing code.
