@@ -143,11 +143,11 @@
 	
   <distributionManagement>
 
-	  <repository>
-		  <id>ebi-repo</id>
-		  <name>EBI Repository</name>
-		  <url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo</url>
-	  </repository>
+	  <!--<repository>-->
+		  <!--<id>ebi-repo</id>-->
+		  <!--<name>EBI Repository</name>-->
+		  <!--<url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo</url>-->
+	  <!--</repository>-->
 		
 	  <snapshotRepository>
 		  <uniqueVersion>false</uniqueVersion>
@@ -155,6 +155,12 @@
 		  <name>EBI Snapshots Repository</name>
 		  <url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
 	  </snapshotRepository>
+
+      <repository>
+          <id>oerc-repo</id>
+          <name>OeRC Maven repository</name>
+          <url>http://frog.oerc.ox.ac.uk:8080/artifactory/libs-release-local/</url>
+      </repository>
 	
   </distributionManagement>
     
