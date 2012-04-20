@@ -84,9 +84,9 @@ public class IOUtils
 		Reader rdr = new BufferedReader ( new InputStreamReader ( clazz.getResourceAsStream ( path ) ) );
 		return readInputFully ( rdr );
 	}
-
+	
 	/**
-	 * Reads the input stream and returns amn MD5 has for it
+	 * Reads the input stream and returns an MD5 hash for it
 	 */
 	public static String getMD5 ( InputStream is ) throws IOException, NoSuchAlgorithmException 
 	{
