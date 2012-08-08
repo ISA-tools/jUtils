@@ -7,7 +7,7 @@
   
   <groupId>uk.ac.ebi</groupId>
   <artifactId>jutils</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
   
   <name>JUtils - Miscellanea of Java Utils</name>
   <description>
@@ -53,6 +53,13 @@
 	    <artifactId>junit</artifactId>
 	    <version>4.10</version>
 	  </dependency>
+	  
+	  <dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
 
 
 		<!-- TEST -->
