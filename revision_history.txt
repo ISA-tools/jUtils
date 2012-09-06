@@ -1,6 +1,9 @@
 REVISION HISTORY
 
-- 1.5 (Not released yet)
+- (Increase needed for next changes)
+  
+
+- 1.5
   TestEntityMgrProvider added.
   Very minor changes in comments.
   
