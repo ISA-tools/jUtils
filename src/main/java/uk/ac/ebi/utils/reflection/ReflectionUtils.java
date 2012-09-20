@@ -112,7 +112,8 @@ public class ReflectionUtils
    * in the object assignment (see the post above for details). If that is the case, re-declare type
    * as abstract and use anonymous classes. 
 	 *
-   * Get the underlying class for a type, or null if the type is a variable type.
+   * Gets the underlying class for a type, or null if the type is a variable type.
+   * 
    * @param type the type
    * @return the underlying class
    * 
@@ -146,7 +147,7 @@ public class ReflectionUtils
    * This method has been copied from: 
    *   http://www.artima.com/weblogs/viewpostP.jsp?thread=208860
    *   
-   * Get the actual type arguments a child class has used to extend a generic base class.
+   * Gets the actual type arguments a child class has used to extend a generic base class.
    *
    * WARNING: This method won't work if childClass is a generic, no matter if the generic variables are bound
    * in the object assignment (see the post above for details). If that is the case, re-declare childClass
