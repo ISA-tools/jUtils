@@ -51,9 +51,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Implements an object store to be used with TAB mapping.
- * Basically, allows to associated a Java object to a type and an identifier.
- *
+ * Implements an object store.
+ * Basically, allows to associate a Java object to a type and a key/identifier.
  *
  * User: brandizi
  * Date: Oct 29, 2007

@@ -148,18 +148,26 @@
 	
   <distributionManagement>
 		
+		<!-- Please do not remove this, we deploy it on multiple repositories and Maven allows only one 
+	  <repository>
+		  <id>ebi-repo</id>
+		  <name>EBI Repository</name>
+		  <url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo</url>
+	  </repository>
+	  -->
+
+    <repository>
+     <id>oerc-repo</id>
+     <name>OeRC Maven repository</name>
+     <url>http://frog.oerc.ox.ac.uk:8080/nexus-2.1.2/content/repositories/releases</url>
+    </repository>
+    		
 	  <snapshotRepository>
 		  <uniqueVersion>false</uniqueVersion>
 		  <id>ebi-repo-snapshots</id>
 		  <name>EBI Snapshots Repository</name>
 		  <url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
 	  </snapshotRepository>
-
-      <repository>
-          <id>oerc-repo</id>
-          <name>OeRC Maven repository</name>
-          <url>http://frog.oerc.ox.ac.uk:8080/nexus-2.1.2/content/repositories/releases</url>
-      </repository>
 	
   </distributionManagement>
     

@@ -57,7 +57,7 @@ public class DownloadUtils {
 
     public static final String TMP_LOCATION = System.getProperty("java.io.tmpdir");
 
-	// TODO: this default is not generic enough
+    // TODO: this default is not generic enough
     public static final String DOWNLOAD_FILE_LOC = TMP_LOCATION + File.separator + "ontologies_matching_";
     public static final String XML_EXT = ".xml";
 

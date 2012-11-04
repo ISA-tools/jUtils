@@ -1,7 +1,7 @@
 REVISION HISTORY
 
-- (Increase needed for next changes)
-  
+- 1.5.1 (to be confirmed and deployed) 
+  IOUtils.getMD5() generalised into getHash().
 
 - 1.5
   TestEntityMgrProvider added.

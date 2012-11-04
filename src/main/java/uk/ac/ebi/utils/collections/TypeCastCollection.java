@@ -47,8 +47,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Allows to type-cast the collection of type T1 into the type T (T extends T1), which is not permitted by the 
- * Java generics. The class is simply the adapter pattern wrapping the converted collection. 
+ * Allows to type-cast the collection of super-type T1 into the sub-type T (i.e., T extends T1), which is not permitted 
+ * by the Java generics. The class is simply the adapter pattern wrapping the converted collection. 
  * 
  * date: Jul 29, 2008
  * @author brandizi

@@ -66,7 +66,8 @@ public class IOUtils
 	/** Reads the full content of a Reader and puts it into a String */
 	public static String readInputFully ( Reader rdr ) throws IOException
 	{
-		if ( rdr == null ) return null; 
+		if ( rdr == null ) return null;
+		
 		StringBuilder rval = new StringBuilder ( 1024 );
 		int c; 
 		
@@ -85,17 +86,19 @@ public class IOUtils
 		return readInputFully ( rdr );
 	}
 	
+	
 	/**
-	 * Reads the input stream and returns an MD5 hash for it
+	 * Reads the input stream and returns an hash for it, based on the algorithm passed as parameter. algorithm 
+	 * is passed to {@link MessageDigest} 
 	 */
-	public static String getMD5 ( InputStream is ) throws IOException, NoSuchAlgorithmException 
+	public static String getHash ( InputStream is, String algorithm ) throws IOException, NoSuchAlgorithmException 
 	{
-		MessageDigest md = MessageDigest.getInstance ( "MD5" );
+		MessageDigest md = MessageDigest.getInstance ( algorithm );
 	  byte buffer[] = new byte [ 1024 ];
 	  
 	  try {
 	  	for ( int read = is.read ( buffer ); read != -1; read = is.read ( buffer ) )
-			 if ( read > 0 ) md.update ( buffer, 0, read );
+	  		if ( read > 0 ) md.update ( buffer, 0, read );
 		} 
 	  finally {
 			is.close();
@@ -109,11 +112,25 @@ public class IOUtils
 	}
 
 	/**
-	 * Reads the input stream and returns amn MD5 has for it
+	 * A wrapper to {@link #getHash(InputStream, String)} that opens a file.
+	 */
+	public static String getHash ( File f, String algorithm ) throws IOException, NoSuchAlgorithmException {
+		return getHash ( new FileInputStream ( f ), algorithm );
+	}
+
+	/**
+	 * A wrapper of {@link #getHash(InputStream, String)} that uses the MD5 algorithm.
+	 */
+	public static String getMD5 ( InputStream is ) throws IOException, NoSuchAlgorithmException {
+		return getHash ( is, "MD5" );
+	} 
+
+	/**
+	 * A wrapper of {@link #getHash(InputStream, File)} that uses the MD5 algorithm.
 	 */
 	public static String getMD5 ( File f ) throws IOException, NoSuchAlgorithmException 
 	{
-		return getMD5 (  new FileInputStream ( f ) );
+		return getHash ( f, "MD5" );
 	}
-	
+
 }

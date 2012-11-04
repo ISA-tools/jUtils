@@ -62,12 +62,12 @@ import java.io.InputStream;
  */
 public class XPathReader {
 
-    private InputStream xmlFile;
+    private InputStream xmlStream;
     private Document xmlDocument;
     private XPath xPath;
 
-    public XPathReader(InputStream xmlFile) {
-        this.xmlFile = xmlFile;
+    public XPathReader(InputStream xmlStream) {
+        this.xmlStream = xmlStream;
         initObjects();
     }
 
@@ -75,7 +75,7 @@ public class XPathReader {
         try {
             xmlDocument = DocumentBuilderFactory.
                     newInstance().newDocumentBuilder().
-                    parse(xmlFile);
+                    parse(xmlStream);
             xPath = XPathFactory.newInstance().
                     newXPath();
         } catch (IOException ex) {

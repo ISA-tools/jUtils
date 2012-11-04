@@ -47,10 +47,33 @@ import java.util.regex.Pattern;
 import static java.lang.System.out;
 import static org.junit.Assert.*;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
 
 public class RegExTest
 {
+	@Test
+	public void testBasics ()
+	{
+		RegEx re = new RegEx ( "foo.*", Pattern.CASE_INSENSITIVE  );
+		assertTrue ( "foo didn't match fool!", re.matches ( "fool" ) );
+		assertFalse ( "foo matched fox!", re.matches ( "fox" ) );
+	}
+	
+	@Test
+	public void testGroups ()
+	{
+		RegEx re = new RegEx ( "(.*):(.*)" );
+		String input = "First:Second";
+		String groups[] = re.groups ( input );
+		out.println ( "I have the groups: " + ArrayUtils.toString ( groups ) );
+		assertNotNull ( "Group matching returns null", groups );
+		assertEquals ( "Wrong no of returned groups!", 3, groups.length );
+		assertTrue ( "Wrong value #0 in returned groups!", input.equals ( groups [ 0 ] ) );
+		assertTrue ( "Wrong value #1 in returned groups!", "First".equals ( groups [ 1 ] ) );
+		assertTrue ( "Wrong value #2 in returned groups!", "Second".equals ( groups [ 2 ] ) );
+	}
+	
 	@Test
 	public void testMatchesAny ()
 	{
@@ -61,4 +84,5 @@ public class RegExTest
 				Pattern.compile ( "^.*TEST.*$", Pattern.CASE_INSENSITIVE ) )
 		);
 	}
+	
 }
