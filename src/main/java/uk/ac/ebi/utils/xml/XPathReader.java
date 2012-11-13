@@ -56,47 +56,51 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by the ISA team
- * Modified from example here: http://www.javabeat.net/tips/182-how-to-query-xml-using-xpath.html
+ * Created by the ISA team Modified from example here:
+ * http://www.javabeat.net/tips/182-how-to-query-xml-using-xpath.html
+ * 
  * @author Eamonn Maguire (eamonnmag@gmail.com)
  */
-public class XPathReader {
+public class XPathReader
+{
 
-    private InputStream xmlStream;
-    private Document xmlDocument;
-    private XPath xPath;
+	private Document xmlDocument;
+	private XPath xPath;
 
-    public XPathReader(InputStream xmlStream) {
-        this.xmlStream = xmlStream;
-        initObjects();
-    }
+	public XPathReader ( InputStream xmlStream )
+	{
+		Exception xmlEx = null;
+		try
+		{
+			xmlDocument = DocumentBuilderFactory.newInstance ().newDocumentBuilder ().parse ( xmlStream );
+			xPath = XPathFactory.newInstance ().newXPath ();
+		} 
+		catch ( SAXException ex ) {
+			xmlEx = ex;
+		} 
+		catch ( IOException ex ){
+			xmlEx = ex;
+		} 
+		catch ( ParserConfigurationException ex ) {
+			xmlEx = ex;
+		} 
+		finally {
+			// TODO: Better exception handling
+			if ( xmlEx != null )
+				throw new RuntimeException ( "Internal error with the XPath Reader: " + xmlEx.getMessage (), xmlEx );
+		}
+	}
 
-    private void initObjects() {
-        try {
-            xmlDocument = DocumentBuilderFactory.
-                    newInstance().newDocumentBuilder().
-                    parse(xmlStream);
-            xPath = XPathFactory.newInstance().
-                    newXPath();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (SAXException ex) {
-            ex.printStackTrace();
-        } catch (ParserConfigurationException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public Object read(String expression,
-                       QName returnType) {
-        try {
-            XPathExpression xPathExpression =
-                    xPath.compile(expression);
-            return xPathExpression.evaluate
-                    (xmlDocument, returnType);
-        } catch (XPathExpressionException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+	public Object read ( String expression, QName returnType )
+	{
+		try
+		{
+			XPathExpression xPathExpression = xPath.compile ( expression );
+			return xPathExpression.evaluate ( xmlDocument, returnType );
+		} catch ( XPathExpressionException ex )
+		{
+			// TODO: Better exception handling
+			throw new RuntimeException ( "Internal error with the XPath Reader: " + ex.getMessage (), ex );
+		}
+	}
 }
