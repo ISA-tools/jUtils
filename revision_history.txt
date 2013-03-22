@@ -1,5 +1,8 @@
 REVISION HISTORY
 
+- 1.6.1-SNAPSHOT
+  POM aligned to this.
+
 - 1.6
   IOUtils.getMD5() generalised into getHash().
   XPathReader, exception handling changed.
