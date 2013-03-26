@@ -1,14 +1,16 @@
 REVISION HISTORY
 
-- 1.6.1-SNAPSHOT
-  POM aligned to this.
+- 2.0-SNAPSHOT
+  ORM package added with Many2ManyUtils added.
 
 - 1.6
   IOUtils.getMD5() generalised into getHash().
+  
   XPathReader, exception handling changed.
 
 - 1.5
   TestEntityMgrProvider added.
+  
   Very minor changes in comments.
   
 - 1.4
@@ -26,6 +28,7 @@ REVISION HISTORY
 
 - 1.2
 	StringBufferReader removed, Apache commons has CharSequenceReader in its place.
+	
 	ISAPair renamed to Pair, to reflect its general-purpose nature.
 
 - 1.1
