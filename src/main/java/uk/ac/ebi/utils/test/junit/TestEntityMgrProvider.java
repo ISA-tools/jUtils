@@ -73,8 +73,8 @@ public class TestEntityMgrProvider extends ExternalResource
 	@Override
 	protected void after ()
 	{
-  	EntityManager entityMgr = getEntityManager ();
-    if ( entityMgr != null && entityMgr.isOpen() ) entityMgr.close();
+  	EntityManager em = getEntityManager ();
+    if ( em != null && em.isOpen() ) em.close();
 	}
 
 	/**

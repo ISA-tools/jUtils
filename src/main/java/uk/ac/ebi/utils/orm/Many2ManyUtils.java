@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
- * TODO: Comment me!
+ * Facilities to manager many-to-many relations in JPA.
  *
  * <dl><dt>date</dt><dd>Mar 25, 2013</dd></dl>
  * @author Marco Brandizi
