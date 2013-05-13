@@ -108,4 +108,10 @@ public class RegEx
 			if ( pattern.matcher ( target ).matches () ) return true;
 		return false;
 	}
+
+	@Override
+	public String toString () {
+		return getPattern ();
+	}
+	
 }
