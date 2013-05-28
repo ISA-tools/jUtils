@@ -1,9 +1,14 @@
 REVISION HISTORY
 
-- 2.0-SNAPSHOT
+- 2.0
+
+  SimpleCache added.
+
   Many2ManyUtils and uk.ac.ebi.utils.orm package added.
   
   RegEx.toString() now yields the pattern as in Pattern.
+  
+  AlphaNumComparator now has an option for case-sensivity.
 
 - 1.6
   IOUtils.getMD5() generalised into getHash().

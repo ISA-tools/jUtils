@@ -68,6 +68,18 @@ import java.util.Comparator;
  */
 public class AlphaNumComparator<T> implements Comparator<T>
 {
+	private final boolean isCaseSensitive;
+	
+	/** Default is true */
+	public AlphaNumComparator ( boolean isCaseSensitive ) {
+		this.isCaseSensitive = isCaseSensitive;
+	} 
+	
+	/** Default is true */
+	public AlphaNumComparator () {
+		this ( true );
+	}
+	
 	private boolean isDigit ( char ch )
 	{
 		return ch >= 48 && ch <= 57;
@@ -155,7 +167,7 @@ public class AlphaNumComparator<T> implements Comparator<T>
 				}
 			} else
 			{
-				result = thisChunk.compareTo ( thatChunk );
+				result = isCaseSensitive ? thisChunk.compareTo ( thatChunk ) : thisChunk.compareToIgnoreCase ( thatChunk );
 			}
 
 			if ( result != 0 )
