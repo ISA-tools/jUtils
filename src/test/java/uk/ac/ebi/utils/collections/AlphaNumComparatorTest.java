@@ -20,7 +20,8 @@ public class AlphaNumComparatorTest
 		
 		String expected[] = new String[] { "Foo", "Foo 1", "Foo 10", "Item 1", "Item 2", "Item 3", "Ultra-Foo" };
 		assertTrue ( 
-			String.format ( "Result different than what it is expected!\n  Result: %s\n  Result: %s", alphaNumStrings, expected ), 
+			String.format ( "Result different than what it is expected!\n  Result: %s\n  Expected: %s", 
+				Arrays.asList ( alphaNumStrings ), Arrays.asList ( expected ) ), 
 			Arrays.equals ( alphaNumStrings, expected ) 
 		);
 	}

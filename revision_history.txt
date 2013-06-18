@@ -1,9 +1,11 @@
 REVISION HISTORY
 
 - 2.0.1-SNAPSHOT
+  SqlUtils added
+  
+  Minor bugfixing in tests 
 
 - 2.0
-
   SimpleCache added.
 
   Many2ManyUtils and uk.ac.ebi.utils.orm package added.
