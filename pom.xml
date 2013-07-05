@@ -56,12 +56,14 @@
 	    <version>4.10</version>
 	  </dependency>
 	  
-	  <dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0.2</version>
+	  <!-- It seems that currently there is no official Oracle release of JPA 2.0, so we need to rely on some impplementor  -->
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<version>1.0.1.Final</version>
 		</dependency>
-
+		
+		
 		<!-- TEST -->
 
 		<dependency>

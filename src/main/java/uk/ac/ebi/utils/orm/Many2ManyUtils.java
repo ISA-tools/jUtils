@@ -1,6 +1,3 @@
-/*
- * 
- */
 package uk.ac.ebi.utils.orm;
 
 import java.lang.reflect.InvocationTargetException;

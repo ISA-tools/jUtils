@@ -1,10 +1,12 @@
 REVISION HISTORY
 
-- 2.0.1-SNAPSHOT
-  SqlUtils added
+- 3.0
+  SqlUtils added.
   
-  Minor bugfixing in tests 
+  Minor bugfixing in tests. 
 
+  JPA upgraded to version 2.
+  
 - 2.0
   SimpleCache added.
 

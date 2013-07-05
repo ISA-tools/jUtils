@@ -50,7 +50,7 @@ public class StringSearchUtils
 	private StringSearchUtils () {}
 	
 	/**
-	 * Tells if the string contains one of the matches. This is often used to detect which type of material/data one has.
+	 * Tells if the string contains one of the matches.
 	 */
   public static boolean containsOneOf ( String target, String... matches ) 
   {
@@ -66,7 +66,7 @@ public class StringSearchUtils
   }
 
   /**
-	 * Tells if the string contains one of the matches. This is often used to detect which type of material/data one has.
+	 * Tells if the string contains one of the matches.
 	 */
   public static boolean containsOneOfIgnoreCase ( String target, String... matches ) 
   {
