@@ -1,4 +1,5 @@
 REVISION HISTORY
+- 3.0.1-SNAPSHOT
 
 - 3.0
   SqlUtils added.
