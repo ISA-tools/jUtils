@@ -141,12 +141,12 @@
 	
   <repositories>
 
-		<repository>
-			<id>ebi-repo</id>
-			<name>EBI repo</name>
-			<url>http://www.ebi.ac.uk/~maven/m2repo</url>
-		</repository>
-
+    <repository>
+	    <id>coconut.ebi.ac.uk</id>
+	    <name>coconut.ebi.ac.uk-releases</name>
+	    <url>http://coconut.ebi.ac.uk:8081/artifactory/local-repo</url>
+    </repository>
+		
   </repositories>
 	
 	
@@ -166,18 +166,17 @@
 	    </snapshotRepository -->
 
 
-		  <repository>
-			  <id>ebi-repo</id>
-			  <name>EBI Repository</name>
-			  <url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo</url>
-		  </repository>
-			
-		  <snapshotRepository>
-			  <uniqueVersion>false</uniqueVersion>
-			  <id>ebi-repo-snapshots</id>
-			  <name>EBI Snapshots Repository</name>
-			  <url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
-		  </snapshotRepository>
+    <repository>
+	    <id>coconut.ebi.ac.uk</id>
+	    <name>coconut.ebi.ac.uk-releases</name>
+	    <url>http://coconut.ebi.ac.uk:8081/artifactory/local-repo</url>
+    </repository>
+    
+    <snapshotRepository>
+	    <id>coconut.ebi.ac.uk</id>
+	    <name>coconut.ebi.ac.uk-snapshots</name>
+	    <url>http://coconut.ebi.ac.uk:8081/artifactory/local-repo</url>
+    </snapshotRepository>
 		  	
   </distributionManagement>
     
