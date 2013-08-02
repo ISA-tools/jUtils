@@ -6,7 +6,7 @@ REVISION HISTORY
   
   Minor bugfixing in tests. 
 
-  JPA upgraded to version 2.
+  JPA dependency upgraded to version 2.
   
 - 2.0
   SimpleCache added.
