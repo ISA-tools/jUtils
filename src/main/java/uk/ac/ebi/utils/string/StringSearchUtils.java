@@ -55,10 +55,10 @@ public class StringSearchUtils
   public static boolean containsOneOf ( String target, String... matches ) 
   {
   	if ( target == null ) throw new IllegalArgumentException ( 
-  		"StringSearchUtils.containsOne(): target is null!" 
+  		"StringSearchUtils.containsOneOf(): target is null!" 
   	);
   	if ( matches == null || matches.length == 0 ) throw new IllegalArgumentException ( 
-  		"containsOne(): no match to check!" 
+  		"containsOneOf(): no match to check!" 
   	);
   	for ( String match: matches )
   		if ( target.contains ( match ) ) return true;
@@ -71,10 +71,10 @@ public class StringSearchUtils
   public static boolean containsOneOfIgnoreCase ( String target, String... matches ) 
   {
   	if ( target == null ) throw new IllegalArgumentException ( 
-  		"StringSearchUtils.containsOne(): target is null!" 
+  		"StringSearchUtils.containsOneOfIgnoreCase(): target is null!" 
   	);
   	if ( matches == null || matches.length == 0 ) throw new IllegalArgumentException ( 
-    	"containsOne(): no match to check!" 
+    	"StringSearchUtils.containsOneOfIgnoreCase(): no match to check!" 
   	);
   	for ( String match: matches )
   		if ( StringUtils.containsIgnoreCase ( target, match ) ) return true;

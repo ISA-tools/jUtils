@@ -1,5 +1,10 @@
 REVISION HISTORY
 - 3.0.1-SNAPSHOT
+  BatchService and related classes added.
+  
+  ArraySearchUtils added.
+
+  ExceptionUtils added.
 
 - 3.0
   SqlUtils added.
