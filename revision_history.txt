@@ -1,5 +1,7 @@
 REVISION HISTORY
-- 3.0.1-SNAPSHOT
+- 4.0.1-SNAPSHOT
+
+- 4.0
   BatchService and related classes added.
   
   ArraySearchUtils added.
