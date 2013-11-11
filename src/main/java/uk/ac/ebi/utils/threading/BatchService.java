@@ -14,14 +14,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A pool-based thread execution service, that dynamically optimises its size.
+ * <p>A pool-based thread execution service, that dynamically optimises its size.</p>
  * 
- * This is a base class that allow you to manage the execution of a number of {@link BatchServiceTask tasks} in parallel.
+ * <p>This is a base class that allow you to manage the execution of a number of {@link BatchServiceTask tasks} in parallel.
  * This is achieved by means of a thread pool, which of size is dynamically adjusted via {@link PoolSizeTuner}, 
- * in order to optimise the task throughput (i.e., the number of tasks that complete their execution in the unit of time).
+ * in order to optimise the task throughput (i.e., the number of tasks that complete their execution in the unit of time).</p>
  *
- * You should initialise this class with a moderate initial pool size (default is 40 threads), cause the tuning algorithm
- * works well (i.e. converges) when it approaches the best value from the left. 
+ * <p>You should initialise this class with a moderate initial pool size (default is the number of available processors), 
+ * cause the tuning algorithm works well (i.e. converges) when it approaches the best value from the left.</p>
+ * 
+ * <p>The <a href = "http://codeidol.com/java/java-concurrency/Applying-Thread-Pools/Sizing-Thread-Pools/">theory</a> 
+ * says that the optimal number of threads is given by the number of available processors and the ratio 
+ * between task waiting time and real CPU consumption time. However things can be more complicated when task latencies
+ * depend on how much they communicate or interfere each other, for instance by hitting transactions on the same database.
+ * This is the rationale to base thread optimisation on live performance measurement.</p> 
  * 
  * <dl><dt>date</dt><dd>8 Oct 2013</dd></dl>
  * @author Marco Brandizi
