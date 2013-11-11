@@ -4,7 +4,7 @@
   
   <groupId>uk.ac.ebi</groupId>
   <artifactId>jutils</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>4.0</version>
   
   <name>JUtils - Miscellanea of Java Utils</name>
   <description>
@@ -168,14 +168,14 @@
 	  <repository>
 		  <id>ebi-repo-old</id>
 		  <name>EBI Repository</name>
-		  <url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo</url>
+		  <url>scp://ebi-001.ebi.ac.uk/homes/maven/public_html/m2repo</url>
 	  </repository>
 		
 	  <snapshotRepository>
 		  <id>ebi-repo-old-snapshots</id>
 		  <uniqueVersion>false</uniqueVersion>
 		  <name>EBI Snapshots Repository</name>
-		  <url>scp://parrot.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
+		  <url>scp://ebi-001.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
 	  </snapshotRepository>
 
 <!-- This is better, but not yet public -->
