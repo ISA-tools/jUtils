@@ -1,5 +1,7 @@
 package uk.ac.ebi.utils.test.junit;
 
+import static java.lang.System.out;
+
 import java.text.MessageFormat;
 
 import org.apache.commons.lang.StringUtils;
@@ -9,8 +11,6 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunListener;
 import org.junit.runners.model.Statement;
-
-import static java.lang.System.out;
 
 /**
  *

@@ -42,8 +42,8 @@
  */
 package uk.ac.ebi.utils.xml;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -52,8 +52,9 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.InputStream;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Created by the ISA team Modified from example here:

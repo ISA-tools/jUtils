@@ -1,11 +1,11 @@
 package uk.ac.ebi.utils.collections;
 
+import static java.lang.System.out;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
-
-import static java.lang.System.out;
 
 
 public class AlphaNumComparatorTest
@@ -36,7 +36,8 @@ public class AlphaNumComparatorTest
 
 		String expected[] = new String[] { null, "Abc", "Item 3", "Item 01", "Item 02", "Item 100" };
 		assertTrue ( 
-			String.format ( "Result different than what it is expected!\n  Result: %s\n  Result: %s", alphaNumStrings, expected ), 
+			String.format ( "Result different than what it is expected!\n  Result: %s\n  Result: %s", 
+				Arrays.asList ( alphaNumStrings ), Arrays.asList ( expected )), 
 			Arrays.equals ( alphaNumStrings, expected ) 
 		);
 	}

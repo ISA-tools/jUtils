@@ -52,13 +52,13 @@
 
 package uk.ac.ebi.utils.collections;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
-import uk.ac.ebi.utils.collections.ObjectStore;
-
-
 import static java.lang.System.out;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 public class ObjectStoreTest
 {

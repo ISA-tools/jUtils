@@ -1,11 +1,11 @@
 package uk.ac.ebi.utils.threading;
 
+import static java.lang.System.out;
+import static junit.framework.Assert.assertTrue;
+
 import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Ignore;
 import org.junit.Test;
-import static junit.framework.Assert.assertTrue;
-
-import static java.lang.System.out;
 
 /**
  * Tests the {@link BatchService} with the {@link PoolSizeTuner}, to verify that it reaches the optimal pool size. 

@@ -48,12 +48,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-
 import static uk.ac.ebi.utils.reflection.ReflectionUtils.getTypeArguments;
 
 import java.util.Collection;
 import java.util.List;
+
+import org.junit.Test;
 
 /**
  * Jan 16, 2008
