@@ -9,7 +9,11 @@ import java.util.concurrent.Executors;
 
 /**
  * 
- * TODO: Comment me!
+ * This is a piped writer that runs write operations as a background thread. This is useful in situations
+ * where there is a component that gives you some output via a {@link Writer} and you want to send such output
+ * straight to a reader (e.g., a connection proxy). This is ispired by this 
+ * <a href = 'http://ostermiller.org/convert_java_writer_reader.html'>ostermiller post</a>.
+ *  
  * TODO: Never used/tested! 
  * 
  * <dl><dt>date</dt><dd>3 Nov 2013</dd></dl>
@@ -42,7 +46,7 @@ public class ThreadedPipedWriter extends Writer
 	}
 	
 	
-	public ThreadedPipedWriter ( Writer base ) throws IOException
+	public ThreadedPipedWriter () throws IOException
 	{
 		writer = new PipedWriter ( reader );
 	}

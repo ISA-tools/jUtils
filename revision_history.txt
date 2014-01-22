@@ -2,6 +2,7 @@ REVISION HISTORY
 
 - 4.0.1-SNAPSHOT
   ThreadedPipedWriter?
+  Minor changes
   
 - 4.0
   BatchService and related classes added.
