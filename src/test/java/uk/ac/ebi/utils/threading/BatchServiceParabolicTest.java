@@ -3,7 +3,7 @@ package uk.ac.ebi.utils.threading;
 import static java.lang.System.out;
 import static junit.framework.Assert.assertTrue;
 
-import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class BatchServiceParabolicTest
 		public TestTask ( String name, int n ) 
 		{
 			super ( name );
-			T = (int) Math.round ( a * n * n + b * n + c + ( RandomUtils.nextInt ( N - ( -N ) + 1 ) + (-N ) ) );
+			T = (int) Math.round ( a * n * n + b * n + c + RandomUtils.nextInt ( -N, +N ) );
 			if ( T < 0 ) T = 0;
 			this.name += " (" + T + "ms )";
 		}
@@ -69,7 +69,7 @@ public class BatchServiceParabolicTest
 	public void testOptimization ()
 	{
 		out.printf ( "a = %f, b = %f, c = %f\n", a, b, c );
-		BatchService service = new BatchService ( 20 );
+		BatchService<TestTask> service = new BatchService<TestTask> ( 20 );
 
 		PoolSizeTuner tuner = service.getPoolSizeTuner ();
 		tuner.setPeriodMSecs ( 10*1000 );

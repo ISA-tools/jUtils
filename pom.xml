@@ -44,11 +44,11 @@
 			<version>1.6.1</version>
 		</dependency>
 
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.4</version>
-    </dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.1</version>
+		</dependency>
 
 	  <dependency>
 	    <groupId>junit</groupId>
@@ -56,7 +56,7 @@
 	    <version>4.10</version>
 	  </dependency>
 	  
-	  <!-- It seems that currently there is no official Oracle release of JPA 2.0, so we need to rely on some impplementor  -->
+	  <!-- It seems that currently there is no official Oracle release of JPA 2.0, so we need to rely on some implementor  -->
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
@@ -133,7 +133,7 @@
 	    <extension>
 	      <groupId>org.apache.maven.wagon</groupId>
 	      <artifactId>wagon-ssh</artifactId>
-	      <version>2.2</version>
+	      <version>2.6</version>
 	    </extension>
     </extensions>    
 
@@ -152,30 +152,17 @@
 	
   <distributionManagement>
 		
-			<!-- We deploy on both repos, but only one permitted here -->
-	    <!-- repository>
-	        <id>oerc</id>
-			    <name>Oxford e-Research Center</name>
-	        <url>http://frog.oerc.ox.ac.uk:8080/artifactory/libs-release-local</url>
-	    </repository>
-	
-			<snapshotRepository>
-		    <id>oerc</id>
-		    <name>frog.oerc.ox.ac.uk-snapshots</name>
-		    <url>http://frog.oerc.ox.ac.uk:8080/artifactory/libs-snapshot-local</url>
-	    </snapshotRepository -->
-
 	  <repository>
 		  <id>ebi-repo-old</id>
 		  <name>EBI Repository</name>
-		  <url>scp://ebi-001.ebi.ac.uk/homes/maven/public_html/m2repo</url>
+		  <url>sftp://ebi-001.ebi.ac.uk/homes/maven/public_html/m2repo</url>
 	  </repository>
 		
 	  <snapshotRepository>
 		  <id>ebi-repo-old-snapshots</id>
 		  <uniqueVersion>false</uniqueVersion>
 		  <name>EBI Snapshots Repository</name>
-		  <url>scp://ebi-001.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
+		  <url>sftp://ebi-001.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
 	  </snapshotRepository>
 
 <!-- This is better, but not yet public -->
@@ -183,14 +170,8 @@
 	    <id>coconut.ebi.ac.uk</id>
 	    <name>coconut.ebi.ac.uk-releases</name>
 	    <url>http://coconut.ebi.ac.uk:8081/artifactory/local-repo</url>
-    </repository>
-    
-    <snapshotRepository>
-	    <id>coconut.ebi.ac.uk</id>
-	    <name>coconut.ebi.ac.uk-snapshots</name>
-	    <url>http://coconut.ebi.ac.uk:8081/artifactory/local-repo</url>
-    </snapshotRepository> -->
-		  	
+    </repository> -->
+    		  	
   </distributionManagement>
     
 </project>

@@ -1,7 +1,10 @@
 REVISION HISTORY
 
-- 4.0.1-SNAPSHOT
-  ThreadedPipedWriter?
+- 4.1.1-SNAPSHOT
+
+- 4.1
+  ThreadedPipedWriter added
+  XStopWatch added
   Minor changes
   
 - 4.0
