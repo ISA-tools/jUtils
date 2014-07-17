@@ -80,6 +80,7 @@ public class IOUtils
 	/** Reads a resource from the class loader, i.e. using clazz.getResourceAsStream (),
 	 *  and puts all the content in a string 
 	 */
+	@SuppressWarnings ( "rawtypes" )
 	public static String readResource ( Class clazz, String path ) throws IOException
 	{
 		Reader rdr = new BufferedReader ( new InputStreamReader ( clazz.getResourceAsStream ( path ) ) );

@@ -1,5 +1,8 @@
 package uk.ac.ebi.utils.sql;
 
+import static java.lang.String.format;
+
+
 /**
  * Utilities for SQL definition and manipulation.
  *
@@ -14,6 +17,6 @@ public class SqlUtils
 	 * building parameterised queries where you want to match a particular value, including the null value. 
 	 */
 	public static String parameterizedWithNullSql ( String fieldName, String paramName ) {
-		return String.format ( "(:%2$s IS NULL AND %1$s IS NULL OR %1$s = :%2$s)", fieldName, paramName );
+		return format ( "(:%2$s IS NULL AND %1$s IS NULL OR %1$s = :%2$s)", fieldName, paramName );
 	}
 }
