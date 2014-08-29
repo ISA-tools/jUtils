@@ -17,7 +17,7 @@ public class HqlUtils
 	 * Builds a string like ":paramName IS NULL AND fieldName IS NULL OR fieldName = :paramName". This is useful for 
 	 * building parameterised queries where you want to match a particular value, including the null value. 
 	 */
-	public static String parameterizedWithNullSql ( String fieldName, String paramName ) {
+	public static String parameterizedWithNullHql ( String fieldName, String paramName ) {
 		return format ( "(:%2$s IS NULL AND %1$s IS NULL OR %1$s = :%2$s)", fieldName, paramName );
 	}
 
