@@ -217,7 +217,7 @@ public class BatchService<TK extends BatchServiceTask>
 			}
 		}, 60000, 60000 );
 
-		// no-task condition, which is triggered by the code wrapping task in submit()
+		// no-tasks condition, which is triggered by the code wrapping the task in submit()
 		submissionLock.lock ();
 		try 
 		{
