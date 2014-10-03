@@ -1,6 +1,9 @@
 REVISION HISTORY
 
-4.1.1-SNAPSHOT
+4.2.1-SNAPSHOT
+  - Just started
+
+4.2
   - HqlUtils added
 
 4.1
