@@ -158,12 +158,28 @@
 		  <url>sftp://ebi-001.ebi.ac.uk/homes/maven/public_html/m2repo</url>
 	  </repository>
 		
-	  <snapshotRepository>
+	  <!-- snapshotRepository>
 		  <id>ebi-repo-old-snapshots</id>
 		  <uniqueVersion>false</uniqueVersion>
 		  <name>EBI Snapshots Repository</name>
 		  <url>sftp://ebi-001.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
+	  </snapshotRepository -->
+
+	  <snapshotRepository>
+		  <id>biosd-snapshots</id>
+		  <uniqueVersion>false</uniqueVersion>
+		  <name>EBI Nexus Repository, Snapshots</name>
+		  <url>http://nexus.ebi.ac.uk:8088/dev/nexus/content/repositories/biosamples-snapshots</url>
 	  </snapshotRepository>
+
+	  <!--  Being tested, will come soon on line snapshotRepository>
+		  <id>biosd-internal-snapshots</id>
+		  <uniqueVersion>false</uniqueVersion>
+		  <name>EBI Nexus Repository, Snapshots</name>
+		  <url>http://nexus.ebi.ac.uk:8088/dev/nexus/content/repositories/biosamples-internal-snapshots/</url>
+	  </snapshotRepository -->
+
+
 
 <!-- This is better, but not yet public -->
 <!--     <repository>

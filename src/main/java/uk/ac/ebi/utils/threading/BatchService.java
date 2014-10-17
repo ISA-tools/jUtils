@@ -54,7 +54,7 @@ public class BatchService<TK extends BatchServiceTask>
 	private int busyTasks = 0;
 	private long completedTasks = 0;
 	private Lock submissionLock = new ReentrantLock ();
-	private Condition freeTasksCond = submissionLock.newCondition (), noTasksCond = submissionLock.newCondition ();
+	private Condition freeThreadsCond = submissionLock.newCondition (), noTasksCond = submissionLock.newCondition ();
 	
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
 	
@@ -138,18 +138,14 @@ public class BatchService<TK extends BatchServiceTask>
 			// Wait until the pool has available threads
 			while ( busyTasks >= threadPoolSize )
 				try {
-					freeTasksCond.await ();
+					freeThreadsCond.await ();
 				}
 				catch ( InterruptedException ex ) {
 					throw new RuntimeException ( "Internal error: " + ex.getMessage (), ex );
 			}
-			busyTasks++;
-			log.info ( 
-				"Submitted: " + batchServiceTask.getName () + ", " + busyTasks + " task(s) running, " 
-				+ completedTasks + " completed, please wait" 
-			);
 	
 			// Now submit a new task, decorated with releasing code
+			//
 			executor.submit ( new Runnable() 
 			{
 				public void run ()
@@ -161,10 +157,14 @@ public class BatchService<TK extends BatchServiceTask>
 					} 
 					finally 
 					{
-						// Release after service run 
+						// Release after service run
+						//
 						submissionLock.lock ();
 						try
 						{
+							// Used by the pool size tuner and for stat purposes.
+							completedTasks++;
+
 							// keep track of the exit code. 
 							int taskExitCode = batchServiceTask.getExitCode ();
 							if ( taskExitCode != 0 ) {
@@ -174,12 +174,9 @@ public class BatchService<TK extends BatchServiceTask>
 							// Decrease the no. of currently actually running tasks, broadcast the empty pool event.
 							if ( --busyTasks < threadPoolSize ) 
 							{
-								freeTasksCond.signal ();
+								freeThreadsCond.signal ();
 								if ( busyTasks == 0 ) noTasksCond.signalAll ();
 							}
-							
-							// Used by the pool size tuner and for stat purposes.
-							completedTasks++;
 							
 							log.trace ( 
 								Thread.currentThread ().getName () + " released, " + busyTasks + " task(s) running, " 
@@ -193,6 +190,12 @@ public class BatchService<TK extends BatchServiceTask>
 					} // run().finally
 				} // run()
 			}); // decorated runnable
+			
+			busyTasks++;
+			log.info ( 
+				"Submitted: " + batchServiceTask.getName () + ", " + busyTasks + " task(s) running, " 
+				+ completedTasks + " completed, please wait" 
+			);
 		} // try on submissionLock  
 		finally {
 			submissionLock.unlock ();
