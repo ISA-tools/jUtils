@@ -63,21 +63,33 @@ public class MemoryUtils
 
 	
 	/**
-	 * Invoke this when you think it's safe to invoke the action (eg, when you can get rid of
+	 * <p>Invoke this when you think it's safe to invoke the action (eg, when you can get rid of
 	 * all the objects and connections in an Hibernate entity manager). The method checks the amount of free memory 
-	 * still available to the JVM ({@link Runtime#freeMemory()} / {@link Runtime#totalMemory()}) and, if this is &lt;
-	 * minFreeMemory, executes the action and then, if callGc is true, invokes the {@link Runtime#gc() garbage collector}.
-	 * The event triggering is also logged with trace level.
+	 * still available to the JVM and, if this is &lt; minFreeMemoryRatio, executes the action and then, if callGc is true, 
+	 * invokes the {@link Runtime#gc() garbage collector}.</p>
 	 * 
-	 * Note the method is synchronised, so that you can avoid that a number of threads trigger a memory reset almost
-	 * simultaneously. 
+	 * <p>The event triggering is also logged with trace level.</p>
+	 * 
+	 * <p>The amount of free memory is computed as:</p>
+	 *  
+	 *   <dl><dd><i>runtime.maxMemory () - ( runtime.totalMemory () - runtime.freeMemory () )</i></dd></dl>
+	 *   
+	 * <p>That's because the JVM allocates more memory, up to maxMemory(), when freeMemory() reaches the totalMemory()
+	 * amount. (hence the above formula first computes the occupied memory and then the true free one</p>
+	 * 
+	 * <p>Note the method is synchronised, so that you can avoid that a number of threads trigger a memory reset almost
+	 * simultaneously.</p> 
 	 */
-	public static synchronized boolean checkMemory ( Runnable action, double minFreeMemory, boolean callGc )
+	public static synchronized boolean checkMemory ( Runnable action, double minFreeMemoryRatio, boolean callGc )
 	{
 		Runtime runtime = Runtime.getRuntime ();
-		float freeMemRatio = ( 1.0f * runtime.freeMemory () ) / runtime.totalMemory ();
-		if ( freeMemRatio < minFreeMemory )
+		
+		// actual free mem = max - occupied -> max - (total - free)
+		float freeMemRatio = ( (float) runtime.maxMemory () - ( runtime.totalMemory () - runtime.freeMemory () ) ) / runtime.maxMemory ();
+
+		if ( freeMemRatio < minFreeMemoryRatio )
 		{
+			
 			if ( log.isTraceEnabled () )
 			{
 				log.trace ( String.format (  

@@ -1,7 +1,8 @@
 REVISION HISTORY
 
 4.2.1-SNAPSHOT
-  - Just started
+  - Fix in MemoryUtils.checkMemory(), Runtime.maxMemory() used (instead of totalMemory())
+  - ReflectionUtils.invoke () added
 
 4.2
   - HqlUtils added

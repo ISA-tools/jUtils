@@ -31,6 +31,10 @@ public class ThreadedPipedWriter extends Writer
 	
 	private abstract class IORunnable implements Runnable 
 	{
+		/**
+		 * Catch IO exceptions and set {@link #ex}, so that the main thread can raise the same to the caller.
+		 * Override bareRun and not this.
+		 */
 		public final void run () 
 		{
 			try {

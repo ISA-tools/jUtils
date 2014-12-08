@@ -53,7 +53,10 @@ import static uk.ac.ebi.utils.reflection.ReflectionUtils.getTypeArguments;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import uk.ac.ebi.utils.collections.Pair;
 
 /**
  * Jan 16, 2008
@@ -63,11 +66,21 @@ import org.junit.Test;
 public class ReflectionUtilsTest
 {
 	
-	private abstract class A<T1, T2 extends Collection<T3>, T3> {}
-	private class B extends A<Integer, List<String>, String> {}
-	private class C<T3> extends A<Integer, List<T3>, T3> {}
-	private class D extends C<Integer> {}
+	private static abstract class A<T1, T2 extends Collection<T3>, T3> {}
+	private static class B extends A<Integer, List<String>, String> {}
+	private static class C<T3> extends A<Integer, List<T3>, T3> {}
+	private static class D extends C<Integer> {}
 
+	public static class TestClass {
+		public String publicMethod ( String name ) {
+			return "Hello " + name + "!";
+		}
+
+		protected String protectedMethod ( String name ) {
+			return "Hello " + name + "!";
+		}
+	}
+	
 	@Test
 	public void testGetTypeArguments () {
 		List<Class<?>> args = getTypeArguments ( A.class, B.class );
@@ -107,5 +120,15 @@ public class ReflectionUtilsTest
 		assertNull ( "getTypeArguments1() with wrong result (arg 2 should be null)!", t2 );
 	}
 	
+	@Test
+	public void testInvoke ()
+	{
+		TestClass test = new TestClass ();
+		
+		assertEquals ( "invoke() didn't work!", "Hello World!", 
+			ReflectionUtils.invoke ( test, "publicMethod", new Class<?> [] { String.class }, "World" ) );
 
+		assertEquals ( "invoke() didn't work (protected Method)!", "Hello World!", 
+				ReflectionUtils.invoke ( test, "protectedMethod", new Class<?> [] { String.class }, "World" ) );
+	}
 }

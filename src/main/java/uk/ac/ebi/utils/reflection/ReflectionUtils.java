@@ -85,8 +85,11 @@ package uk.ac.ebi.utils.reflection;
  * EU NuGO [NoE 503630](http://www.nugo.org/everyone) projects and in part by EMBL-EBI.
  */
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -94,6 +97,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Jan 15, 2008
@@ -230,6 +234,81 @@ public class ReflectionUtils
 				+ baseClass.getCanonicalName () + " / " + childClass.getCanonicalName () 
   	);
   	return ( Class<ArgumentType> ) args.get ( argIndex );
+  }
+
+  
+  /**
+   * Invokes a method by means of reflection. This is a shortcut for the classes and methods existing in the standard
+   * reflection package.
+   * 
+   * @param makeAccessible if true, uses {@link AccessibleObject#setAccessible(boolean)} to make the method accessible, even
+   * when it's protected. As Java documentation says, this will possibly trigger exceptions (wrapped by a {@link RuntimeException}).
+   * 
+   * @param object the object for which the method is invoked 
+   * @param methodClass the class where the method is declared (might be an objec't superclass and you need to identify the
+   * declaring class).
+   * @param methodName the method name
+   * @param paramTypes the types of parameters the method accepts (it's like in {@link Class#getDeclaredMethod(String, Class...)}.
+   * @param params the actual parameters for the invocation.
+   * 
+   * @return whatever the method returns, or null if it's void.
+   */
+  @SuppressWarnings ( "unchecked" )
+	public static <T, RT> RT invoke ( 
+  	boolean makeAccessible, T object, Class<? super T> methodClass, String methodName, 
+  	Class<?>[] paramTypes, Object... params 
+  )
+  {
+		try
+		{
+			if ( object == null ) throw new NullPointerException ( 
+				"Cannot invoke the method '" + methodName + "' over a null object" 
+			);
+			
+			Method setPropM = methodClass.getDeclaredMethod ( methodName, paramTypes );
+			if ( makeAccessible ) setPropM.setAccessible ( true );
+			return (RT) setPropM.invoke ( object, params );
+		} 
+		catch ( 
+			NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException 
+			| InvocationTargetException ex 
+		)
+		{
+			throw new RuntimeException ( String.format ( 
+				"Internal Error while invoking '%s'.'%s': %s", object.getClass ().getSimpleName (), methodName, ex.getMessage () 
+			), ex );
+		}
+  }
+
+  /**
+   * Default class is object.getClass(). {@link NullPointerException} if object is null.
+   */
+	@SuppressWarnings ( "unchecked" )
+	public static <RT> RT invoke ( boolean makeAccessible, Object object, String methodName, Class<?>[] paramTypes, Object... params )
+	{
+		if ( object == null ) throw new NullPointerException ( 
+			"Cannot invoke the method '" + methodName + "' over a null object" 
+		);
+		
+		return invoke ( makeAccessible, object, (Class<Object>) object.getClass (), methodName, paramTypes, params );
+	}
+  
+  /**
+   * Defaults to makeAccessible = true.
+   */
+  @SuppressWarnings ( "unchecked" )
+	public static <T, RT> RT invoke ( Object object, Class<? super T> methodClass, String methodName, Class<?>[] paramTypes, Object... params )
+  {
+  	return invoke ( true, object, (Class<Object>) methodClass, methodName, paramTypes, params );
+  }
+
+  /**
+   * Defaults to methodClass = object.getClass() and makeAccessible = true. {@link NullPointerException} if object is null.
+   */
+  @SuppressWarnings ( "unchecked" )
+	public static <T,RT> RT invoke ( Object object, String methodName, Class<?>[] paramTypes, Object... params )
+  {
+  	return invoke ( true, object, (Class<Object>) object.getClass (), methodName, paramTypes, params );
   }
 
 }
