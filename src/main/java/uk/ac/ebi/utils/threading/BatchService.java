@@ -10,8 +10,10 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import uk.org.lidalia.slf4jext.Level;
+import uk.org.lidalia.slf4jext.Logger;
+import uk.org.lidalia.slf4jext.LoggerFactory;
+
 
 /**
  * <p>A pool-based thread execution service, that dynamically optimises its size.</p>
@@ -55,7 +57,11 @@ public class BatchService<TK extends BatchServiceTask>
 	private long completedTasks = 0;
 	private Lock submissionLock = new ReentrantLock ();
 	private Condition freeThreadsCond = submissionLock.newCondition (), noTasksCond = submissionLock.newCondition ();
+
+	private Timer notificationTimer = null;
 	
+	
+	private Level submissionMsgLogLevel = Level.INFO;
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
 	
 	/**
@@ -192,10 +198,13 @@ public class BatchService<TK extends BatchServiceTask>
 			}); // decorated runnable
 			
 			busyTasks++;
-			log.info ( 
+			log.log ( 
+				this.submissionMsgLogLevel,
 				"Submitted: " + batchServiceTask.getName () + ", " + busyTasks + " task(s) running, " 
 				+ completedTasks + " completed, please wait" 
 			);
+			if ( !this.log.isEnabled ( this.submissionMsgLogLevel ) && this.notificationTimer == null )
+				this.initNotificationTimer ();
 		} // try on submissionLock  
 		finally {
 			submissionLock.unlock ();
@@ -212,13 +221,7 @@ public class BatchService<TK extends BatchServiceTask>
 	public void waitAllFinished ()
 	{
 		// I'm alive message
-		Timer notificationTimer = new Timer ( this.getClass ().getSimpleName () + " Alive Notification" );
-		notificationTimer.scheduleAtFixedRate ( new TimerTask() {
-			@Override
-			public void run () {
-				log.info ( "" + busyTasks + " task(s) still running, " + completedTasks + " completed, please wait" );
-			}
-		}, 60000, 60000 );
+		if ( this.notificationTimer == null ) this.initNotificationTimer ();
 
 		// no-tasks condition, which is triggered by the code wrapping the task in submit()
 		submissionLock.lock ();
@@ -236,6 +239,24 @@ public class BatchService<TK extends BatchServiceTask>
 			notificationTimer.cancel ();
 		}
 	}
+	
+	/**
+	 * Initialises an internal timer, which notifies about current service activity (running tasks, completed tasks
+	 * etc) every 60 secs. This is enabled when {@link #getSubmissionMsgLogLevel()} is not currently enabled in the
+	 * logging system, and during {@link #waitAllFinished()}.
+	 *   
+	 */
+	private void initNotificationTimer ()
+	{
+		this.notificationTimer = new Timer ( this.getClass ().getSimpleName () + " Alive Notification" );
+		this.notificationTimer.scheduleAtFixedRate ( new TimerTask() {
+			@Override
+			public void run () {
+				log.info ( "" + busyTasks + " task(s) running, " + completedTasks + " completed, please wait" );
+			}
+		}, 60000, 60000 );		
+	}
+	
 	
 	/**
 	 * The no of completed tasks. This method is not synchronised, so you might get a number slightly lower than the real
@@ -256,7 +277,24 @@ public class BatchService<TK extends BatchServiceTask>
 		return poolSizeTuner;
 	}
 	
-	
+
+	/**
+	 * The submission of a new task is notified to the logging system via this level ({@link Level#INFO} by default).
+	 * 
+	 * If your application has very many tasks and you don't want to get bothered with these messages, you can 
+	 * change the log granularity here. If the level you set is disabled, this class will instead log 
+	 * a {@link #initNotificationTimer() notification} from time to time. 
+	 *  
+	 */
+	public Level getSubmissionMsgLogLevel ()
+	{
+		return submissionMsgLogLevel;
+	}
+
+	public void setSubmissionMsgLogLevel ( Level submissionMsgLogLevel )
+	{
+		this.submissionMsgLogLevel = submissionMsgLogLevel;
+	}
 
 	/**
 	 * Stops {@link #poolSizeTuner}.

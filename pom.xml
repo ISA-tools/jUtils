@@ -43,6 +43,13 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+		
+		<!-- An SLF4J extension, which allows for log levels (http://projects.lidalia.org.uk/lidalia-slf4j-ext/) -->
+		<dependency>
+		  <groupId>uk.org.lidalia</groupId>
+		  <artifactId>lidalia-slf4j-ext</artifactId>
+		  <version>1.0.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -158,19 +165,19 @@
 	
   <distributionManagement>
 
-	  <repository>
+		<repository>
 		  <id>biosd-repo</id>
 		  <uniqueVersion>false</uniqueVersion>
-		  <name>EBI Nexus Repository, Snapshots</name>
+		  <name>EBI Nexus Repository for BioSD public stuff</name>
 		  <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/biosamples</url>
-	  </repository>
+		</repository>
 
-	  <snapshotRepository>
+		<snapshotRepository>
 		  <id>biosd-repo-snapshots</id>
 		  <uniqueVersion>false</uniqueVersion>
-		  <name>EBI Nexus Repository, Snapshots</name>
+		  <name>EBI Nexus Repository for BioSD public stuff, Snapshots</name>
 		  <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/biosamples-snapshots</url>
-	  </snapshotRepository>
+		</snapshotRepository>
     		  	
   </distributionManagement>
     
