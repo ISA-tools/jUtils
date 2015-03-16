@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -295,6 +296,16 @@ public class BatchService<TK extends BatchServiceTask>
 	{
 		this.submissionMsgLogLevel = submissionMsgLogLevel;
 	}
+	
+	
+	/**
+	 * It's like the {@link ThreadPoolExecutor#setThreadFactory(ThreadFactory)} and might be useful here as well.
+	 */
+	public void setThreadFactory ( ThreadFactory threadFactory )
+	{
+		((ThreadPoolExecutor) executor).setThreadFactory ( threadFactory );
+	}
+	
 
 	/**
 	 * Stops {@link #poolSizeTuner}.
@@ -305,4 +316,5 @@ public class BatchService<TK extends BatchServiceTask>
 		if ( poolSizeTuner != null ) this.poolSizeTuner.stop ();
 		super.finalize ();
 	}
+	
 }
