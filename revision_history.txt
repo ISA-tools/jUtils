@@ -2,6 +2,7 @@ REVISION HISTORY
 
 4.3.1-SNAPSHOT
   - Just started
+  - Experimental migration to EBI/Nexus Maven repository
   
 4.3
   - Fix in MemoryUtils.checkMemory(), Runtime.maxMemory() used (instead of totalMemory())
