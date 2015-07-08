@@ -25,4 +25,13 @@ public class XStopWatch extends StopWatch
 		// or, it is already running
 	}
 	
+	/**
+	 * Invokes {@link #reset()} and then {@link #start()}, ie, start a new timing session.
+	 */
+	public void restart () 
+	{
+		super.reset ();
+		super.start ();
+	}
+
 }

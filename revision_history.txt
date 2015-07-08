@@ -2,7 +2,8 @@ REVISION HISTORY
 
 4.3.1-SNAPSHOT
   - Experimental migration to EBI/Nexus Maven repository
-	- XStopWatch fixed against new checkings in StopWatch (start() cannot be called twice, without reset())  
+	- XStopWatch fixed against new checkings in StopWatch (start() cannot be called twice, without reset())
+	- XStopWatch.restart() added
   
 4.3
   - Fix in MemoryUtils.checkMemory(), Runtime.maxMemory() used (instead of totalMemory())
