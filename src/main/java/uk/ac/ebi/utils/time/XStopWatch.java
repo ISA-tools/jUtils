@@ -17,11 +17,12 @@ public class XStopWatch extends StopWatch
 	 */
 	public void resumeOrStart ()
 	{
-		if ( isStopped () ) {
-			super.reset ();
-			super.start ();
+		if ( isStopped () )
+		{
+			this.reset ();
+			this.start ();
 		}
-		else if ( isSuspended () ) super.resume ();
+		else if ( isSuspended () ) this.resume ();
 		// or, it is already running
 	}
 	
@@ -30,8 +31,8 @@ public class XStopWatch extends StopWatch
 	 */
 	public void restart () 
 	{
-		super.reset ();
-		super.start ();
+		this.reset ();
+		this.start ();
 	}
 
 }
