@@ -1,6 +1,9 @@
 REVISION HISTORY
 
-4.3.1-SNAPSHOT
+4.4.1-SNAPSHOT
+  - New dev version started
+
+4.4
   - Experimental migration to EBI/Nexus Maven repository
 	- XStopWatch fixed against new checkings in StopWatch (start() cannot be called twice, without reset())
 	- XStopWatch.restart() added
