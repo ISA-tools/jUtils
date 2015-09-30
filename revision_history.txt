@@ -1,7 +1,8 @@
 REVISION HISTORY
 
 4.4.1-SNAPSHOT
-  - New dev version started
+  - Moving to BioSD/GitHub repository
+  - Some improvements in BatchService
 
 4.4
   - Experimental migration to EBI/Nexus Maven repository
