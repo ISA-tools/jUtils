@@ -41,7 +41,7 @@ public class BatchService<TK extends BatchServiceTask>
 	/**
 	 * The current pools size (no of max parallel threads the service is running).
 	 */
-	protected int threadPoolSize;
+	private int threadPoolSize;
 
 	/**
 	 * This should be 1 if there are multiple and different exit codes returned by submitted tasks {@link BatchServiceTask#getExitCode()}.
@@ -84,16 +84,12 @@ public class BatchService<TK extends BatchServiceTask>
 		@Override
 		protected void setThreadPoolSize ( int size ) 
 		{
-			submissionLock.lock ();
-			threadPoolSize = size;
-			((ThreadPoolExecutor) executor ).setCorePoolSize ( size );
-			((ThreadPoolExecutor) executor ).setMaximumPoolSize ( size );
-			submissionLock.unlock ();
+			BatchService.this.setThreadPoolSize ( size );
 		}
 		
 		@Override
 		public int getThreadPoolSize () {
-			return threadPoolSize;
+			return BatchService.this.getThreadPoolSize ();
 		}
 		
 		@Override
@@ -114,9 +110,9 @@ public class BatchService<TK extends BatchServiceTask>
 	/** Initialises a pool service with this number of initial threads. */
 	public BatchService ( int initialThreadPoolSize ) 
 	{
-		this.threadPoolSize = initialThreadPoolSize;
 		this.poolSizeTuner = new BatchServiceTuner ();
-		this.executor = Executors.newFixedThreadPool ( threadPoolSize );
+		this.executor = Executors.newFixedThreadPool ( initialThreadPoolSize );
+		this.setThreadPoolSize ( initialThreadPoolSize );
 	}
 	
 	/** 
@@ -126,7 +122,7 @@ public class BatchService<TK extends BatchServiceTask>
 	 */
 	public BatchService ( int initialThreadPoolSize, PoolSizeTuner poolSizeTuner )
 	{
-		this.threadPoolSize = initialThreadPoolSize;
+		this.setThreadPoolSize ( initialThreadPoolSize );
 		this.poolSizeTuner = poolSizeTuner;
 		this.executor = Executors.newFixedThreadPool ( threadPoolSize );
 	}
@@ -143,7 +139,7 @@ public class BatchService<TK extends BatchServiceTask>
 		try
 		{
 			// Wait until the pool has available threads
-			while ( busyTasks >= threadPoolSize )
+			while ( busyTasks >= this.getThreadPoolSize () )
 				try {
 					freeThreadsCond.await ();
 				}
@@ -179,7 +175,7 @@ public class BatchService<TK extends BatchServiceTask>
 							}
 							
 							// Decrease the no. of currently actually running tasks, broadcast the empty pool event.
-							if ( --busyTasks < threadPoolSize ) 
+							if ( --busyTasks < getThreadPoolSize () )
 							{
 								freeThreadsCond.signal ();
 								if ( busyTasks == 0 ) noTasksCond.signalAll ();
@@ -277,7 +273,50 @@ public class BatchService<TK extends BatchServiceTask>
 	{
 		return poolSizeTuner;
 	}
+
+	public int getThreadPoolSize ()
+	{
+		submissionLock.lock ();
+		try {
+			return threadPoolSize;
+		}
+		finally {
+			submissionLock.unlock ();
+		}
+	}
 	
+	public void setThreadPoolSize ( int threadPoolSize )
+	{
+		submissionLock.lock ();
+		try 
+		{
+			this.threadPoolSize = threadPoolSize;
+			if ( BatchService.this.executor == null ) return; 
+			
+			((ThreadPoolExecutor) executor ).setCorePoolSize ( threadPoolSize );
+			((ThreadPoolExecutor) executor ).setMaximumPoolSize ( threadPoolSize );
+		}
+		finally {
+			submissionLock.unlock ();
+		}
+	}
+
+	public int getLastExitCode ()
+	{
+		return lastExitCode;
+	}
+
+	public int getBusyTasks ()
+	{
+		submissionLock.lock ();
+		try 
+		{
+			return busyTasks;
+		}
+		finally {
+			submissionLock.unlock ();
+		}
+	}
 
 	/**
 	 * The submission of a new task is notified to the logging system via this level ({@link Level#INFO} by default).
@@ -305,6 +344,7 @@ public class BatchService<TK extends BatchServiceTask>
 	{
 		((ThreadPoolExecutor) executor).setThreadFactory ( threadFactory );
 	}
+	
 	
 
 	/**
