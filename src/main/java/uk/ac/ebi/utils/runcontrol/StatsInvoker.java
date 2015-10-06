@@ -15,7 +15,7 @@ import uk.ac.ebi.utils.time.XStopWatch;
 public class StatsInvoker implements WrappedInvoker<Boolean>
 {
 	private long samplingTime;
-	private String messageHeader = "";
+	private String serviceName = "[Unspecified]";
 	
 	private int totalCalls = 0, failedCalls = 0;
 	private XStopWatch timer = new XStopWatch ();
@@ -23,14 +23,14 @@ public class StatsInvoker implements WrappedInvoker<Boolean>
 	private Logger log = LoggerFactory.getLogger ( this.getClass () );
 
 	
-	public StatsInvoker ( String messageHeader, long samplingTime )
+	public StatsInvoker ( String serviceName, long samplingTime )
 	{
 		this.samplingTime = samplingTime;
-		this.messageHeader = messageHeader;
+		this.serviceName = serviceName;
 	}
 
-	public StatsInvoker ( String messageHeader ) {
-		 this ( messageHeader, 5 * 60 * 1000 );
+	public StatsInvoker ( String serviceName ) {
+		 this ( serviceName, 5 * 60 * 1000 );
 	}
 	
 	@Override
@@ -41,8 +41,8 @@ public class StatsInvoker implements WrappedInvoker<Boolean>
 		}
 		catch ( Exception ex ) 
 		{
-			log.warn ( "Call to {}, due to: {}", this.messageHeader, ex.getMessage () );
-			if ( log.isDebugEnabled () ) log.debug ( "Call to " + this.messageHeader + ", reason:", ex );
+			log.warn ( "Call to {} failed, due to: {}", this.serviceName, ex.getMessage () );
+			if ( log.isTraceEnabled () ) log.trace ( "Call to " + this.serviceName + ", reason:", ex );
 			this.failedCalls++;
 		}
 		finally {
@@ -67,8 +67,8 @@ public class StatsInvoker implements WrappedInvoker<Boolean>
 			: 1.0 * this.failedCalls / this.totalCalls;
 
 		log.info ( String.format ( 
-			"---- %s, throughput: %.0f calls/min, failed: %.1f %%",
-			messageHeader,
+			"---- %s Statistics, throughput: %.0f calls/min, failed: %.1f %%",
+			serviceName,
 			avgCalls * 60000, avgFails * 100
 		));
 		
@@ -76,4 +76,15 @@ public class StatsInvoker implements WrappedInvoker<Boolean>
 		timer.restart ();
 		return true;
 	}
+
+	public synchronized int getTotalCalls ()
+	{
+		return totalCalls;
+	}
+
+	public synchronized int getFailedCalls ()
+	{
+		return failedCalls;
+	}
+	
 }

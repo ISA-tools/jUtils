@@ -4,7 +4,7 @@
   
   <groupId>uk.ac.ebi</groupId>
   <artifactId>jutils</artifactId>
-  <version>4.5</version>
+  <version>4.5.1-SNAPSHOT</version>
   
   <name>JUtils - Miscellanea of Java Utils</name>
   <description>
@@ -63,12 +63,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.3.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>18.0</version>
 		</dependency>
 
 

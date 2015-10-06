@@ -1,7 +1,7 @@
 REVISION HISTORY
 
 4.5.1-SNAPSHOT
-  - New version started
+  - uk.ac.ebi.utils.runcontrol added
 
 4.5
   - Moving to BioSD/GitHub repository
