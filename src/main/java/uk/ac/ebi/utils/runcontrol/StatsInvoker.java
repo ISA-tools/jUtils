@@ -16,6 +16,7 @@ public class StatsInvoker implements WrappedInvoker<Boolean>
 {
 	private long samplingTime;
 	private String serviceName = "[Unspecified]";
+	private boolean popUpExceptions = true;
 	
 	private int totalCalls = 0, failedCalls = 0;
 	private XStopWatch timer = new XStopWatch ();
@@ -41,9 +42,12 @@ public class StatsInvoker implements WrappedInvoker<Boolean>
 		}
 		catch ( Exception ex ) 
 		{
+			this.failedCalls++;
+			if ( this.popUpExceptions )
+				throw ex;
+			
 			log.warn ( "Call to {} failed, due to: {}", this.serviceName, ex.getMessage () );
 			if ( log.isTraceEnabled () ) log.trace ( "Call to " + this.serviceName + ", reason:", ex );
-			this.failedCalls++;
 		}
 		finally {
 			this.totalCalls++;
@@ -85,6 +89,17 @@ public class StatsInvoker implements WrappedInvoker<Boolean>
 	public synchronized int getFailedCalls ()
 	{
 		return failedCalls;
+	}
+
+	public boolean isPopUpExceptions ()
+	{
+		return popUpExceptions;
+	}
+
+	public StatsInvoker setPopUpExceptions ( boolean popUpExceptions )
+	{
+		this.popUpExceptions = popUpExceptions;
+		return this;
 	}
 	
 }

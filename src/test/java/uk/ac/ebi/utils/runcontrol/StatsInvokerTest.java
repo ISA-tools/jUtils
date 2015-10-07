@@ -45,7 +45,7 @@ public class StatsInvokerTest
 	public void testBasics ()
 	{
 		long samplingTime = 500;
-		StatsInvoker invoker = new StatsInvoker ( "JUnit Test", samplingTime );
+		StatsInvoker invoker = new StatsInvoker ( "JUnit Test", samplingTime ).setPopUpExceptions ( false );
 		Tester tester = new Tester ();
 
 		XStopWatch timer = new XStopWatch ();

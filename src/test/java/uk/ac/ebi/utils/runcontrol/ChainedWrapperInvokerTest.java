@@ -30,7 +30,8 @@ public class ChainedWrapperInvokerTest
 
 
 		RateLimitedInvoker rateInvoker = new RateLimitedInvoker ( rate );
-		StatsInvoker statsInvoker = new StatsInvoker ( "ChainedInvokerTest", samplingTime ); 
+		StatsInvoker statsInvoker = new StatsInvoker ( "ChainedInvokerTest", samplingTime )
+			.setPopUpExceptions ( false ); 
 		
 		ChainedWrappedInvoker<Boolean> invoker = new ChainedWrappedInvoker<Boolean> ( 
 			rateInvoker, 
