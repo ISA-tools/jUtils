@@ -27,4 +27,12 @@ public class RateLimitedInvoker implements WrappedInvoker<Boolean>
 		return result;
 	}
 	
+	public double getRate () {
+		return this.rateLimiter.getRate ();
+	}
+	
+	public void setRate ( double requestsPerSecond ) {
+		this.rateLimiter.setRate ( requestsPerSecond );
+	}
+	
 }
