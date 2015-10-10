@@ -8,17 +8,17 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.ebi.utils.runcontrol.StatsInvokerTest.Tester;
+import uk.ac.ebi.utils.runcontrol.StatsExecutorTest.Tester;
 import uk.ac.ebi.utils.time.XStopWatch;
 
 /**
- * TODO: comment me!
+ * Test {@link RateLimitedExecutor}.
  *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>5 Oct 2015</dd>
  *
  */
-public class RateLimitedInvokerTest
+public class RateLimitedExecutorTest
 {
 	private Logger log = LoggerFactory.getLogger ( this.getClass () );
 	
@@ -30,10 +30,10 @@ public class RateLimitedInvokerTest
 		XStopWatch timer = new XStopWatch ();
 		long testTime = 3000;
 		double rate = 50;
-		RateLimitedInvoker invoker = new RateLimitedInvoker ( rate );
+		RateLimitedExecutor executor = new RateLimitedExecutor ( rate );
 		
 		for ( timer.start (); timer.getTime () < testTime; )
-			invoker.run ( tester );
+			executor.execute ( tester );
 		
 		double actualRate = 1d * tester.calls.get () / ( testTime / 1000 );
 		log.info ( "Calls: {}, Actual Rate: {} call/sec", tester.calls.get (), actualRate );
@@ -46,7 +46,7 @@ public class RateLimitedInvokerTest
 		final Tester tester = new Tester ();
 		final long testTime = 10 * 1000;
 		double rate = 10;
-		final RateLimitedInvoker invoker = new RateLimitedInvoker ( rate );
+		final RateLimitedExecutor executor = new RateLimitedExecutor ( rate );
 		final int nthreads = 5;
 		
 		Thread[] threads = new Thread [ nthreads ];
@@ -59,7 +59,7 @@ public class RateLimitedInvokerTest
 				{
 					XStopWatch timer = new XStopWatch ();
 					for ( timer.start (); timer.getTime () < testTime; ) {
-						invoker.run ( tester );
+						executor.execute ( tester );
 					}
 				}
 			});

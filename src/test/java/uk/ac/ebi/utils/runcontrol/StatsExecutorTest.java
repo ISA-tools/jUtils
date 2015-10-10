@@ -17,7 +17,7 @@ import uk.ac.ebi.utils.time.XStopWatch;
  * <dl><dt>Date:</dt><dd>5 Oct 2015</dd>
  *
  */
-public class StatsInvokerTest
+public class StatsExecutorTest
 {
 	private Logger log = LoggerFactory.getLogger ( this.getClass () );
 	public static final double FAIL_RATE = 0.03;
@@ -45,18 +45,18 @@ public class StatsInvokerTest
 	public void testBasics ()
 	{
 		long samplingTime = 500;
-		StatsInvoker invoker = new StatsInvoker ( "JUnit Test", samplingTime ).setPopUpExceptions ( false );
+		StatsExecutor executor = new StatsExecutor ( "JUnit Test", samplingTime ).setPopUpExceptions ( false );
 		Tester tester = new Tester ();
 
 		XStopWatch timer = new XStopWatch ();
 		final long testTime = 2000 - samplingTime / 10; // Avoids to finish just after the reset of internal stats
 		
 		for ( timer.start (); timer.getTime () < testTime; )
-			invoker.run ( tester );
+			executor.execute ( tester );
 
-		double failRate = 1d * invoker.getFailedCalls () / invoker.getTotalCalls ();
-		log.info ( "Calls: {}, fail rate: {} %", invoker.getTotalCalls (), failRate * 100 );
-		Assert.assertTrue ( "Total calls wrong!", invoker.getTotalCalls () > 0 );
+		double failRate = 1d * executor.getFailedCalls () / executor.getTotalCalls ();
+		log.info ( "Calls: {}, fail rate: {} %", executor.getTotalCalls (), failRate * 100 );
+		Assert.assertTrue ( "Total calls wrong!", executor.getTotalCalls () > 0 );
 		Assert.assertTrue ( "Failed Calls wrong!", Math.abs ( failRate - FAIL_RATE ) < 0.1 );
 	}
 	
@@ -66,7 +66,7 @@ public class StatsInvokerTest
 		long samplingTime = 500;
 		final Tester tester = new Tester ();
 		final long testTime = 2000 - samplingTime / 10; // Avoids to finish just after the reset of internal stats
-		final StatsInvoker invoker = new StatsInvoker ( "JUnit Multi-Thread Test", samplingTime );
+		final StatsExecutor executor = new StatsExecutor ( "JUnit Multi-Thread Test", samplingTime );
 		final int nthreads = 3;
 		
 		Thread[] threads = new Thread [ nthreads ];
@@ -79,7 +79,7 @@ public class StatsInvokerTest
 				{
 					XStopWatch timer = new XStopWatch ();
 					for ( timer.start (); timer.getTime () < testTime; ) {
-						invoker.run ( tester );
+						executor.execute ( tester );
 					}
 				}
 			});
@@ -88,9 +88,9 @@ public class StatsInvokerTest
 		
 		for ( Thread thread: threads ) thread.join ();
 				
-		double failRate = 1d * invoker.getFailedCalls () / invoker.getTotalCalls ();
-		log.info ( "Calls: {}, fail rate: {} %", invoker.getTotalCalls (), failRate * 100 );
-		Assert.assertTrue ( "Multi-thread total calls wrong!", invoker.getTotalCalls () > 0  );
+		double failRate = 1d * executor.getFailedCalls () / executor.getTotalCalls ();
+		log.info ( "Calls: {}, fail rate: {} %", executor.getTotalCalls (), failRate * 100 );
+		Assert.assertTrue ( "Multi-thread total calls wrong!", executor.getTotalCalls () > 0  );
 		Assert.assertTrue ( "Multi-thread failed calls wrong!", Math.abs ( failRate - FAIL_RATE ) < 0.1 );
 	}	
 }

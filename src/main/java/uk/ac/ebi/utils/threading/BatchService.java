@@ -1,6 +1,5 @@
 package uk.ac.ebi.utils.threading;
 
-
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
