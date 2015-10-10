@@ -35,7 +35,7 @@ public class RateLimitedExecutorTest
 		for ( timer.start (); timer.getTime () < testTime; )
 			executor.execute ( tester );
 		
-		double actualRate = 1d * tester.calls.get () / ( testTime / 1000 );
+		double actualRate = 1d * tester.calls.get () / ( testTime / 1000d );
 		log.info ( "Calls: {}, Actual Rate: {} call/sec", tester.calls.get (), actualRate );
 		Assert.assertTrue ( "Rate was not limited!", actualRate <= rate * 1.05 );
 	}

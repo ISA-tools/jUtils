@@ -228,8 +228,7 @@ public class ReflectionUtils
 		} 
 		catch ( 
 			NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException 
-			| InvocationTargetException ex 
-		)
+			| InvocationTargetException ex ) 
 		{
 			throw new RuntimeException ( String.format ( 
 				"Internal Error while invoking '%s'.'%s': %s", object.getClass ().getSimpleName (), methodName, ex.getMessage () 

@@ -20,6 +20,7 @@ public class StatsExecutor implements Executor
 	private String serviceName = "[Unspecified]";
 	private boolean popUpExceptions = true;
 	
+	// TODO: AtomicInteger
 	private int totalCalls = 0, failedCalls = 0;
 	private XStopWatch timer = new XStopWatch ();
 	

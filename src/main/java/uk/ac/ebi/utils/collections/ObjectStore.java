@@ -89,10 +89,6 @@ public class ObjectStore<T, K, V>
 			if ( !idmap.containsKey ( id ) ) size++;
 			idmap.put ( id, value );
 		}
-
-//		log.trace ( String.format (
-//			"ObjectStore, storing no. %d: <%s, %s, %s>\n\n", size, type, id, value
-//		));
 	}
 
 

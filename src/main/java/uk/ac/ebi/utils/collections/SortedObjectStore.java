@@ -57,7 +57,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Like {@link ObjectStore}, but with types and keys kept sorted. 
+ * Like {@link ObjectStore}, but with types and keys kept sorted.
+ * TODO: needs to be reworked, to inhreit much more from the parent.
  *  
  * @author brandizi
  * <b>date</b>: Mar 3, 2010
@@ -108,9 +109,6 @@ public class SortedObjectStore<T, K, V> extends ObjectStore<T, K, V>
 			idmap.put ( id, value );
 		}
 
-//		log.trace ( String.format (
-//			"ObjectStore, storing no. %d: <%s, %s, %s>\n\n", size, type, id, value
-//		));
 	}
 	
 	@Override
@@ -163,8 +161,6 @@ public class SortedObjectStore<T, K, V> extends ObjectStore<T, K, V>
 		return Collections.unmodifiableCollection ( idmap.values () );
 	}
 	
-
-	
 	/**
 	 * Prints full contents of the object store.
 	 *
@@ -178,6 +174,5 @@ public class SortedObjectStore<T, K, V> extends ObjectStore<T, K, V>
 				result += String.format ( "<%s, %s>:\n%s\n", type, key, this.get ( type, key ) );
 		return result;
 	}
-
 	
 }
