@@ -7,7 +7,7 @@ import java.util.Map;
 import com.google.common.base.Function;
 
 /**
- * Creates a view of a Map that is a collection. Does so by using a key function, which applies to map
+ * Creates a view of a Map that is a collection. Does so by using a key {@link Function function}, which applies to map
  * values.
  * 
  * WARNING: Not fully tested yet!
