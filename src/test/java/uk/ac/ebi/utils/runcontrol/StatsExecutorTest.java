@@ -46,17 +46,23 @@ public class StatsExecutorTest
 	{
 		long samplingTime = 500;
 		StatsExecutor executor = new StatsExecutor ( "JUnit Test", samplingTime ).setPopUpExceptions ( false );
+
 		Tester tester = new Tester ();
 
 		XStopWatch timer = new XStopWatch ();
-		final long testTime = 2000 - samplingTime / 10; // Avoids to finish just after the reset of internal stats
+		final long testTime = 3000;
 		
-		for ( timer.start (); timer.getTime () < testTime; )
+		for ( timer.start (); timer.getTime () <= testTime; )
 			executor.execute ( tester );
 
-		double failRate = 1d * executor.getFailedCalls () / executor.getTotalCalls ();
-		log.info ( "Calls: {}, fail rate: {} %", executor.getTotalCalls (), failRate * 100 );
-		Assert.assertTrue ( "Total calls wrong!", executor.getTotalCalls () > 0 );
+		double failRate = 1d * executor.getLastFailedCalls () / executor.getLastTotalCalls ();
+		double expectedCalls = samplingTime * 2d / TASK_MAX_TIME;
+		log.info ( "Calls: {}, fail rate: {} %", executor.getLastTotalCalls (), failRate * 100 );
+		log.info ( "Expected Calls: {}", expectedCalls );
+		
+		Assert.assertTrue ( "Total calls wrong!", 
+			Math.abs ( executor.getLastTotalCalls () / expectedCalls - 1 ) < 0.1 
+		);
 		Assert.assertTrue ( "Failed Calls wrong!", Math.abs ( failRate - FAIL_RATE ) < 0.1 );
 	}
 	
@@ -65,8 +71,8 @@ public class StatsExecutorTest
 	{
 		long samplingTime = 500;
 		final Tester tester = new Tester ();
-		final long testTime = 2000 - samplingTime / 10; // Avoids to finish just after the reset of internal stats
-		final StatsExecutor executor = new StatsExecutor ( "JUnit Multi-Thread Test", samplingTime );
+		final long testTime = 2000;
+		final StatsExecutor executor = new StatsExecutor ( "JUnit Multi-Thread Test", samplingTime ).setPopUpExceptions ( false );
 		final int nthreads = 3;
 		
 		Thread[] threads = new Thread [ nthreads ];
@@ -78,7 +84,7 @@ public class StatsExecutorTest
 				public void run ()
 				{
 					XStopWatch timer = new XStopWatch ();
-					for ( timer.start (); timer.getTime () < testTime; ) {
+					for ( timer.start (); timer.getTime () <= testTime; ) {
 						executor.execute ( tester );
 					}
 				}
@@ -88,9 +94,15 @@ public class StatsExecutorTest
 		
 		for ( Thread thread: threads ) thread.join ();
 				
-		double failRate = 1d * executor.getFailedCalls () / executor.getTotalCalls ();
-		log.info ( "Calls: {}, fail rate: {} %", executor.getTotalCalls (), failRate * 100 );
-		Assert.assertTrue ( "Multi-thread total calls wrong!", executor.getTotalCalls () > 0  );
+		double failRate = 1d * executor.getLastFailedCalls () / executor.getLastTotalCalls ();
+		double expectedCalls = nthreads * samplingTime * 2d / TASK_MAX_TIME;
+
+		log.info ( "Calls: {}, fail rate: {} %", executor.getLastTotalCalls (), failRate * 100 );
+		log.info ( "Expected Calls: {}", expectedCalls );
+		
+		Assert.assertTrue ( "Multi-thread Total calls wrong!", 
+			Math.abs ( executor.getLastTotalCalls () / expectedCalls - 1 ) < 0.1 
+		);
 		Assert.assertTrue ( "Multi-thread failed calls wrong!", Math.abs ( failRate - FAIL_RATE ) < 0.1 );
 	}	
 }

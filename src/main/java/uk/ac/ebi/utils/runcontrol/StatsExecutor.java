@@ -22,6 +22,8 @@ public class StatsExecutor implements Executor
 	
 	// TODO: AtomicInteger
 	private int totalCalls = 0, failedCalls = 0;
+	private int lastTotalCalls = 0, lastFailedCalls = 0;
+
 	private XStopWatch timer = new XStopWatch ();
 	
 	private Logger log = LoggerFactory.getLogger ( this.getClass () );
@@ -88,6 +90,8 @@ public class StatsExecutor implements Executor
 			avgCalls * 60000, avgFails * 100
 		));
 		
+		this.lastTotalCalls = this.totalCalls;
+		this.lastFailedCalls = this.failedCalls;
 		this.totalCalls = this.failedCalls = 0;
 		timer.restart ();
 		return true;
@@ -96,7 +100,7 @@ public class StatsExecutor implements Executor
 	/**
 	 * This is reset every {@link #getSamplingTime()} ms.
 	 */
-	public synchronized int getTotalCalls ()
+	protected synchronized int getTotalCalls ()
 	{
 		return totalCalls;
 	}
@@ -104,11 +108,28 @@ public class StatsExecutor implements Executor
 	/**
 	 * This is reset every {@link #getSamplingTime()} ms.
 	 */
-	public synchronized int getFailedCalls ()
+	protected synchronized int getFailedCalls ()
 	{
 		return failedCalls;
+	}	
+	
+	/**
+	 * This is updated every {@link #getSamplingTime()}
+	 */
+	public synchronized int getLastTotalCalls ()
+	{
+		return lastTotalCalls;
 	}
 
+	/**
+	 * This is updated every {@link #getSamplingTime()}
+	 */
+	public synchronized int getLastFailedCalls ()
+	{
+		return lastFailedCalls;
+	}
+
+	
 	/**
 	 * @see #execute(Runnable). If true, exceptions are let to reach the invoker. If you have a service that is known
 	 * to fail, you may want to just record failures and let your program to continue, e.g., with null result.

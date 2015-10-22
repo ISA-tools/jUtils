@@ -33,14 +33,15 @@ public class RateLimitedExecutor implements Executor
 	}
 	
 	/**
-	 * The maximum speed allowed by this executor, in actions received per second. 
+	 * The maximum speed allowed by this executor, in actions received per second.
+	 * 0 means no limit is applied. 
 	 */
 	public double getRate () {
 		return this.rateLimiter.getRate ();
 	}
 	
-	public void setRate ( double requestsPerSecond ) {
+	public void setRate ( double requestsPerSecond ) 
+	{
 		this.rateLimiter.setRate ( requestsPerSecond );
-	}
-	
+	}	
 }

@@ -1,8 +1,5 @@
 package uk.ac.ebi.utils.runcontrol;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.lang3.RandomUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -44,6 +41,7 @@ public class RateLimitedExecutorTest
 	public void testMultiThreading () throws InterruptedException
 	{
 		final Tester tester = new Tester ();
+		tester.failRate = -1;
 		final long testTime = 10 * 1000;
 		double rate = 10;
 		final RateLimitedExecutor executor = new RateLimitedExecutor ( rate );
