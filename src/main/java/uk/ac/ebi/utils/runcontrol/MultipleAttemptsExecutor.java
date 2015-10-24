@@ -74,7 +74,7 @@ public class MultipleAttemptsExecutor implements Executor
 						if ( exi.isAssignableFrom ( ex.getClass () ) ) 
 						{
 							log.log ( attemptMsgLogLevel,
-								"Operation failure due to: {}, re-attempting for {} more time(s)", ex.getMessage (), attempts 
+								"Operation failure due to: {}, re-attempting for {} more time(s)", ex.getMessage (), attempts - 1
 							);
 					
 							mustReattempt = true;
