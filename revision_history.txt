@@ -1,6 +1,9 @@
 REVISION HISTORY
 
-4.5.1-SNAPSHOT
+4.5.2-SNAPSHOT
+
+
+5.0
   - uk.ac.ebi.utils.runcontrol added
   - MapCollection added.
 

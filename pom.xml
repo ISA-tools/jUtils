@@ -4,7 +4,7 @@
   
   <groupId>uk.ac.ebi</groupId>
   <artifactId>jutils</artifactId>
-  <version>4.5.1-SNAPSHOT</version>
+  <version>5.0</version>
   
   <name>JUtils - Miscellanea of Java Utils</name>
   <description>
@@ -40,7 +40,7 @@
 	<parent>
 		<groupId>uk.ac.ebi.fg.biosd</groupId>
 		<artifactId>biosd_deploy</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 
 
