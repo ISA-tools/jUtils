@@ -6,7 +6,7 @@ package uk.ac.ebi.utils.runcontrol;
  * via {@link StatsExecutor}.
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>19 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>19 Oct 2015</dd></dl>
  *
  */
 public abstract class DynamicRateExecutor extends RateLimitedExecutor

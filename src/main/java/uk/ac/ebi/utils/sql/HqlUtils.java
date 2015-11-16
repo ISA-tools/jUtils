@@ -22,10 +22,10 @@ public class HqlUtils
 	}
 
 	/**
-	 * Builds a query clause that restricts fieldName in the specified range. Uses '<=', '>=' or BETWEEN, depending on 
-	 * the lo, hi value. The returned HQL strings contains only paramLo, paramHi, not the lo, hi values themselves. You should
-	 * use {@link #parameterizedRangeBinding(Query, String, String, Object, Object)} with a {@link Query} built 
-	 * this way.
+	 * Builds a query clause that restricts fieldName in the specified range. Uses {@code '<=' }, {@code '<='} or 
+	 * {@code BETWEEN}, depending on the lo, hi value. The returned HQL string contains only paramLo, paramHi, not 
+	 * the lo, hi values themselves. You should use 
+	 * {@link #parameterizedRangeBinding(Query, String, String, Object, Object)} with a {@link Query} built this way.
 	 * 
 	 */
 	public static <T> String parameterizedRangeClause ( String fieldName, String paramLo, String paramHi, T lo, T hi ) 

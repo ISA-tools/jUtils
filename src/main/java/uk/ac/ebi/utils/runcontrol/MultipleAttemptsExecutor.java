@@ -14,7 +14,7 @@ import uk.org.lidalia.slf4jext.LoggerFactory;
  * a REST API).
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>9 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>9 Oct 2015</dd></dl>
  *
  */
 public class MultipleAttemptsExecutor implements Executor

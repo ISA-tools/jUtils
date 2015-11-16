@@ -12,7 +12,7 @@ import uk.ac.ebi.utils.time.XStopWatch;
  * Test {@link RateLimitedExecutor}.
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>5 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>5 Oct 2015</dd></dl>
  *
  */
 public class RateLimitedExecutorTest

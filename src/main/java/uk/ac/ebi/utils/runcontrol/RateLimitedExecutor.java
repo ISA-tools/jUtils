@@ -8,7 +8,7 @@ import com.google.common.util.concurrent.RateLimiter;
  * A rate limiting executor, based on {@link RateLimiter}.
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>5 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>5 Oct 2015</dd></dl>
  *
  */
 public class RateLimitedExecutor implements Executor

@@ -9,7 +9,7 @@ import javax.xml.bind.DatatypeConverter;
  * Utilities about management of identifiers.
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>28 Aug 2015</dd>
+ * <dl><dt>Date:</dt><dd>28 Aug 2015</dd></dl>
  *
  */
 public class IdUtils

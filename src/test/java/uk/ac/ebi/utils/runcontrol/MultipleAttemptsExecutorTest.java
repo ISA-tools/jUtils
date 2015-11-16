@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * Tests for {@link MultipleAttemptsExecutor}.
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>9 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>9 Oct 2015</dd></dl>
  *
  */
 public class MultipleAttemptsExecutorTest

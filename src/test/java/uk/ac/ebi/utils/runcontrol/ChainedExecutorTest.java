@@ -14,7 +14,7 @@ import uk.ac.ebi.utils.time.XStopWatch;
  * Tests {@link ChainExecutor}.
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>6 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>6 Oct 2015</dd></dl>
  *
  */
 public class ChainedExecutorTest

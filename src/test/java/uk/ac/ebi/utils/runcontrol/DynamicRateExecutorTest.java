@@ -12,7 +12,7 @@ import uk.ac.ebi.utils.time.XStopWatch;
  * Tests DynamicRateExecutor.
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>19 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>19 Oct 2015</dd></dl>
  *
  */
 public class DynamicRateExecutorTest

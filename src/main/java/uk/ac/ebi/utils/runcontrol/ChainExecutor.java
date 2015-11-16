@@ -6,7 +6,7 @@ import java.util.concurrent.Executor;
  * An {@link Executor} that is able to chain/stack two other executors.
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>6 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>6 Oct 2015</dd></dl>
  *
  */
 public class ChainExecutor implements Executor

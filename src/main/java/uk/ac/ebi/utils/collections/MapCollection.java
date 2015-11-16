@@ -13,7 +13,7 @@ import com.google.common.base.Function;
  * WARNING: Not fully tested yet!
  *
  * @author brandizi
- * <dl><dt>Date:</dt><dd>15 Oct 2015</dd>
+ * <dl><dt>Date:</dt><dd>15 Oct 2015</dd></dl>
  *
  */
 public class MapCollection<K, V> implements Collection<V>
