@@ -250,7 +250,7 @@ public class BatchService<TK extends BatchServiceTask>
 			public void run () {
 				log.info ( "" + busyTasks + " task(s) running, " + completedTasks + " completed, please wait" );
 			}
-		}, 60000, 60000 );		
+		}, 5 * 60000, 5 * 60000 );		
 	}
 	
 	
