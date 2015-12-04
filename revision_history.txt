@@ -1,6 +1,6 @@
 REVISION HISTORY
 
-4.5.2-SNAPSHOT
+5.0.1-SNAPSHOT
   - Next dev version.
 
 5.0

@@ -7,7 +7,7 @@ import java.util.Map;
 import com.google.common.base.Function;
 
 /**
- * Creates a view of a Map that is a collection. Does so by using a key {@link Function function}, which applies to map
+ * Creates a view of a Map that is a collection. Does so by using a keyFunc {@link Function function}, which applies to map
  * values.
  * 
  * WARNING: Not fully tested yet!
@@ -18,16 +18,16 @@ import com.google.common.base.Function;
  */
 public class MapCollection<K, V> implements Collection<V>
 {
-	private Map<K, V> base;
-	private Function<V, K> key; 
+	private final Map<K, V> base;
+	private final Function<V, K> keyFunc; 
 	
 	/**
 	 * @see #getKey().
 	 */
-	public MapCollection ( Map<K, V> base, Function<V, K> key )
+	public MapCollection ( Map<K, V> base, Function<V, K> keyFunc )
 	{
 		this.base = base;
-		this.key = key;
+		this.keyFunc = keyFunc;
 	}
 
 	@Override
@@ -43,13 +43,13 @@ public class MapCollection<K, V> implements Collection<V>
 	}
 
 	/**
-	 * Checks the entry ({@link #getKey() key.apply(e)}, e)
+	 * Checks the entry ({@link #getKeyFunction() keyFunc.apply(e)}, e)
 	 */
 	@Override
 	@SuppressWarnings ( "unchecked" )
 	public boolean contains ( Object o )
 	{
-		return base.containsKey ( key.apply ( (V) o ) );
+		return base.containsKey ( keyFunc.apply ( (V) o ) );
 	}
 
 	/**
@@ -80,23 +80,23 @@ public class MapCollection<K, V> implements Collection<V>
 	}
 
 	/**
-	 * Adds the entry ({@link #getKey() key.apply(e)}, e)
+	 * Adds the entry ({@link #getKeyFunction() keyFunc.apply(e)}, e)
 	 */
 	@Override
 	public boolean add ( V e )
 	{
-		V old = base.put ( key.apply ( e ), e );
+		V old = base.put ( keyFunc.apply ( e ), e );
 		return old == null || !old.equals ( e );
 	}
 
 	/**
-	 * Removes the entry ({@link #getKey() key.apply(e)}, e)
+	 * Removes the entry ({@link #getKeyFunction() keyFunc.apply(e)}, e)
 	 */
 	@Override
 	@SuppressWarnings ( "unchecked" )
 	public boolean remove ( Object o )
 	{
-		return base.remove ( key.apply ( (V) o ) ) != null;
+		return base.remove ( keyFunc.apply ( (V) o ) ) != null;
 	}
 
 	/**
@@ -168,9 +168,9 @@ public class MapCollection<K, V> implements Collection<V>
 	 * The key function should return different values for different arguments and should always return the same value
 	 * when an argument is presented multiple times.
 	 */
-	public Function<V, K> getKey ()
+	public Function<V, K> getKeyFunction ()
 	{
-		return key;
+		return keyFunc;
 	}
 	
 }
