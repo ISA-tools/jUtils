@@ -19,7 +19,7 @@ public abstract class BatchServiceTask implements Runnable
 
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
 		
-	public BatchServiceTask ( String name )
+	protected BatchServiceTask ( String name )
 	{
 		this.name = name;
 	}
