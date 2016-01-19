@@ -1,6 +1,7 @@
 package uk.ac.ebi.utils.runcontrol;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,7 @@ public class StatsExecutor implements Executor
 	private String serviceName = "[Unspecified]";
 	private boolean popUpExceptions = true;
 	
-	// TODO: AtomicInteger
-	private int totalCalls = 0, failedCalls = 0;
+	private AtomicInteger totalCalls = new AtomicInteger ( 0 ), failedCalls = new AtomicInteger ( 0 );
 	private int lastTotalCalls = 0, lastFailedCalls = 0;
 
 	private XStopWatch timer = new XStopWatch ();
@@ -53,15 +53,14 @@ public class StatsExecutor implements Executor
 		}
 		catch ( Exception ex ) 
 		{
-			this.failedCalls++;
-			if ( this.popUpExceptions )
-				throw ex;
+			this.failedCalls.incrementAndGet ();
+			if ( this.popUpExceptions ) throw ex;
 			
 			log.warn ( "Call to {} failed, due to: {}", this.serviceName, ex.getMessage () );
 			if ( log.isTraceEnabled () ) log.trace ( "Call to " + this.serviceName + ", reason:", ex );
 		}
 		finally {
-			this.totalCalls++;
+			this.totalCalls.incrementAndGet ();
 		}
 		doStats ();
 	}	
@@ -79,10 +78,13 @@ public class StatsExecutor implements Executor
 		
 		if ( this.timer.getTime () < this.samplingTime ) return false;
 		
-		double avgCalls = 1.0 * this.totalCalls / this.samplingTime;  
-		double avgFails = this.totalCalls == 0  
+		int totalCalls = this.totalCalls.get ();
+		int failedCalls = this.failedCalls.get ();
+		
+		double avgCalls = 1d * totalCalls / this.samplingTime;  
+		double avgFails = totalCalls == 0  
 			? 0d
-			: 1.0 * this.failedCalls / this.totalCalls;
+			: 1d * this.failedCalls.get () / this.totalCalls.get ();
 
 		log.info ( String.format ( 
 			"---- %s Statistics, throughput: %.0f calls/min, failed: %.1f %%",
@@ -90,9 +92,10 @@ public class StatsExecutor implements Executor
 			avgCalls * 60000, avgFails * 100
 		));
 		
-		this.lastTotalCalls = this.totalCalls;
-		this.lastFailedCalls = this.failedCalls;
-		this.totalCalls = this.failedCalls = 0;
+		this.lastTotalCalls = totalCalls;
+		this.lastFailedCalls = failedCalls;
+		this.totalCalls.set ( 0 ); 
+		this.failedCalls.set ( 0 );
 		timer.restart ();
 		return true;
 	}
@@ -102,7 +105,7 @@ public class StatsExecutor implements Executor
 	 */
 	protected synchronized int getTotalCalls ()
 	{
-		return totalCalls;
+		return totalCalls.get ();
 	}
 
 	/**
@@ -110,7 +113,7 @@ public class StatsExecutor implements Executor
 	 */
 	protected synchronized int getFailedCalls ()
 	{
-		return failedCalls;
+		return failedCalls.get ();
 	}	
 	
 	/**
