@@ -12,7 +12,8 @@ import com.google.common.cache.CacheBuilder;
  * A SimpleCache that uses feature from {@link LinkedHashMap}, as explained in 
  * <a href = "http://java-planet.blogspot.co.uk/2005/08/how-to-set-up-simple-lru-cache-using.html">this post</a>.
  *
- * @deprecated Use {@link CacheBuilder}. This is now using this internally, but we plan to remove it in futue.
+ * @deprecated Use {@link CacheBuilder}. We are now is now using it internally, but we plan to remove this class in 
+ * future.
  *
  * <dl><dt>date</dt><dd>May 27, 2013</dd></dl>
  * @author Marco Brandizi
