@@ -1,7 +1,7 @@
 REVISION HISTORY
 
-5.0.1-SNAPSHOT
-  - Next dev version.
+5.1-SNAPSHOT
+  - IOUtils.uri () added.
 
 5.0
   - uk.ac.ebi.utils.runcontrol added.

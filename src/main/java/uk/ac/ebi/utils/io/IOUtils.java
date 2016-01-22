@@ -49,6 +49,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -132,6 +134,20 @@ public class IOUtils
 	public static String getMD5 ( File f ) throws IOException, NoSuchAlgorithmException 
 	{
 		return getHash ( f, "MD5" );
+	}
+	
+	/**
+	 * Creates a URI and intercepts of URISyntaxException, throwing IllegalArgumentException if such an exception
+	 * occurs. I've created this method because it's often very annoying to have a checked exception here.
+	 */
+	public static URI uri ( String uriStr ) 
+	{
+		try {
+			return new URI ( uriStr );
+		}
+		catch ( URISyntaxException ex ) {
+			throw new IllegalArgumentException ( "Internal error with URI '" + uriStr + "'", ex );
+		}
 	}
 
 }

@@ -4,7 +4,7 @@
   
   <groupId>uk.ac.ebi</groupId>
   <artifactId>jutils</artifactId>
-  <version>5.0.1-SNAPSHOT</version>
+  <version>5.1-SNAPSHOT</version>
   
   <name>JUtils - Miscellanea of Java Utils</name>
   <description>
@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.5</version>
 		</dependency>
 		
 		<!-- An SLF4J extension, which allows for log levels (http://projects.lidalia.org.uk/lidalia-slf4j-ext/) -->
@@ -57,6 +57,12 @@
 		  <groupId>uk.org.lidalia</groupId>
 		  <artifactId>lidalia-slf4j-ext</artifactId>
 		  <version>1.0.0</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<groupId>com.google.guava</groupId>
+		  		<artifactId>guava</artifactId>
+		  	</exclusion>
+		  </exclusions>
 		</dependency>
 
 		<dependency>
