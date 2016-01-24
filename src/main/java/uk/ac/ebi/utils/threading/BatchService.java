@@ -259,7 +259,7 @@ public class BatchService<TK extends BatchServiceTask>
 	 */
 	private void initNotificationTimer ()
 	{
-		this.notificationTimer = new Timer ( this.getClass ().getSimpleName () + " Alive Notification" );
+		this.notificationTimer = new Timer ( this.getClass ().getSimpleName () + "/Notifier" );
 		this.notificationTimer.scheduleAtFixedRate ( new TimerTask() {
 			@Override
 			public void run () {
