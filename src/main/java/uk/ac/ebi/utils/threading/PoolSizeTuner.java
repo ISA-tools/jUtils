@@ -215,10 +215,10 @@ public abstract class PoolSizeTuner
 	private void validateParameters ()
 	{
 		if ( minThreads <= 0 ) throw new IllegalArgumentException ( "minThreads parameter should be a positive integer" );
-		if ( maxThreads < minThreads ) throw new IllegalArgumentException ( "maxThreads parameter should be >= maxThreads" );
+		if ( maxThreads < minThreads ) throw new IllegalArgumentException ( "maxThreads parameter should be >= minThreads" );
 
 		if ( maxThreadIncr <= 0 ) throw new IllegalArgumentException ( "maxThreadIncr parameter should be a positive integer" );
-		if ( maxThreadIncr < minThreadIncr ) throw new IllegalArgumentException ( "maxThreadIncr parameter should be >= maxThreads" );
+		if ( maxThreadIncr < minThreadIncr ) throw new IllegalArgumentException ( "maxThreadIncr parameter should be >= minThreadIncr" );
 
 		if ( periodMsecs <= 0 ) throw new IllegalArgumentException ( "periodMsecs parameter should be a positive integer" );
 }

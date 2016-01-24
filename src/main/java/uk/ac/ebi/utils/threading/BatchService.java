@@ -105,26 +105,41 @@ public class BatchService<TK extends BatchServiceTask>
 	{
 		this ( Runtime.getRuntime().availableProcessors() );
 	}
-
-	/** Initialises a pool service with this number of initial threads. */
-	public BatchService ( int initialThreadPoolSize ) 
-	{
-		this.poolSizeTuner = new BatchServiceTuner ();
-		this.executor = Executors.newFixedThreadPool ( initialThreadPoolSize );
-		this.setThreadPoolSize ( initialThreadPoolSize );
-	}
 	
 	/** 
-	 * Initialises a pool service with this number of initial threads and a custom {@link PoolSizeTuner}. 
-	 * In most cases you will be fine with the default {@link BatchServiceTuner}. If you need to change its tuning 
-	 * parameters, use the {@link #poolSizeTuner} field.
+	 * Initialises a pool service with this number of initial threads.
 	 */
-	public BatchService ( int initialThreadPoolSize, PoolSizeTuner poolSizeTuner )
+	public BatchService ( int initialThreadPoolSize )
 	{
 		this.setThreadPoolSize ( initialThreadPoolSize );
-		this.poolSizeTuner = poolSizeTuner;
-		this.executor = Executors.newFixedThreadPool ( threadPoolSize );
+		this.poolSizeTuner = this.newPoolSizeTuner ();
+		this.executor = newThreadPoolExecutor ( initialThreadPoolSize );
 	}
+	
+	
+	/**
+	 * Allows you to initialise with a custom {@link BatchServiceTuner}. In most cases you will be fine with the default. 
+	 * If you need to change its tuning parameters, use the {@link #poolSizeTuner} field.
+	 * 
+	 * This is called by the {@link #BatchService(int)} constructor (and all the others).
+	 * 
+	 */
+	protected BatchServiceTuner newPoolSizeTuner () {
+		return new BatchServiceTuner ();
+	}
+
+	/**
+	 * Allows you to initialise with a custom {@link ExecutorService}. WARNING: this class was designed and tested with
+	 * {@link Executors#newFixedThreadPool(int) fixed pools} in mind. This method is supposed to instantiate variants
+	 * of fixed thread pools (e.g., <a href = 'http://tinyurl.com/jjktm53'>using priority</a>). Use other executors
+	 * at your own risk!
+	 * 
+	 * @param initialThreadPoolSize the initial thread pool size.
+	 */
+	protected ExecutorService newThreadPoolExecutor ( int initialThreadPoolSize ) {
+		return Executors.newFixedThreadPool ( initialThreadPoolSize );
+	}
+	
 	
 	/**
 	 * Submits a task into the pool, synchronising updates requested from {@link #poolSizeTuner} and other internal 
