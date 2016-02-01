@@ -10,6 +10,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import uk.ac.ebi.utils.threading.BatchServiceTask.TaskComparator;
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jext.Logger;
 import uk.org.lidalia.slf4jext.LoggerFactory;
@@ -131,8 +132,18 @@ public class BatchService<TK extends BatchServiceTask>
 	/**
 	 * Allows you to initialise with a custom {@link ExecutorService}. WARNING: this class was designed and tested with
 	 * {@link Executors#newFixedThreadPool(int) fixed pools} in mind. This method is supposed to instantiate variants
-	 * of fixed thread pools (e.g., <a href = 'http://tinyurl.com/jjktm53'>using priority</a>). Use other executors
-	 * at your own risk!
+	 * of fixed thread pools, in other to accommodate specific needs. One example is when you need to give different 
+	 * priorities to the tasks in a pool. We have {@link TaskComparator} for that, which can be instantiated from this
+	 * method this way (method inspired to <a href = 'http://tinyurl.com/jjktm53'>this</a>)): 
+	 * 
+	 * <pre>
+	 * return new ThreadPoolExecutor ( 
+	 *   initialThreadPoolSize, initialThreadPoolSize, 0L, TimeUnit.MILLISECONDS,
+   *   new PriorityBlockingQueue<Runnable> ( initialThreadPoolSize, new BatchServiceTask.TaskComparator () )
+   * );
+   * </pre>
+	 * 
+	 * Use executors other than fixed pool size at your own risk!
 	 * 
 	 * @param initialThreadPoolSize the initial thread pool size.
 	 */

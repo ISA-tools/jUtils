@@ -2,7 +2,7 @@ REVISION HISTORY
 
 5.1-SNAPSHOT
   - IOUtils.uri () added.
-  - Extensions to BatchService, to allow for customisation.
+  - Extensions to BatchService, to allow for customisation, including task priority option.
 
 5.0
   - uk.ac.ebi.utils.runcontrol added.
