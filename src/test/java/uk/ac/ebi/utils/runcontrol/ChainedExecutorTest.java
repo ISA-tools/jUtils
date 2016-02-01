@@ -32,7 +32,8 @@ public class ChainedExecutorTest
 
 
 		RateLimitedExecutor rateExecutor = new RateLimitedExecutor ( rate );
-		StatsExecutor statsExecutor = new StatsExecutor ( this.getClass ().getSimpleName (), samplingTime )
+		StatsExecutor statsExecutor = 
+			new StatsExecutor ( this.getClass ().getSimpleName (), samplingTime )
 			.setPopUpExceptions ( false ); 
 		
 		// Calls are first logged by the statistics executor, then considered by the rate limiter.

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.utils.time.XStopWatch;
 
 /**
- * TODO: comment me!
+ * Tests for {@link StatsExecutor}.
  *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>5 Oct 2015</dd></dl>
@@ -56,7 +56,11 @@ public class StatsExecutorTest
 			executor.execute ( tester );
 
 		double failRate = 1d * executor.getLastFailedCalls () / executor.getLastTotalCalls ();
-		double expectedCalls = samplingTime * 2d / TASK_MAX_TIME;
+		
+		// each call requires TASK_MAX_TIME/2, except those that fails, which needs almost no time
+		// (so, we have the failRate factor).
+		double expectedCalls = samplingTime / ( ( 1 - failRate ) * TASK_MAX_TIME / 2d );
+		
 		log.info ( "Calls: {}, fail rate: {} %", executor.getLastTotalCalls (), failRate * 100 );
 		log.info ( "Expected Calls: {}", expectedCalls );
 		
@@ -95,8 +99,12 @@ public class StatsExecutorTest
 		for ( Thread thread: threads ) thread.join ();
 				
 		double failRate = 1d * executor.getLastFailedCalls () / executor.getLastTotalCalls ();
-		double expectedCalls = nthreads * samplingTime * 2d / TASK_MAX_TIME;
 
+		// each call requires TASK_MAX_TIME/2, except those that fails, which needs almost no time
+		// (so, we have the 1-failRate factor).
+		double expectedCalls = nthreads * samplingTime / ( ( 1 - failRate ) * TASK_MAX_TIME / 2d );
+		
+		
 		log.info ( "Calls: {}, fail rate: {} %", executor.getLastTotalCalls (), failRate * 100 );
 		log.info ( "Expected Calls: {}", expectedCalls );
 		
