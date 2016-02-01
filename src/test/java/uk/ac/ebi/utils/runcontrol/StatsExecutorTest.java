@@ -65,7 +65,7 @@ public class StatsExecutorTest
 		log.info ( "Expected Calls: {}", expectedCalls );
 		
 		Assert.assertTrue ( "Total calls wrong!", 
-			Math.abs ( executor.getLastTotalCalls () / expectedCalls - 1 ) < 0.1 
+			Math.abs ( executor.getLastTotalCalls () / expectedCalls - 1 ) < 0.2 
 		);
 		Assert.assertTrue ( "Failed Calls wrong!", Math.abs ( failRate - FAIL_RATE ) < 0.1 );
 	}
@@ -75,7 +75,7 @@ public class StatsExecutorTest
 	{
 		long samplingTime = 500;
 		final Tester tester = new Tester ();
-		final long testTime = 3000;
+		final long testTime = 2000;
 		final StatsExecutor executor = new StatsExecutor ( "JUnit Multi-Thread Test", samplingTime ).setPopUpExceptions ( false );
 		final int nthreads = 3;
 		
@@ -109,7 +109,7 @@ public class StatsExecutorTest
 		log.info ( "Expected Calls: {}", expectedCalls );
 		
 		Assert.assertTrue ( "Multi-thread Total calls wrong!", 
-			Math.abs ( executor.getLastTotalCalls () / expectedCalls - 1 ) < 0.1 
+			Math.abs ( executor.getLastTotalCalls () / expectedCalls - 1 ) < 0.2 
 		);
 		Assert.assertTrue ( "Multi-thread failed calls wrong!", Math.abs ( failRate - FAIL_RATE ) < 0.1 );
 	}	
