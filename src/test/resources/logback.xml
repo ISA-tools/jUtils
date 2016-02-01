@@ -20,7 +20,7 @@
     <File>target/test.log</File>
 
     <encoder>
-      <pattern>%d{dd MMM yyyy HH:mm:ss.SSS} [%-6t] [%-5p] \(%C{1},%L\): %m%n</pattern>
+      <pattern>%d{dd MMM yyyy HH:mm:ss.SSS} [%-5p] \(%C{1},%L\): %m%n</pattern>
     </encoder>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>ALL</level>

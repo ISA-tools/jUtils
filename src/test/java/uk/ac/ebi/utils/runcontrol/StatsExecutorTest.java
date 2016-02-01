@@ -75,7 +75,7 @@ public class StatsExecutorTest
 	{
 		long samplingTime = 500;
 		final Tester tester = new Tester ();
-		final long testTime = 2000;
+		final long testTime = 3000;
 		final StatsExecutor executor = new StatsExecutor ( "JUnit Multi-Thread Test", samplingTime ).setPopUpExceptions ( false );
 		final int nthreads = 3;
 		
