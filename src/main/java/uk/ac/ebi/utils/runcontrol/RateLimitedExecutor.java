@@ -40,6 +40,10 @@ public class RateLimitedExecutor implements Executor
 		return this.rateLimiter.getRate ();
 	}
 	
+	/**
+	 * Note that the new actual rate might be slightly different than the passed parameters, dependa on how 
+	 * {@link RateLimiter} is implemented. 
+	 */
 	public void setRate ( double requestsPerSecond ) 
 	{
 		this.rateLimiter.setRate ( requestsPerSecond );

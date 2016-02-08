@@ -29,8 +29,13 @@ public abstract class DynamicRateExecutor extends RateLimitedExecutor
 	{
 		double newRate = setNewRate ();
 		
-		synchronized ( this.rateLimiter ) {
-			if ( newRate != this.getRate () ) this.setRate ( newRate );
+		synchronized ( this.rateLimiter ) 
+		{
+			double oldRate = this.getRate ();
+			// the rate limiter tends to recalculate the rate parameter, so we need to
+			// compare them with some tolerance
+			if ( oldRate == 0 || Math.abs ( newRate / oldRate - 1 ) > 1d/1000 ) 
+				this.setRate ( newRate );
 		}
 		
 		super.execute ( action );
@@ -38,7 +43,9 @@ public abstract class DynamicRateExecutor extends RateLimitedExecutor
 
 	/**
 	 * Determines the possible new rate, e.g., based on current performance measurement. Note that this 
-	 * is highest when {@link Double#MAX_VALUE} is set, 0 or negative values are not accepted. 
+	 * is highest when {@link Double#MAX_VALUE} is set, 0 or negative values are not accepted.
+	 * 
+	 * Note that the new rate must be different than the old one by more than 0.1%, otherwise no change takes effect. 
 	 */
 	protected abstract double setNewRate ();	
 }
