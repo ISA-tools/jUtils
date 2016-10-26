@@ -1,7 +1,7 @@
 package uk.ac.ebi.utils.exceptions;
 
 /**
- * Utilities related to excption handling.
+ * Utilities related to exception handling.
  *
  * <dl><dt>date</dt><dd>2 Oct 2013</dd></dl>
  * @author Marco Brandizi

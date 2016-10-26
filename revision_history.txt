@@ -3,17 +3,20 @@ REVISION HISTORY
 5.1-SNAPSHOT
   - IOUtils.uri () added.
   - Extensions to BatchService, to allow for customisation, including task priority option.
+  - Some useful general-purpose exceptions added in uk.ac.ebi.utils.exceptions 
+  - ThreadedPipedWriter removed, didn't make much sense, use EasyStream instead 
+  (http://io-tools.sourceforge.net/easystream/index.html)
 
 5.0
   - uk.ac.ebi.utils.runcontrol added.
   - MapCollection added.
 
 4.5
-  - Moving to BioSD/GitHub repository.
+  - Moving deployment to BioSD/GitHub repository.
   - Some improvements in BatchService.
 
 4.4
-  - Experimental migration to EBI/Nexus Maven repository.
+  - Experimental migration of deployment to EBI/Nexus Maven repository.
 	- XStopWatch fixed against new checkings in StopWatch (start() cannot be called twice, without reset()).
 	- XStopWatch.restart() added.
   

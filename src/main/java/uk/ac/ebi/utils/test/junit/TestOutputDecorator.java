@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * An output decorator for Junit. Logs a nice header with the test name before the test and a similar trailer 
+ * An output decorator for JUnit. Logs a nice header with the test name before the test and a similar trailer 
  * afterward. This can be used in two ways. One is as a {@link TestRule}, pretty much the same way you would use 
  * {@link ExternalResource}. Another option is to add this listener to your runner of choice in order to be invoked 
  * automatically for all the tests run via that runner. For instance, see
  * <a href = 'http://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html#Using_custom_listeners_and_reporters'>here</a>
- * for an example about Maven/Surefire. Jutils's POM is itself another example of that.
+ * for what concerns Maven/Surefire. The JUtils's POM is itself another example of that.
  * 
  * WARNING: this uses SLF4J, you need to enable the INFO level to see anything.
  * 
@@ -46,7 +46,8 @@ public class TestOutputDecorator extends RunListener implements TestRule
 	}
 
 	/**
-	 * You can use this either as a listener, or a {@link Rule}.
+	 * You can use this class either as a listener, or a {@link Rule}, so we have this method too, to be called by
+	 * JUnit in the second case.
 	 */
 	public Statement apply ( final Statement base, final Description description )
 	{

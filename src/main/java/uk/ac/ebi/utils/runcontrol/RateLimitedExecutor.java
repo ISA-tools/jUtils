@@ -23,7 +23,7 @@ public class RateLimitedExecutor implements Executor
 	}
 
 	/**
-	 * Control the execution of the action in such a way that it is run at no more than {@link #getRate()} speed within 
+	 * Controls the execution of the action in such a way that it is run at no more than {@link #getRate()} speed within 
 	 * a given JVM. This is useful when you have a service that is hurt if hammered too fast.
 	 */
 	public void execute ( Runnable action )
