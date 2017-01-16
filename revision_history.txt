@@ -1,6 +1,6 @@
 REVISION HISTORY
 
-6.0
+6.0-SNAPSHOT
   - Splitting into multiple modules
 
 5.1
