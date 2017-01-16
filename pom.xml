@@ -3,12 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>uk.ac.ebi</groupId>
-  <artifactId>jutils</artifactId>
-  <version>5.1</version>
-  
+  <artifactId>jutils-pom</artifactId>
+  <version>6.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+    
   <name>JUtils - Miscellanea of Java Utils</name>
   <description>
-  	General utility code for several purposes, developed for the BII/ISA-Tools project and reusable elsewhere.
+  	General utility code for several purposes.
+
+  	This project is an empty container of POM type. Most of the real stuff
+  	is in jutils and extensions are linked from here as modules.
   
   	The project originated in the ISA-Tools project (http://isa-tools.org).
   </description>
@@ -19,9 +23,7 @@
     <developer>
       <id>brandizi</id>
       <name>Marco Brandizi</name>
-      <email>brandizi@ebi.ac.uk</email>
-      <organization>EBI - Functional Genomics Group</organization>
-      <organizationUrl>http://www.ebi.ac.uk/fg</organizationUrl>
+      <email>marco.brandizi@gmail.com</email>
       <timezone>0</timezone>
       <properties />
     </developer>
@@ -44,69 +46,70 @@
 	</parent>
 
 
-	<dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.5</version>
+			</dependency>
+			
+			<!-- An SLF4J extension, which allows for log levels (http://projects.lidalia.org.uk/lidalia-slf4j-ext/) -->
+			<dependency>
+			  <groupId>uk.org.lidalia</groupId>
+			  <artifactId>lidalia-slf4j-ext</artifactId>
+			  <version>1.0.0</version>
+			  <exclusions>
+			  	<exclusion>
+			  		<groupId>com.google.guava</groupId>
+			  		<artifactId>guava</artifactId>
+			  	</exclusion>
+			  </exclusions>
+			</dependency>
 	
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-		
-		<!-- An SLF4J extension, which allows for log levels (http://projects.lidalia.org.uk/lidalia-slf4j-ext/) -->
-		<dependency>
-		  <groupId>uk.org.lidalia</groupId>
-		  <artifactId>lidalia-slf4j-ext</artifactId>
-		  <version>1.0.0</version>
-		  <exclusions>
-		  	<exclusion>
-		  		<groupId>com.google.guava</groupId>
-		  		<artifactId>guava</artifactId>
-		  	</exclusion>
-		  </exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.3.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.5</version>
-		</dependency>
-
-	  <dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <version>4.10</version>
-	  </dependency>
-	  
-	  <!-- It seems that currently there is no official Oracle release of JPA 2.0, so we need to rely on some implementor  -->
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.1-api</artifactId>
-			<version>1.0.0.Final</version>
-		</dependency>
-		
-		<dependency>
-		  <groupId>com.google.guava</groupId>
-		  <artifactId>guava</artifactId>
-		  <version>20.0</version>
-		</dependency>		
-
-		
-		<!-- TEST -->
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>0.9.29</version>
-	    <scope>test</scope>
-		</dependency>
-
-	</dependencies>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.3.1</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.5</version>
+			</dependency>
+	
+		  <dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.10</version>
+		  </dependency>
+		  
+		  <!-- It seems that currently there is no official Oracle release of JPA 2.0, so we need to rely on some implementor  -->
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.1-api</artifactId>
+				<version>1.0.0.Final</version>
+			</dependency>
+			
+			<dependency>
+			  <groupId>com.google.guava</groupId>
+			  <artifactId>guava</artifactId>
+			  <version>20.0</version>
+			</dependency>		
+	
+			
+			<!-- TEST -->
+	
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>0.9.29</version>
+		    <scope>test</scope>
+			</dependency>
+	
+		</dependencies>
+	</dependencyManagement>
 	
 	<build>
 		<plugins>
@@ -114,8 +117,8 @@
       <plugin>
 	      <artifactId>maven-compiler-plugin</artifactId>
 	      <configuration>
-	        <source>1.7</source>
-	        <target>1.7</target>
+	        <source>1.8</source>
+	        <target>1.8</target>
 	        <encoding>utf-8</encoding>
 	      </configuration>
 	    </plugin>
@@ -183,5 +186,12 @@
     </repository>
 		
   </repositories>
+  
+	<modules>
+		<module>jutils</module>
+		<module>jutils-io</module>
+		<module>jutils-hibernate</module>
+	</modules>
+
 	    
 </project>
