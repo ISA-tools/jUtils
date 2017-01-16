@@ -42,17 +42,25 @@
  */
 package uk.ac.ebi.utils.io;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import org.apache.commons.io.input.ReaderInputStream;
+
+import com.google.common.io.ByteSource;
+import com.google.common.io.CharSource;
+import com.google.common.io.Resources;
 
 /**
  * Miscellanea of small IO utilities 
@@ -65,11 +73,16 @@ public class IOUtils
 {
 	private IOUtils () {}
 	
-	/** Reads the full content of a Reader and puts it into a String */
+	/** 
+	 * Reads the full content of a Reader and puts it into a String 
+	 * @deprecated see {@link org.apache.commons.io.IOUtils#toString(java.io.Reader)}
+   *
+	 */
+	@Deprecated
 	public static String readInputFully ( Reader rdr ) throws IOException
 	{
 		if ( rdr == null ) return null;
-		
+				
 		StringBuilder rval = new StringBuilder ( 1024 );
 		int c; 
 		
@@ -79,16 +92,76 @@ public class IOUtils
 		return rval.toString ();
 	}
 	
-	/** Reads a resource from the class loader, i.e. using clazz.getResourceAsStream (),
-	 *  and puts all the content in a string 
+	
+	/**
+	 * Facility to read a resource from the class loader associated to a class. 
 	 */
-	@SuppressWarnings ( "rawtypes" )
-	public static String readResource ( Class clazz, String path ) throws IOException
+	public static String readResource ( Class<?> clazz, String path, Charset charset ) throws IOException
 	{
-		Reader rdr = new BufferedReader ( new InputStreamReader ( clazz.getResourceAsStream ( path ) ) );
-		return readInputFully ( rdr );
+		return readResource ( clazz.getClassLoader (), path, charset );
+	}
+
+	public static String readResource ( Class<?> clazz, String path, String charset ) throws IOException 
+	{
+		return readResource ( clazz, path, Charset.forName ( charset ) );
+	}
+
+	/** 
+	 * <b>WARNING</b>: after 5.0 this uses UTF-8 as default and not the system default!
+	 */
+	public static String readResource ( Class<?> clazz, String path ) throws IOException
+	{
+		return readResource ( clazz, path, "UTF-8" );
 	}
 	
+	
+	/**
+	 * Uses the class loader in the current thread, or the one in {@link Resources}.
+	 */
+	public static String readResource ( String path, Charset charset ) throws IOException
+	{
+		URL url = Resources.getResource ( path );
+		return Resources.toString ( url, charset );
+	}
+
+	public static String readResource ( String path, String charset ) throws IOException
+	{
+		return readResource ( path, Charset.forName ( charset ) );
+	}
+
+	/**
+	 * Defaults to UTF-8 
+	 */
+	public static String readResource ( String path ) throws IOException
+	{
+		return readResource ( path, "UTF-8" );
+	}
+	
+	
+	/**
+	 * Facility to read a resource from a class loader.
+	 * @see ClassLoader#getResource(String).
+	 * 
+	 */
+	public static String readResource ( ClassLoader classLoader, String path, Charset charset ) throws IOException
+	{
+		URL url = classLoader.getResource ( path );
+		return Resources.toString ( url, charset );
+	}
+
+	public static String readResource ( ClassLoader classLoader, String path, String charset ) throws IOException
+	{
+		return readResource ( classLoader, path, Charset.forName ( charset ) );
+	}
+	
+	/**
+	 * Defaults to UTF-8
+	 */
+	public static String readResource ( ClassLoader classLoader, String path ) throws IOException
+	{
+		return readResource ( classLoader, path, "UTF-8" );
+	}
+
 	
 	/**
 	 * Reads the input stream and returns an hash for it, based on the algorithm passed as parameter. algorithm 
@@ -122,19 +195,58 @@ public class IOUtils
 	}
 
 	/**
+	 * Hashes a string, using {@link #getHash(InputStream, String)}.
+	 */
+	public static String getHash ( String string, String algorithm ) throws NoSuchAlgorithmException
+	{
+		try {
+			return getHash ( new ReaderInputStream ( new StringReader ( string ), "UTF-8" ), algorithm
+			);
+		}
+		catch ( IOException ex ) {
+			throw new IllegalArgumentException ( "Internal error: " + ex.getMessage (), ex );
+		}
+	}
+
+	/**
 	 * A wrapper of {@link #getHash(InputStream, String)} that uses the MD5 algorithm.
 	 */
-	public static String getMD5 ( InputStream is ) throws IOException, NoSuchAlgorithmException {
-		return getHash ( is, "MD5" );
-	} 
-
+	public static String getMD5 ( InputStream is ) throws IOException 
+	{
+		try {
+			return getHash ( is, "MD5" );
+		}
+		catch ( NoSuchAlgorithmException ex ) {
+			throw new RuntimeException ( "Internal error: " + ex.getMessage (), ex );
+		}
+	} 	
+	
 	/**
 	 * A wrapper of {@link #getHash(InputStream, File)} that uses the MD5 algorithm.
 	 */
-	public static String getMD5 ( File f ) throws IOException, NoSuchAlgorithmException 
+	public static String getMD5 ( File f ) throws IOException 
 	{
-		return getHash ( f, "MD5" );
+		try {
+			return getHash ( f, "MD5" );
+		}
+		catch ( NoSuchAlgorithmException ex ) {
+			throw new RuntimeException ( "Internal error: " + ex.getMessage (), ex );
+		}
 	}
+
+	/**
+	 * A wrapper for {@link #getHash(String, String)} that uses MD5.
+	 */
+	public static String getMD5 ( String string )
+	{
+		try {
+			return getHash ( string, "MD5" );
+		}
+		catch ( NoSuchAlgorithmException ex ) {
+			throw new RuntimeException ( "Internal error: " + ex.getMessage (), ex );
+		}
+	}
+	
 	
 	/**
 	 * Creates a URI and intercepts of URISyntaxException, throwing IllegalArgumentException if such an exception
@@ -150,4 +262,16 @@ public class IOUtils
 		}
 	}
 
+	/**
+	 * @see #uri(String)
+	 */
+	public static URL url ( String urlStr ) 
+	{
+		try {
+			return new URL ( urlStr );
+		}
+		catch ( MalformedURLException ex ) {
+			throw new IllegalArgumentException ( "Internal error with URI '" + urlStr + "'", ex );
+		}
+	}
 }
