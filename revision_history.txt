@@ -1,7 +1,8 @@
 REVISION HISTORY
 
-5.1-SNAPSHOT
-  - IOUtils.uri () added.
+5.1
+  - new hash functions added to IOUtils 
+  - IOUtils.uri () and .url() added.
   - Extensions to BatchService, to allow for customisation, including task priority option.
   - Some useful general-purpose exceptions added in uk.ac.ebi.utils.exceptions 
   - ThreadedPipedWriter removed, didn't make much sense, use EasyStream instead 
