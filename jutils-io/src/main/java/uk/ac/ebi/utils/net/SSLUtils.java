@@ -27,7 +27,9 @@ import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 
 /**
- * Utilities to disable SSL certificate verification in HTTP connections.
+ * SSL Utilities.
+ * 
+ * At the moment contains methods to disable SSL certificate verification in HTTP connections.
  * <b>WARNING</b>: doing this is <b>UNSAFE</b>, you should fix the bad certificate on server side instead.  
  * 
  * Courtesy of <a href =
@@ -41,7 +43,7 @@ import org.apache.http.ssl.TrustStrategy;
  *         </dl>
  *
  */
-public final class SSLUtilities
+public final class SSLUtils
 {
 	/**
 	 * Trusts all certificates.
