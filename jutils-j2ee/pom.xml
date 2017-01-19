@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jutils-hibernate</artifactId>
+  <artifactId>jutils-j2ee</artifactId>
   
-  <name>JUtils - Hibernate</name>
+  <name>JUtils - J2EE</name>
   <description>
   	General utility code for several purposes. 
   	
-  	This is the JPA/Hibernate module.
+  	This is the J2EE module, contains utilities about JPA, Hibernate and the like.
   </description>
   <url>https://github.com/ISA-tools/jUtils</url>
 

@@ -44,6 +44,13 @@
 		  <artifactId>guava</artifactId>
 		</dependency>		
 
+		<dependency>
+		  <groupId>org.apache.httpcomponents</groupId>
+		  <artifactId>httpcomponents-core</artifactId>
+		  <type>pom</type>
+		  <version>4.4.4</version>
+		</dependency>
+
 		
 		<!-- TEST -->
 

@@ -48,6 +48,7 @@
 
 	<dependencyManagement>
 		<dependencies>
+		
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
@@ -97,6 +98,12 @@
 			  <artifactId>guava</artifactId>
 			  <version>20.0</version>
 			</dependency>		
+
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.5.2</version>
+			</dependency>
 	
 			
 			<!-- TEST -->
@@ -112,6 +119,7 @@
 	</dependencyManagement>
 	
 	<build>
+
 		<plugins>
 		
       <plugin>
@@ -151,6 +159,7 @@
 		
     </plugins>
 	
+
     <testResources>
 	    <testResource>
 	      <directory>src/test/resources</directory>
@@ -190,7 +199,7 @@
 	<modules>
 		<module>jutils</module>
 		<module>jutils-io</module>
-		<module>jutils-hibernate</module>
+		<module>jutils-j2ee</module>
 	</modules>
 
 	    
