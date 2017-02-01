@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jutils</artifactId>
+  
+  <name>JUtils - Core</name>
+  <description>
+  	General utility code for several purposes. 
+  	
+  	This is the core module, having minimal non-specific dependencies.
+  </description>
+  <url>https://github.com/ISA-tools/jUtils</url>
+
+	<parent>
+	  <groupId>uk.ac.ebi</groupId>
+	  <artifactId>jutils-pom</artifactId>
+  	<version>6.0-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		
+		<dependency>
+		  <groupId>uk.org.lidalia</groupId>
+		  <artifactId>lidalia-slf4j-ext</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+
+	  <dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	  </dependency>
+	  		
+		<dependency>
+		  <groupId>com.google.guava</groupId>
+		  <artifactId>guava</artifactId>
+		</dependency>		
+
+		<dependency>
+		  <groupId>org.apache.httpcomponents</groupId>
+		  <artifactId>httpcomponents-core</artifactId>
+		  <type>pom</type>
+		  <version>4.4.4</version>
+		</dependency>
+
+		
+		<!-- TEST -->
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+	    
+</project>

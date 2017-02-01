@@ -1,5 +1,8 @@
 REVISION HISTORY
 
+6.0-SNAPSHOT
+  - Splitting the original jutils into multiple modules
+
 5.1
   - new hash functions added to IOUtils 
   - IOUtils.uri () and .url() added.
