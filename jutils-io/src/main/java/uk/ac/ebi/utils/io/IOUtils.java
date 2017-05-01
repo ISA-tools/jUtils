@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -92,7 +93,50 @@ public class IOUtils
 		return rval.toString ();
 	}
 	
+	/**
+	 * Facility to get a reader from a resource, uses {@link Resources#getResource(Class, String)} and
+	 * {@link URL#openStream()}.
+	 */
+	public static Reader openResourceReader ( Class<?> clazz, String path, Charset charset ) throws IOException
+	{
+		return new InputStreamReader ( Resources.getResource ( clazz, path ).openStream (), charset );
+	}	
+
+	public static Reader openResourceReader ( Class<?> clazz, String path, String charset ) throws IOException
+	{
+		return openResourceReader ( clazz, path, Charset.forName ( charset ) );
+	}	
+
+	/**
+	 * Defaults to "UTF-8"
+	 */
+	public static Reader openResourceReader ( Class<?> clazz, String path ) throws IOException
+	{
+		return openResourceReader ( clazz, path, "UTF-8" );
+	}
 	
+	
+	public static Reader openResourceReader ( String path, Charset charset ) throws IOException
+	{
+		return new InputStreamReader ( Resources.getResource ( path ).openStream (), charset );
+	}
+
+	public static Reader openResourceReader ( String path, String charset ) throws IOException
+	{
+		return openResourceReader ( path, Charset.forName ( charset ) );
+	}	
+	
+	/**
+	 * Defaults to "UTF-8"
+	 */
+	public static Reader openResourceReader ( String path ) throws IOException
+	{
+		return openResourceReader ( path, "UTF-8" );
+	}
+	
+	
+	
+
 	/**
 	 * Facility to read a resource from the class loader associated to a class. 
 	 */
