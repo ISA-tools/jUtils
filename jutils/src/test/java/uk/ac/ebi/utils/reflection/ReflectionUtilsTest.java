@@ -53,10 +53,7 @@ import static uk.ac.ebi.utils.reflection.ReflectionUtils.getTypeArguments;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import uk.ac.ebi.utils.collections.Pair;
 
 /**
  * Jan 16, 2008

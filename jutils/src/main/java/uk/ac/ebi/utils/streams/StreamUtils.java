@@ -1,7 +1,5 @@
 package uk.ac.ebi.utils.streams;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -9,7 +7,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import uk.ac.ebi.utils.collections.TupleIterator;
-import uk.ac.ebi.utils.reflection.ReflectionUtils;
 
 /**
  * Stream Utils
