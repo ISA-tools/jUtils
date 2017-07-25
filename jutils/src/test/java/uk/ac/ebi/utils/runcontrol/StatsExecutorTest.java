@@ -100,7 +100,7 @@ public class StatsExecutorTest
 				
 		double failRate = 1d * executor.getLastFailedCalls () / executor.getLastTotalCalls ();
 
-		// each call requires TASK_MAX_TIME/2, except those that fails, which needs almost no time
+		// each call requires TASK_MAX_TIME/2 on average, except those that fails, which needs almost no time
 		// (so, we have the 1-failRate factor).
 		double expectedCalls = nthreads * samplingTime / ( ( 1 - failRate ) * TASK_MAX_TIME / 2d );
 		
@@ -108,8 +108,9 @@ public class StatsExecutorTest
 		log.info ( "Calls: {}, fail rate: {} %", executor.getLastTotalCalls (), failRate * 100 );
 		log.info ( "Expected Calls: {}", expectedCalls );
 		
+		// Keep this delta high, CI environments are often busy and erratic
 		Assert.assertTrue ( "Multi-thread Total calls wrong!", 
-			Math.abs ( executor.getLastTotalCalls () / expectedCalls - 1 ) < 0.2 
+			Math.abs ( executor.getLastTotalCalls () / expectedCalls - 1 ) < 0.35 
 		);
 		Assert.assertTrue ( "Multi-thread failed calls wrong!", Math.abs ( failRate - FAIL_RATE ) < 0.1 );
 	}	
