@@ -2,6 +2,7 @@ REVISION HISTORY
 
 6.0-SNAPSHOT
   - Splitting the original jutils into multiple modules
+  - TupleIterator and StreamUtils.tupleStream() added
 
 5.1
   - new hash functions added to IOUtils 

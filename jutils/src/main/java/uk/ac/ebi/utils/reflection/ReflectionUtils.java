@@ -170,7 +170,7 @@ public class ReflectionUtils
   /**
    * A wrapper to getTypeArgument which retrieves the ith argument 
    * 
-   * WARNING: This method won't work if the generic argument i in childClass is a generic, no matter if it is bouund
+   * WARNING: This method won't work if the generic argument i in childClass is a generic, no matter if it is bound
    * in the object assignment (see the post above for details). If that is the case, re-declare childClass
    * as abstract and use anonymous classes. 
 

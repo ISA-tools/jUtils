@@ -40,7 +40,7 @@
 package uk.ac.ebi.utils.collections;
 
 /**
- * An implementation of the famouse Pair interface, as it is found in some package and in discussions about wether it is
+ * An implementation of the famous Pair interface, as it is found in some package and in discussions about whether it is
  * necessary or not to have it in java.util.
  *  
  * <dl>
