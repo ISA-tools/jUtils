@@ -1,6 +1,9 @@
 REVISION HISTORY
 
-6.0-SNAPSHOT
+6.0.1-SNAPSHOT
+  - New version started
+
+6.0
   - Splitting the original jutils into multiple modules
   - TupleIterator and StreamUtils.tupleStream() added
 
