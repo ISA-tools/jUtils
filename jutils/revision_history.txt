@@ -2,6 +2,7 @@ REVISION HISTORY
 
 6.0.1-SNAPSHOT
   - New version started
+  - TupleSpliterator added and used in StreamUtils.tupleStream(), to make the result parallelizable.
 
 6.0
   - Splitting the original jutils into multiple modules

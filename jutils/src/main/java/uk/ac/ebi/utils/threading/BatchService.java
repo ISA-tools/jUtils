@@ -185,7 +185,7 @@ public class BatchService<TK extends BatchServiceTask>
 					} 
 					finally 
 					{
-						// Release after service run
+						// Release (in the sense of marking there is one fewer thread and one more that finished) after service run
 						//
 						submissionLock.lock ();
 						try
@@ -217,8 +217,9 @@ public class BatchService<TK extends BatchServiceTask>
 						
 					} // run().finally
 				} // run()
-			}); // decorated runnable
+			}); // decorated runnable and submit() opeation
 			
+			// Update data about the submission of a new thread that just happened
 			busyTasks++;
 			log.log ( 
 				this.submissionMsgLogLevel,
@@ -227,7 +228,7 @@ public class BatchService<TK extends BatchServiceTask>
 			);
 			if ( !this.log.isEnabled ( this.submissionMsgLogLevel ) && this.notificationTimer == null )
 				this.initNotificationTimer ();
-		} // try on submissionLock  
+		} // try{} on submissionLock  
 		finally {
 			submissionLock.unlock ();
 		}
@@ -236,8 +237,8 @@ public class BatchService<TK extends BatchServiceTask>
 	
 	
 	/**
-	 * This can be used this after you have submitted all the tasks that you have to run, to wait until all of them 
-	 * complete their execution. The method starts a timer that reports the current state (with INFO log messages). 
+	 * This can be used after you have submitted all the tasks that you have to run, when you want to wait that all of them 
+	 * complete their execution. The method starts a {@link #initNotificationTimer() timer} that reports the current state (with INFO log messages). 
 	 *  
 	 */
 	public void waitAllFinished ()
@@ -334,8 +335,7 @@ public class BatchService<TK extends BatchServiceTask>
 	public int getBusyTasks ()
 	{
 		submissionLock.lock ();
-		try 
-		{
+		try {
 			return busyTasks;
 		}
 		finally {
@@ -351,13 +351,11 @@ public class BatchService<TK extends BatchServiceTask>
 	 * a {@link #initNotificationTimer() notification} from time to time. 
 	 *  
 	 */
-	public Level getSubmissionMsgLogLevel ()
-	{
+	public Level getSubmissionMsgLogLevel () {
 		return submissionMsgLogLevel;
 	}
 
-	public void setSubmissionMsgLogLevel ( Level submissionMsgLogLevel )
-	{
+	public void setSubmissionMsgLogLevel ( Level submissionMsgLogLevel ) {
 		this.submissionMsgLogLevel = submissionMsgLogLevel;
 	}
 	
@@ -365,8 +363,7 @@ public class BatchService<TK extends BatchServiceTask>
 	/**
 	 * It's like the {@link ThreadPoolExecutor#setThreadFactory(ThreadFactory)} and might be useful here as well.
 	 */
-	public void setThreadFactory ( ThreadFactory threadFactory )
-	{
+	public void setThreadFactory ( ThreadFactory threadFactory ) {
 		((ThreadPoolExecutor) executor).setThreadFactory ( threadFactory );
 	}
 	
@@ -381,5 +378,4 @@ public class BatchService<TK extends BatchServiceTask>
 		if ( poolSizeTuner != null ) this.poolSizeTuner.stop ();
 		super.finalize ();
 	}
-	
 }

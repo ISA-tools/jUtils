@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import uk.ac.ebi.utils.collections.TupleIterator;
+import uk.ac.ebi.utils.collections.TupleSpliterator;
 
 /**
  * Stream Utils
@@ -44,17 +45,15 @@ public class StreamUtils
 		if ( streams == null ) throw new NullPointerException ( 
 			"Cannot create a tuple stream from a null stream array" 
 		);
-		
-		characteristics |= Spliterator.IMMUTABLE;
-		
-		Iterator<Object> strmItrs[] = new Iterator [ streams.length ];
+			
+		Spliterator<Object> strmSpltrs[] = new Spliterator [ streams.length ];
 		
 		for ( int i = 0; i < streams.length; i++ )
-			strmItrs [ i ] = (Iterator<Object>) streams [ i ].iterator ();
+			strmSpltrs [ i ] = (Spliterator<Object>) streams [ i ].spliterator ();
 		
-		TupleIterator<T> tupleItr = new TupleIterator<> ( (Iterator<T>[]) strmItrs );
+		TupleSpliterator<T> tupleItr = new TupleSpliterator<> ( (Spliterator<T>[]) strmSpltrs );
 		
-		return StreamSupport.stream ( Spliterators.spliteratorUnknownSize ( tupleItr, characteristics ), isParallel );
+		return StreamSupport.stream ( tupleItr, isParallel );
 	}
 	
 	/**
