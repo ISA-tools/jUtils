@@ -62,7 +62,7 @@ public class StreamUtilsTest
 		
 		String[][] expResults = new String [][] {
 			new String [] { "A", "X", "0" },
-			new String [] { "B", "Y", "1" },
+			new String [] { "B", "Y", "1" }
 		};
 		
 		verify ( 
@@ -121,7 +121,7 @@ public class StreamUtilsTest
 			new String [] { "A", "Q", "0" },
 			new String [] { "B", "W", "1" },
 			new String [] { "C", "E", "2" },
-			new String [] { "D", "R", "3" },
+			new String [] { "D", "R", "3" }
 		};
 		
 		verify ( 
