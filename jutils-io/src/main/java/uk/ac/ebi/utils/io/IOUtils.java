@@ -59,8 +59,6 @@ import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.io.input.ReaderInputStream;
 
-import com.google.common.io.ByteSource;
-import com.google.common.io.CharSource;
 import com.google.common.io.Resources;
 
 /**
