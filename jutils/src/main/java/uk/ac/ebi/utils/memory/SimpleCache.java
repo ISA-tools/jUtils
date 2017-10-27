@@ -105,7 +105,7 @@ public class SimpleCache<K, V> implements ConcurrentMap<K, V>
 		return base.values ();
 	}
 
-	public Set<java.util.Map.Entry<K, V>> entrySet ()
+	public Set<Entry<K, V>> entrySet ()
 	{
 		return base.entrySet ();
 	}
