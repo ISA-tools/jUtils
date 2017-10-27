@@ -105,7 +105,7 @@ public class MapCollection<K, V> implements Collection<V>
 	@Override
 	public boolean containsAll ( Collection<?> c )
 	{
-		for ( Object e: c ) if ( !contains ( c ) ) return false;
+		for ( Object e: c ) if ( !contains ( e ) ) return false;
 		return true;
 	}
 

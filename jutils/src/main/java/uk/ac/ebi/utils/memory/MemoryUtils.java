@@ -57,9 +57,10 @@ import org.slf4j.LoggerFactory;
  */
 public class MemoryUtils
 {
+	private final static Logger log = LoggerFactory.getLogger ( MemoryUtils.class );
+
 	private MemoryUtils () {}
 
-	private final static Logger log = LoggerFactory.getLogger ( MemoryUtils.class );
 
 	
 	/**
