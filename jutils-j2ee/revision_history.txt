@@ -1,2 +1,0 @@
-6.0-SNAPSHOT
-  - Splitting the original jutils into multiple modules
