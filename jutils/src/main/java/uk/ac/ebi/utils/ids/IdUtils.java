@@ -1,6 +1,7 @@
 package uk.ac.ebi.utils.ids;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -8,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Utilities about management of identifiers.
@@ -93,5 +96,60 @@ public class IdUtils
 		catch ( UnsupportedEncodingException ex ) {
 			throw new IllegalArgumentException ( "That's strange, UTF-8 encoding seems wrong for encoding '" + queryStringUrl + "'" );
 		}
-	}	
+	}
+	
+
+	/**
+	 * Same as {@link #urlEncode(String)}, for the reverse operation, based on {@link URLDecoder}.
+	 * 
+	 */
+	public static String urlDecode ( String url )
+	{
+		try {
+			if ( url == null ) return null;
+			return URLDecoder.decode ( url, "UTF-8" );
+		}
+		catch ( UnsupportedEncodingException ex ) {
+			throw new IllegalArgumentException ( "That's strange, UTF-8 encoding seems wrong for encoding '" + url + "'" );
+		}
+	}
+	
+	/**
+	 * Splits a URL based on the splitRegEx expression and returns the last fragment of it, which usually 
+	 * correspond to an identifer to an accession (such as a class name in OWL/RDF-S). That fragment is 
+	 * also passed to {@link #urlDecode(String)} and characters matching replacementRegEx are all replaced
+	 * by '_' (if the parameter is non-null).
+	 * 
+	 * Returns null if the IRI is null or its trimmed version is empty.
+	 * 
+	 */
+	public static String iri2id ( String iri, String splitRegEx, String replacementRegEx )
+	{
+		iri = StringUtils.trimToNull ( iri );
+		if ( iri == null ) return null; 
+		
+		String[] frags = iri.split ( splitRegEx );
+		String lastFrag = frags [ frags.length - 1 ];
+		lastFrag = urlDecode ( lastFrag );
+		lastFrag = lastFrag.replaceAll ( replacementRegEx, "_" );
+		return lastFrag;
+	}
+
+	/**
+	 * Uses a suitable default for replacementRegEx ("[\\s\\+\\-\\:\\.\\?]"). 
+	 */
+	public static String iri2id ( String iri, String splitRegEx )
+	{
+		return iri2id ( iri, splitRegEx, "[\\s\\+\\-\\:\\.\\?]" );
+	}
+	
+	
+	/**
+	 * Uses suitable default for splitRegEx ("[#/]") 
+	 */
+	public static String iri2id ( String iri )
+	{
+		return iri2id ( iri, "[#/]" );
+	}
+
 }
