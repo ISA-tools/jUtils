@@ -62,8 +62,13 @@ public abstract class BatchProcessor<S, D>
 	 * <b>WARNING</b>: in addition to the behaviour explained above, this method should also invoke 
 	 * {@link #waitExecutor(String)}.
 	 */
-	public abstract void process ( S source );
-				
+	public abstract void process ( S source, Object... opts );
+
+	public void process ( S source ) {
+		this.process ( source, new Object [ 0 ] );
+	}
+
+	
 	protected D handleNewTask ( D currentDest ) {
 		return handleNewTask ( currentDest, false );
 	}
