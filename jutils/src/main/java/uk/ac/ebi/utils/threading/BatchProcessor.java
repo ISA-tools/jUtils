@@ -10,6 +10,8 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
+
 
 /**
  * A simple class to manage processing of data in multi-thread mode.
@@ -56,6 +58,10 @@ public abstract class BatchProcessor<S, D>
 		);
 	}
 	
+	/**
+	 * <b>WARNING</b>: in addition to the behaviour explained above, this method should also invoke 
+	 * {@link #waitExecutor(String)}.
+	 */
 	public abstract void process ( S source );
 				
 	protected D handleNewTask ( D currentDest ) {
@@ -146,7 +152,13 @@ public abstract class BatchProcessor<S, D>
 		return this;
 	}
 			
-	protected void waitExecutor ( String message )
+	/**
+	 * Waits that all the parallel jobs submitted to the processor are finished. It keeps polling
+	 * {@link ExecutorService#isTerminated()} and invoking {@link ExecutorService#awaitTermination(long, TimeUnit)}.
+	 * 
+	 * @param pleaseWaitMessage the message to be reported (via logger/INFO level) while waiting.
+	 */
+	protected void waitExecutor ( String pleaseWaitMessage )
 	{
 		executor.shutdown ();
 
@@ -155,12 +167,12 @@ public abstract class BatchProcessor<S, D>
 		{
 			while ( !executor.isTerminated () ) 
 			{
-				log.info ( message ); 
+				log.info ( pleaseWaitMessage ); 
 				executor.awaitTermination ( 5, TimeUnit.MINUTES );
 			}
 		}
 		catch ( InterruptedException ex ) {
-			throw new RuntimeException ( "Internal error: " + ex.getMessage (), ex );
+			throw new UnexpectedEventException ( "Internal error: " + ex.getMessage (), ex );
 		}
 	}
 }
