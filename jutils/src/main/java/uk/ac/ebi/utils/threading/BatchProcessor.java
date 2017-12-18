@@ -87,7 +87,18 @@ public abstract class BatchProcessor<S, D>
 		{
 			@Override
 			public void run () {
-				consumer.accept ( currentDest );
+				try {
+					consumer.accept ( currentDest );
+				}
+				catch ( Exception ex ) {
+					log.error ( 
+						String.format ( 
+							"Error while running batch processor thread %s: %s", 
+							Thread.currentThread ().getName (), ex.getMessage () 
+						),
+						ex
+					);
+				}
 			}
 		});
 		
