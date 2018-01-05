@@ -1,7 +1,6 @@
 package uk.ac.ebi.utils.threading;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -48,14 +47,7 @@ public abstract class BatchProcessor<S, D>
 	
 	public BatchProcessor ()
 	{
-		int poolSize = Runtime.getRuntime().availableProcessors();
-		
-		this.executor = new ThreadPoolExecutor (
-			poolSize, 
-			Integer.MAX_VALUE, 
-			0L, TimeUnit.MILLISECONDS, 
-			new LinkedBlockingQueue<> ( poolSize * 2 ) 
-		);
+		this.executor = HackedBlockingQueue.createExecutor ();
 	}
 	
 	/**
@@ -145,16 +137,13 @@ public abstract class BatchProcessor<S, D>
 
 
 	/**
-	 * The thread pool manager used by {@link #export(ONDEXGraph)}. By default this is 
-	 * {@link ThreadPoolExecutor 
-	 * ThreadPoolExecutor( &lt;available processors&gt;, Integer.MAX_VALUE, ..., LinkedBlockingQueue (processors*2) )},
-	 * that is, a pool where a fixed number of threads is running at any time (up to the 
-	 * {@link Runtime#availableProcessors() number of processors available}) and where the  
-	 * {@link ExecutorService#submit(Runnable) task submission operation} is also put on hold if the 
-	 * pool is full, waiting for some thread to finish its job.
+	 * The thread pool manager used by {@link #process(Object, Object...)}. 
 	 * 
-	 * Normally you shouldn't need to change this parameter, except, maybe, where parallelism isn't such 
-	 * worth and hence you prefer a fixed pool of size 1 ({@link RDFFileExporter} does so).
+	 * By default this is {@link HackedBlockingQueue#createExecutor()}. Normally you shouldn't need to 
+	 * change this parameter, unless you want some particular execution policy.
+	 * 
+	 * Note that you can change the service's size by casting the default value returned by this method
+	 * to {@link ThreadPoolExecutor} and then using the methods of this class. 
 	 * 
 	 */
 	public ExecutorService getExecutor ()
