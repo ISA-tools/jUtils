@@ -10,11 +10,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * Tricks the behaviour of {@link LinkedBlockingQueue} so that methods like {@link #offer(Object)}
  * and {@link #poll()} actually invoke {@link #put(Object)} and {@link #take()}, ie, the queue always 
- * wait for it being free-of/filled-with-some value/s.
+ * waits for it being free-of/filled-with-some value/s.
  * 
  * This can be used in {@link ThreadPoolExecutor}, which of {@link ThreadPoolExecutor#submit(Runnable)}
  * methods can raise {@link RejectedExecutionException} by calling offer(). By passing this class to its
- * constructor, the executor will always wait for a free thread or space in the task queue. 
+ * constructor, the executor will always wait for a free thread, either in the executor or in the task queue. 
  * 
  * <a href = "https://goo.gl/LtV8QL">Credits</a>.
  *

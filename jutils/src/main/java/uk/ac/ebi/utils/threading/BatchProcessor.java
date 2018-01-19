@@ -83,6 +83,7 @@ public abstract class BatchProcessor<S, D> implements AutoCloseable
 					consumer.accept ( currentDest );
 				}
 				catch ( Exception ex ) {
+					// TODO: keep track of exceptions and make them available in the processor.
 					log.error ( 
 						String.format ( 
 							"Error while running batch processor thread %s: %s", 
