@@ -132,10 +132,10 @@ public class DownloadUtils {
      * Remove a file given an absolute file path
      * @param file - String representing the absolute location of the file to be removed.
      */
-    public static void deleteFile(String file) {
+    public static boolean deleteFile(String file) 
+    {
         File f = new File(file);
-        if (f.exists()) {
-            f.delete();
-        }
+        if ( !f.exists () ) return false;
+        return f.delete();
     }
 }

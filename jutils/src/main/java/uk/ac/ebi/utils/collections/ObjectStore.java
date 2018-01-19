@@ -61,18 +61,25 @@ import org.slf4j.LoggerFactory;
 public class ObjectStore<T, K, V>
 {
 	private Map<T, Map<K, V>> types = new HashMap<T, Map<K, V>> ();
-	private int size = 0;
+	protected int size = 0;
 
 	protected final Logger log = LoggerFactory.getLogger ( this.getClass () );
 
+	protected Map<T, Map<K, V>> getInternalTypes ()
+	{
+		return types;
+	}
+	
+	
 	/**
 	 * Stores an object, identified by a type and an identifier
 	 * If value is null deletes the entry.
 	 *
 	 */
-	public void put ( T type, K id, V value )
+	public void put ( T type, K key, V value )
 	{
-		Map<K, V> idmap = this.types.get ( type );
+		Map<T, Map<K, V>> types = this.getInternalTypes ();
+		Map<K, V> idmap = types.get ( type );
 		
 		if ( idmap == null ) {
 			idmap = new HashMap<K, V> ();
@@ -80,14 +87,14 @@ public class ObjectStore<T, K, V>
 		}
 
 		if ( value == null ) {
-			if ( idmap.containsKey ( id ) ) {
-				idmap.remove ( id );
+			if ( idmap.containsKey ( key ) ) {
+				idmap.remove ( key );
 				if ( size > 0 ) size--;
 			}
 		}
 		else {
-			if ( !idmap.containsKey ( id ) ) size++;
-			idmap.put ( id, value );
+			if ( !idmap.containsKey ( key ) ) size++;
+			idmap.put ( key, value );
 		}
 	}
 
@@ -97,7 +104,7 @@ public class ObjectStore<T, K, V>
 	 */
 	public void remove ( T type )
 	{
-		Map<K, V> idmap = this.types.get ( type );
+		Map<K, V> idmap = this.getInternalTypes ().get ( type );
 		if ( idmap == null ) return; 
 		
 		size -= idmap.size ();
@@ -106,15 +113,15 @@ public class ObjectStore<T, K, V>
 
 	
 	/**
-	 * Gets an object identifies by type and id. Returns null in case the entry is
+	 * Gets an object identified by type and key. Returns null in case the entry is
 	 * empty.
 	 *
 	 */
-	public V get ( T type, K id )
+	public V get ( T type, K key )
 	{
-		Map<K, V> idmap =  this.types.get ( type );
+		Map<K, V> idmap =  this.getInternalTypes ().get ( type );
 		if ( idmap == null ) return null;
-		return idmap.get ( id );
+		return idmap.get ( key );
 	}
 
 
@@ -125,12 +132,12 @@ public class ObjectStore<T, K, V>
 
 	/** All the types in the store */
 	public Set<T> types () {
-		return types.keySet ();
+		return getInternalTypes ().keySet ();
 	}
 
 	/** All the identifiers of objects belonging to a given type */
 	public Set<K> typeKeys ( T type ) {
-		Map<K, V> idmap = this.types.get ( type );
+		Map<K, V> idmap = this.getInternalTypes ().get ( type );
 		if ( idmap == null ) return null;
 		return idmap.keySet ();
 	}
@@ -139,7 +146,7 @@ public class ObjectStore<T, K, V>
 	/** All the values of a certain type. Never returns null. */
 	public Collection<V> values ( T type ) 
 	{
-		Map<K,V> idmap = this.types.get ( type );
+		Map<K,V> idmap = this.getInternalTypes ().get ( type );
 		if ( idmap == null ) return Collections.emptySet ();
 		return Collections.unmodifiableCollection ( idmap.values () );
 	}
@@ -152,12 +159,12 @@ public class ObjectStore<T, K, V>
 	 */
 	public String toStringVerbose ()
 	{
-		String result = "";
+		StringBuilder result = new StringBuilder ();
 
 		for ( T type : this.types () )
 			for (  K key : this.typeKeys ( type ) )
-				result += String.format ( "<%s, %s>:\n%s\n", type, key, this.get ( type, key ) );
-		return result;
+				result.append ( String.format ( "<%s, %s>:\n%s\n", type, key, this.get ( type, key ) ) );
+		return result.toString ();
 	}
 
 

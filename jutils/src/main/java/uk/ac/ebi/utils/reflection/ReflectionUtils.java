@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -230,8 +231,12 @@ public class ReflectionUtils
 			NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException 
 			| InvocationTargetException ex ) 
 		{
+			String clsName = Optional.ofNullable ( object )
+				.map ( o -> o.getClass ().getSimpleName () )
+				.orElse ( "<null>" );
+			
 			throw new RuntimeException ( String.format ( 
-				"Internal Error while invoking '%s'.'%s': %s", object.getClass ().getSimpleName (), methodName, ex.getMessage () 
+				"Internal Error while invoking '%s'.'%s': %s", clsName, methodName, ex.getMessage () 
 			), ex );
 		}
   }

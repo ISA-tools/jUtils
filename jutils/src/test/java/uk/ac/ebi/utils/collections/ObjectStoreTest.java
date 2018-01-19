@@ -58,6 +58,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.Test;
 
 public class ObjectStoreTest
@@ -160,4 +163,24 @@ public class ObjectStoreTest
 		out.println ( "I've printed " + sz + " values, as expected" );
 	}
 
+	
+	@Test
+	public void testSorted ()
+	{
+		SortedObjectStore<String, Integer, String> sortedStore = new SortedObjectStore<> ();
+		for ( String type: store.types () )
+			for ( int key: store.typeKeys ( type ) )
+				sortedStore.put ( type, key, store.get ( type, key ) );
+		
+		List<String> ltypes = sortedStore.types ().stream ().collect ( Collectors.toList () );
+		assertEquals ( "Wrong types (size)!", 2, ltypes.size () );
+		assertEquals ( "Wrong type (0)!", "type1", ltypes.get ( 0 ) );
+		assertEquals ( "Wrong type (1)!", "type2", ltypes.get ( 1 ) );
+		
+		List<Integer> lkeys = sortedStore.typeKeys ( "type1" ).stream ().collect ( Collectors.toList () );
+		assertEquals ( "Wrong keys (size)!", 2, lkeys.size () );
+		assertEquals ( "Wrong key (0)!", 1, (int) lkeys.get ( 0 ) );
+		assertEquals ( "Wrong key (1)!", 2, (int) lkeys.get ( 1 ) );		
+	}
+	
 }

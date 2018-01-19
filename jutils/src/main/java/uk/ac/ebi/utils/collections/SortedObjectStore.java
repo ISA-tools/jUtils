@@ -43,11 +43,8 @@
  
 package uk.ac.ebi.utils.collections;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -58,7 +55,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Like {@link ObjectStore}, but with types and keys kept sorted.
- * TODO: needs to be reworked, to inhreit much more from the parent.
  *  
  * @author brandizi
  * <b>date</b>: Mar 3, 2010
@@ -67,14 +63,11 @@ import org.slf4j.LoggerFactory;
 public class SortedObjectStore<T, K, V> extends ObjectStore<T, K, V>
 {
 	private SortedMap<T, SortedMap<K, V>> types; 
-	protected int size = 0;
-
 	private final Comparator<K> keyComparator;
 	
 	public SortedObjectStore () {
 		this ( null, null );
 	}
-
 
 	public SortedObjectStore ( Comparator<T> typeComparator, Comparator<K> keyComparator ) 
 	{
@@ -82,16 +75,21 @@ public class SortedObjectStore<T, K, V> extends ObjectStore<T, K, V>
 		this.keyComparator = keyComparator;
 	}
 
+	
+	@Override
+	@SuppressWarnings ( { "unchecked", "rawtypes" } )
+	protected Map<T, Map<K, V>> getInternalTypes () {
+		return (Map) this.types;
+	}
+
+
 	protected final Logger log = LoggerFactory.getLogger ( this.getClass () );
 
-	/**
-	 * Stores an object, identified by a type and an identifier
-	 * If value is null deletes the entry.
-	 *
-	 */
-	public void put ( T type, K id, V value )
+	public void put ( T type, K key, V value )
 	{
-		SortedMap<K, V> idmap = this.types.get ( type );
+		@SuppressWarnings ( { "rawtypes", "unchecked" } )
+		SortedMap<T, SortedMap<K,V>> types = (SortedMap<T, SortedMap<K,V>>) (Map) this.getInternalTypes ();
+		SortedMap<K, V> idmap = (SortedMap<K,V>) types.get ( type );
 
 		if ( idmap == null ) {
 			idmap = new TreeMap<K, V> ( keyComparator );
@@ -99,80 +97,14 @@ public class SortedObjectStore<T, K, V> extends ObjectStore<T, K, V>
 		}
 
 		if ( value == null ) {
-			if ( idmap.containsKey ( id ) ) {
-				idmap.remove ( id );
+			if ( idmap.containsKey ( key ) ) {
+				idmap.remove ( key );
 				if ( size > 0 ) size--;
 			}
 		}
 		else {
-			if ( !idmap.containsKey ( id ) ) size++;
-			idmap.put ( id, value );
+			if ( !idmap.containsKey ( key ) ) size++;
+			idmap.put ( key, value );
 		}
-
-	}
-	
-	@Override
-	public void remove ( T type ) 
-	{
-		Map<K, V> idmap = this.types.get ( type );
-		if ( idmap == null ) return; 
-		
-		size -= idmap.size ();
-		idmap.clear ();
-	}
-
-
-	/**
-	 * Gets an object identifies by type and id. Returns null in case the entry is
-	 * empty.
-	 *
-	 */
-	public V get ( T type, K id )
-	{
-		Map<K, V> idmap =  this.types.get ( type );
-		if ( idmap == null ) return null;
-		return idmap.get ( id );
-	}
-
-
-	public int size () {
-		return size;
-	}
-
-
-	/** All the types, sorted, in the store */
-	public Set<T> types () {
-		return types.keySet ();
-	}
-
-	/** All the identifiers, sorted, of objects belonging to a given type */
-	public Set<K> typeKeys ( T type ) {
-		Map<K, V> idmap = this.types.get ( type );
-		if ( idmap == null ) return null;
-		return idmap.keySet ();
-	}
-
-
-	/** All the values of a certain type. Never returns null. */
-	public Collection<V> values ( T type ) 
-	{
-		Map<K,V> idmap = this.types.get ( type );
-		if ( idmap == null ) return Collections.emptySet ();
-		return Collections.unmodifiableCollection ( idmap.values () );
-	}
-	
-	/**
-	 * Prints full contents of the object store.
-	 *
-	 */
-	public String toStringVerbose ()
-	{
-		String result = "";
-
-		for ( T type : this.types () )
-			for (  K key : this.typeKeys ( type ) )
-				result += String.format ( "<%s, %s>:\n%s\n", type, key, this.get ( type, key ) );
-		return result;
-	}
-	
+	}	
 }
