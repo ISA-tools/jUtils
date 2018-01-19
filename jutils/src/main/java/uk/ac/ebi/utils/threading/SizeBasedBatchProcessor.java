@@ -36,6 +36,6 @@ public abstract class SizeBasedBatchProcessor<S, D> extends BatchProcessor<S, D>
 	 */
 	@Override
 	protected boolean decideNewTask ( D dest ) {
-		return this.getDestinationSize ( dest ) > this.getDestinationMaxSize ();
+		return this.getDestinationSize ( dest ) >= this.getDestinationMaxSize ();
 	}	
 }

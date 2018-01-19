@@ -46,8 +46,9 @@ public class MultipleAttemptsExecutor implements Executor
 
 	/**
 	 * Tries to run the action and, if it fails with one of {@link #getInterceptedExceptions()}, re-run it up to 
-	 * {@link #getMaxAttempts()}. A pause with a time between {@link #getMinPauseTime()} and {@link #getMaxPauseTime()}
-	 * is inserted between attempts.
+	 * {@link #getMaxAttempts()}. A pause with a random time between {@link #getMinPauseTime()} and {@link #getMaxPauseTime()}
+	 * is inserted between attempts, so that, in case of race conditions between parallel threads, they don't 
+	 * re-attempt the same conflicting operation at the same time.
 	 */
 	@Override
 	public void execute ( Runnable action )

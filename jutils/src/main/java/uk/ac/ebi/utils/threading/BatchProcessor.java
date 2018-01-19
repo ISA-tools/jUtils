@@ -36,7 +36,7 @@ import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
  * <dl><dt>Date:</dt><dd>1 Dec 2017</dd></dl>
  *
  */
-public abstract class BatchProcessor<S, D>
+public abstract class BatchProcessor<S, D> implements AutoCloseable
 {
 	private Consumer<D> consumer;
 	private Supplier<D> destinationSupplier;
@@ -165,7 +165,7 @@ public abstract class BatchProcessor<S, D>
 	 */
 	protected void waitExecutor ( String pleaseWaitMessage )
 	{
-		executor.shutdown ();
+		executor.shutdown (); 
 
 		// Wait to finish
 		try
@@ -180,4 +180,15 @@ public abstract class BatchProcessor<S, D>
 			throw new UnexpectedEventException ( "Internal error: " + ex.getMessage (), ex );
 		}
 	}
+	
+	/**
+	 * If the {@link #getConsumer() consumer} is {@link AutoCloseable}, invokes its {@link AutoCloseable#close()}
+	 * method.
+	 */
+	@Override
+	public void close () throws Exception
+	{
+		Consumer<?> consumer = this.getConsumer ();
+		if ( consumer != null && consumer instanceof AutoCloseable ) ((AutoCloseable) consumer).close (); 
+	}	
 }
