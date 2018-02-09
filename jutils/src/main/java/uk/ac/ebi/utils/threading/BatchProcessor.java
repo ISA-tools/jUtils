@@ -190,6 +190,6 @@ public abstract class BatchProcessor<S, D> implements AutoCloseable
 	public void close () throws Exception
 	{
 		Consumer<?> consumer = this.getConsumer ();
-		if ( consumer != null && consumer instanceof AutoCloseable ) ((AutoCloseable) consumer).close (); 
+		if ( consumer != null && consumer instanceof AutoCloseable ) ((AutoCloseable) consumer).close ();
 	}	
 }
