@@ -44,6 +44,7 @@ package uk.ac.ebi.utils.io;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -71,26 +72,22 @@ import com.google.common.io.Resources;
 public class IOUtils 
 {
 	private IOUtils () {}
-	
-	/** 
-	 * Reads the full content of a Reader and puts it into a String 
-	 * @deprecated see {@link org.apache.commons.io.IOUtils#toString(java.io.Reader)}
-   *
+		
+	/**
+	 * A wrapper of {@link org.apache.commons.io.IOUtils#toString(InputStream, String)} which opens an input stream
+	 * from a file path.
 	 */
-	@Deprecated
-	public static String readInputFully ( Reader rdr ) throws IOException
-	{
-		if ( rdr == null ) return null;
-				
-		StringBuilder rval = new StringBuilder ( 1024 );
-		int c; 
-		
-		while ( ( c = rdr.read () ) != -1 )
-			rval.append ( (char) c );
-		
-		return rval.toString ();
+	public static String readFile ( String path, String charSet ) throws IOException {
+		return org.apache.commons.io.IOUtils.toString ( new FileInputStream ( path ), charSet );
 	}
-	
+
+	/**
+	 * Defaults to UTF-8
+	 */
+	public static String readFile ( String path ) throws IOException { 
+		return readFile ( path, "UTF-8" );
+	}
+
 	/**
 	 * Facility to get a reader from a resource, uses {@link Resources#getResource(Class, String)} and
 	 * {@link URL#openStream()}.

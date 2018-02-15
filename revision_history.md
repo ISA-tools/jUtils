@@ -6,6 +6,7 @@
   * `uk.ac.ebi.utils.threading.BatchProcessor` added.
   * URI-related methods added to `uk.ac.ebi.utils.ids.IdUtils` (migrated from [java2rdf](https://github.com/EBIBioSamples/java2rdf)).
   * TupleSpliterator added and used in StreamUtils.tupleStream(), to make the result parallelizable.
+  * (jutils-io) IOUtils.readFile() added, deprecated method readInputFully removed.
   
   
 ## 6.0
