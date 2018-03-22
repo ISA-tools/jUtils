@@ -3,6 +3,8 @@
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
 ## 6.0.1-SNAPSHOT
+  * (jutils-io) `uk.ac.ebi.utils.io.Unix4jUtils` added.
+  * (jutils-io) `XmlFilterUtils` added.
   * `uk.ac.ebi.utils.threading.BatchProcessor` added.
   * URI-related methods added to `uk.ac.ebi.utils.ids.IdUtils` (migrated from [java2rdf](https://github.com/EBIBioSamples/java2rdf)).
   * TupleSpliterator added and used in StreamUtils.tupleStream(), to make the result parallelizable.
