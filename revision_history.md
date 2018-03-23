@@ -2,7 +2,9 @@
 
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
-## 6.0.1-SNAPSHOT
+## 7.0.1-SNAPSHOT
+
+## 7.0
   * (jutils-io) `uk.ac.ebi.utils.io.Unix4jUtils` added.
   * (jutils-io) `XmlFilterUtils` added.
   * `uk.ac.ebi.utils.threading.BatchProcessor` added.
