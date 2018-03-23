@@ -10,6 +10,9 @@ import uk.ac.ebi.utils.io.Unix4jUtils;
 /**
  * Utilities to filter XML streams and alike.
  *
+ *	 <p><b>WARNING</b>: In order to avoid too many dependency for jUtils, you have to declare the dependency on
+ * both Unix4j and EasyStream (copy-paste them from the junit-io's pom).</p>
+ * 
  * @author brandizi
  * <dl><dt>Date:</dt><dd>22 Mar 2018</dd></dl>
  *
