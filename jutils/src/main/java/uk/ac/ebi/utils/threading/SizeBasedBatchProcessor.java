@@ -14,6 +14,10 @@ public abstract class SizeBasedBatchProcessor<S, D> extends BatchProcessor<S, D>
 	
 	/**
 	 * The max destination size that the destination D can have on each new processing thread.
+	 * 
+	 * The idea is to issue a new thread when this number of items have been submitted to the processor via 
+	 * {@link #process(Object, Object...)}.
+	 * 
 	 */
 	public long getDestinationMaxSize ()
 	{

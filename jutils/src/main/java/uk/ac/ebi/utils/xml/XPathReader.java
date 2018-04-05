@@ -44,16 +44,23 @@ package uk.ac.ebi.utils.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Optional;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -61,6 +68,7 @@ import org.xml.sax.SAXException;
  * http://www.javabeat.net/tips/182-how-to-query-xml-using-xpath.html
  * 
  * @author Eamonn Maguire (eamonnmag@gmail.com)
+ * @author Marco Brandizi
  */
 public class XPathReader
 {
@@ -68,12 +76,25 @@ public class XPathReader
 	private Document xmlDocument;
 	private XPath xPath;
 
-	public XPathReader ( InputStream xmlStream )
+	public XPathReader ( Reader xmlReader )
+	{
+		this ( new InputSource ( xmlReader ) );
+	}
+
+	public XPathReader ( InputStream xmlStream ) {
+		this ( new InputSource ( xmlStream ) );
+	}
+
+	public XPathReader ( String xmlString ) {
+		this ( new StringReader ( xmlString ) );
+	}
+	
+	public XPathReader ( InputSource xmlSource )
 	{
 		Exception xmlEx = null;
 		try
 		{
-			xmlDocument = DocumentBuilderFactory.newInstance ().newDocumentBuilder ().parse ( xmlStream );
+			xmlDocument = DocumentBuilderFactory.newInstance ().newDocumentBuilder ().parse ( xmlSource );
 			xPath = XPathFactory.newInstance ().newXPath ();
 		} 
 		catch ( SAXException ex ) {
@@ -92,16 +113,48 @@ public class XPathReader
 		}
 	}
 
-	public Object read ( String expression, QName returnType )
+	@SuppressWarnings ( "unchecked" )
+	public <T> T read ( String xpath, QName returnType )
 	{
 		try
 		{
-			XPathExpression xPathExpression = xPath.compile ( expression );
-			return xPathExpression.evaluate ( xmlDocument, returnType );
-		} catch ( XPathExpressionException ex )
-		{
-			// TODO: Better exception handling
-			throw new RuntimeException ( "Internal error with the XPath Reader: " + ex.getMessage (), ex );
+			XPathExpression xPathExpression = xPath.compile ( xpath );
+			return (T) xPathExpression.evaluate ( xmlDocument, returnType );
+		} 
+		catch ( XPathExpressionException ex ) {
+			throw new IllegalArgumentException ( "Internal error with the XPath Reader: " + ex.getMessage (), ex );
 		}
+	}
+	
+	public String readString ( String xpath ) {
+		return (String) this.read ( xpath, XPathConstants.STRING );
+	}
+
+	public Double readDouble ( String xpath ) {
+		return (Double) this.read ( xpath, XPathConstants.NUMBER );
+	}
+
+	public Optional<Double> readOptDouble ( String xpath ) {
+		return Optional.ofNullable ( this.readDouble ( xpath ) );
+	}
+
+	public Float readFloat ( String xpath ) {
+		return readOptDouble ( xpath ).map ( x -> x.floatValue () ).orElse ( null );
+	}
+		
+	public Long readLong ( String xpath ) {
+		return readOptDouble ( xpath ).map ( x -> x.longValue () ).orElse ( null );
+	}
+	
+	public Integer readInt ( String xpath ) {
+		return readOptDouble ( xpath ).map ( x -> x.intValue () ).orElse ( null );
+	}
+	
+	public Node readNode ( String xpath ) {
+		return (Node) this.read ( xpath, XPathConstants.NODE );
+	}
+
+	public NodeList readNodeList ( String xpath ) {
+		return (NodeList) this.read ( xpath, XPathConstants.NODESET );
 	}
 }
