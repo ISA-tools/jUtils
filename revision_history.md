@@ -3,6 +3,8 @@
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
 ## 7.0.1-SNAPSHOT
+  * Additions to `uk.ac.ebi.utils.exceptions`. 
+  * `uk.ac.ebi.utils.xml.XPathReader` interface enhanced and unit-tested.
 
 ## 7.0
   * (jutils-io) `uk.ac.ebi.utils.io.Unix4jUtils` added.
