@@ -9,9 +9,6 @@ import uk.ac.ebi.utils.io.Unix4jUtils;
 
 /**
  * Utilities to filter XML streams and alike.
- *
- *	 <p><b>WARNING</b>: In order to avoid too many dependency for jUtils, you have to declare the dependency on
- * both Unix4j and EasyStream (copy-paste them from the junit-io's pom).</p>
  * 
  * @author brandizi
  * <dl><dt>Date:</dt><dd>22 Mar 2018</dd></dl>
@@ -25,6 +22,9 @@ public class XmlFilterUtils
 	 * wrong XML without failing. This is also done dynamically, the returning stream is processed 
 	 * while reading and we don't stuff memory with all the data coming from the original stream (but you may want
 	 * to buffer it).</p>
+	 * 
+	 *	 <p><b>WARNING</b>: In order to avoid too many dependency for jUtils, you have to declare the dependency on
+	 * both Unix4j and EasyStream (copy-paste them from the junit-io's pom).</p>
 	 * 
 	 * <b>TODO</b>: this doesn't work when tags are nested, like in:
 	 * {@code <foo>bla bla bla <foo> bla </foo>}. In this case, the inner foo will have a CDATA block appended.
