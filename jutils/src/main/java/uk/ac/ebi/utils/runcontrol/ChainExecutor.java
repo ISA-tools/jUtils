@@ -31,13 +31,9 @@ public class ChainExecutor implements Executor
 	@Override
 	public void execute ( final Runnable action )
 	{
-		this.externalExecutor.execute ( new Runnable() {
-			@Override
-			public void run ()
-			{
-				ChainExecutor.this.internalExecutor.execute ( action );
-			}
-		});
+		this.externalExecutor.execute ( 
+			() -> this.internalExecutor.execute ( action ) 
+		);
 	}
 
 }

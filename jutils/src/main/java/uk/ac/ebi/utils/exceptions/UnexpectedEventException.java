@@ -1,7 +1,7 @@
 package uk.ac.ebi.utils.exceptions;
 
 /**
- * To be used when the execution of a program has met an event that wasn't expected. E.g., it can 
+ * To be used when the execution flow of a program has met an event that is unusual, rare, or alike. E.g., it can 
  * be used to wrap {@link InterruptedException} with an unchecked exception. 
  *
  * @author brandizi
