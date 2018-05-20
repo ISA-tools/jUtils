@@ -4,6 +4,9 @@ import java.util.concurrent.Executor;
 
 import org.apache.commons.lang3.RandomUtils;
 
+import com.google.common.util.concurrent.UncheckedExecutionException;
+import com.machinezoo.noexception.throwing.ThrowingRunnable;
+
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jext.Logger;
 import uk.org.lidalia.slf4jext.LoggerFactory;
@@ -23,7 +26,7 @@ public class MultipleAttemptsExecutor implements Executor
 	private long maxPauseTime = 3000;
 	private long minPauseTime = 0;
 	
-	private Class<RuntimeException>[] interceptedExceptions;
+	private Class<Exception>[] interceptedExceptions;
 	
 	private Level attemptMsgLogLevel = Level.INFO;
 	private Logger log = LoggerFactory.getLogger ( this.getClass () );
@@ -31,37 +34,56 @@ public class MultipleAttemptsExecutor implements Executor
 	@SafeVarargs
 	@SuppressWarnings ( "unchecked" )
 	public MultipleAttemptsExecutor ( 
-		int maxAttempts, long minPauseTime, long maxPauseTime, Class<? extends RuntimeException> ...interceptedExceptions 
+		int maxAttempts, long minPauseTime, long maxPauseTime, Class<? extends Exception> ...interceptedExceptions 
 	)
 	{
 		this.maxAttempts = maxAttempts;
 		this.maxPauseTime = maxPauseTime;
-		this.interceptedExceptions = ( Class<RuntimeException>[] ) interceptedExceptions;
+		this.interceptedExceptions = ( Class<Exception>[] ) interceptedExceptions;
 	}
 
 	@SafeVarargs
-	public MultipleAttemptsExecutor ( Class<? extends RuntimeException> ...interceptedExceptions ) {
+	public MultipleAttemptsExecutor ( Class<? extends Exception> ...interceptedExceptions ) {
 		this ( 3, 0, 3000, interceptedExceptions );
 	}
 
+	/**
+	 * Overrides {@link Executor#execute(Runnable)}, by calling {@link #executeChecked(Runnable)}. 
+	 */
+	@Override
+	public void execute ( Runnable action )
+	{
+		try {
+			executeChecked ( action::run );
+		}
+		catch ( Exception ex ) {
+			if ( ex instanceof RuntimeException ) throw (RuntimeException) ex;
+			throw new RuntimeException ( 
+				"Error while running " + this.getClass ().getSimpleName () + ": " + ex.getMessage (), 
+				ex
+			);
+		}
+	}
+
+	
 	/**
 	 * Tries to run the action and, if it fails with one of {@link #getInterceptedExceptions()}, re-run it up to 
 	 * {@link #getMaxAttempts()}. A pause with a random time between {@link #getMinPauseTime()} and {@link #getMaxPauseTime()}
 	 * is inserted between attempts, so that, in case of race conditions between parallel threads, they don't 
 	 * re-attempt the same conflicting operation at the same time.
+	 * 
+	 * This version is based on the possibility that an exception occurs, se above. 
 	 */
-	@Override
-	public void execute ( Runnable action )
+	public void executeChecked ( ThrowingRunnable action ) throws Exception
 	{
 		try
 		{
 			int attempts = 0; 
-			RuntimeException lastInterceptedEx = null; 
+			Exception lastInterceptedEx = null; 
 			
 			for ( attempts = this.maxAttempts; attempts > 0; attempts-- )
 			{
-				try 
-				{
+				try {
 					action.run ();
 					break;
 				}
@@ -70,7 +92,7 @@ public class MultipleAttemptsExecutor implements Executor
 					boolean mustReattempt = false;
 					lastInterceptedEx = ex;
 					
-					for ( Class<RuntimeException> exi: interceptedExceptions )
+					for ( Class<Exception> exi: interceptedExceptions )
 					{
 						if ( exi.isAssignableFrom ( ex.getClass () ) ) 
 						{
@@ -157,16 +179,16 @@ public class MultipleAttemptsExecutor implements Executor
 	 * re-attemped. 
 	 * 
 	 */
-	public Class<RuntimeException>[] getInterceptedExceptions ()
+	public Class<Exception>[] getInterceptedExceptions ()
 	{
 		return interceptedExceptions;
 	}
 
 
 	@SuppressWarnings ( "unchecked" )
-	public void setInterceptedExceptions ( Class<? extends RuntimeException>[] interceptedExceptions )
+	public void setInterceptedExceptions ( Class<? extends Exception>[] interceptedExceptions )
 	{
-		this.interceptedExceptions = (Class<RuntimeException>[]) interceptedExceptions;
+		this.interceptedExceptions = (Class<Exception>[]) interceptedExceptions;
 	}
 
 	/**
