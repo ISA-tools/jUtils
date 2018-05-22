@@ -42,6 +42,8 @@
  */
 package uk.ac.ebi.utils.string;
 
+import java.util.function.BiFunction;
+
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -81,4 +83,34 @@ public class StringSearchUtils
     return false;
   }
 
+  /**
+   * An extension of {@link StringUtils#indexOfAny(CharSequence, char...)} that allows to specify the
+   * start position.
+   */
+  public static int indexOfAny ( final String s, int startPos, char... chars )
+  {
+  	return indexOfAny ( s, startPos, (str, ks) -> StringUtils.indexOfAny ( str, chars ), chars );
+  }
+ 
+  /**
+   * An extension of {@link StringUtils#indexOfAny(CharSequence, CharSequence...)} that allows to specify the
+   * start position.
+   */  
+  public static int indexOfAny ( String s, int startPos, CharSequence... chars )
+  {
+  	return indexOfAny ( s, startPos, (str, ks) -> StringUtils.indexOfAny ( str, chars ), chars );
+  }
+
+  /**
+   * All the above methods are based on this template: the search function searches for keys in some input (internal
+   * to the function, defined by the invoker of this method), returns -1 or the string index where one of the
+   * keys was found.
+   */
+  protected static <KA> int indexOfAny ( String s, int startPos, BiFunction<String, KA, Integer> searcher, KA keys )
+  {
+  	s = s.substring ( startPos );
+  	int idx = searcher.apply ( s, keys );
+  	if ( idx == -1 ) return -1;
+  	return idx + startPos;
+  }
 }
