@@ -4,7 +4,6 @@ import java.util.concurrent.Executor;
 
 import org.apache.commons.lang3.RandomUtils;
 
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.machinezoo.noexception.throwing.ThrowingRunnable;
 
 import uk.org.lidalia.slf4jext.Level;
@@ -48,7 +47,8 @@ public class MultipleAttemptsExecutor implements Executor
 	}
 
 	/**
-	 * Overrides {@link Executor#execute(Runnable)}, by calling {@link #executeChecked(Runnable)}. 
+	 * Overrides {@link Executor#execute(Runnable)}, by calling {@link #executeChecked(Runnable)}.
+	 * and intercepting the thrown checked exception. 
 	 */
 	@Override
 	public void execute ( Runnable action )
@@ -56,8 +56,10 @@ public class MultipleAttemptsExecutor implements Executor
 		try {
 			executeChecked ( action::run );
 		}
-		catch ( Exception ex ) {
+		catch ( Exception ex ) 
+		{
 			if ( ex instanceof RuntimeException ) throw (RuntimeException) ex;
+			// Shouldn't happen, but just in case
 			throw new RuntimeException ( 
 				"Error while running " + this.getClass ().getSimpleName () + ": " + ex.getMessage (), 
 				ex
@@ -72,7 +74,8 @@ public class MultipleAttemptsExecutor implements Executor
 	 * is inserted between attempts, so that, in case of race conditions between parallel threads, they don't 
 	 * re-attempt the same conflicting operation at the same time.
 	 * 
-	 * This version is based on the possibility that an exception occurs, se above. 
+	 * This version is based on the possibility that a checked exception occurs, use {@link #execute(Runnable)}
+	 * when you have only unchecked exceptions. 
 	 */
 	public void executeChecked ( ThrowingRunnable action ) throws Exception
 	{
@@ -175,8 +178,8 @@ public class MultipleAttemptsExecutor implements Executor
 
 	/**
 	 * {@link #execute(Runnable)} considers only these exceptions (or their subclasses), when evaluating if a failed
-	 * operation has to be re-attempted. Any other exception is rethrown to the caller and the operation is not 
-	 * re-attemped. 
+	 * operation has to be re-attempted. Any other exception is re-thrown to the caller and the operation is not 
+	 * re-attempted. 
 	 * 
 	 */
 	public Class<Exception>[] getInterceptedExceptions ()
