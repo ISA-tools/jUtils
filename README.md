@@ -2,6 +2,5 @@ A miscellanea of small and handy general purpose utilities. They should be fairl
 
 See [this post](http://www.marcobrandizi.info/mysite/jutils) for a description of what the library offers.
 
-``WARNING``: since 6.0 it has been split into multiple Maven modules. What it used to be the root of the whole project is now the jutils/ module/folder, some more specific components were moved out of there and send to 
-their own modules (include them in place of jutils, if you need that, the core dependency will be pulled up automatically).
-
+``WARNING``: since 6.0 it has been split into multiple Maven modules. What it used to be the root of the whole project is now the jutils/ module/folder, some more specific components were moved out of there and sent to 
+their own modules (include them in place of jutils, if you need their functionality, the core dependency will be pulled up automatically).
