@@ -42,7 +42,7 @@ public abstract class BatchProcessor<S, D> implements AutoCloseable
 	private Supplier<D> destinationSupplier;
 	
 	private ExecutorService executor;
-	
+		
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
 	
 	public BatchProcessor ()
@@ -75,23 +75,20 @@ public abstract class BatchProcessor<S, D> implements AutoCloseable
 	{
 		if ( !( forceFlush || this.decideNewTask ( currentDest ) ) ) return currentDest;
 
-		executor.submit ( new Runnable() 
+		executor.submit ( () -> 
 		{
-			@Override
-			public void run () {
-				try {
-					consumer.accept ( currentDest );
-				}
-				catch ( Exception ex ) {
-					// TODO: keep track of exceptions and make them available in the processor.
-					log.error ( 
-						String.format ( 
-							"Error while running batch processor thread %s: %s", 
-							Thread.currentThread ().getName (), ex.getMessage () 
-						),
-						ex
-					);
-				}
+			try {
+				consumer.accept ( currentDest );
+			}
+			catch ( Exception ex ) {
+				// TODO: keep track of exceptions and make them available in the processor.
+				log.error ( 
+					String.format ( 
+						"Error while running batch processor thread %s: %s", 
+						Thread.currentThread ().getName (), ex.getMessage () 
+					),
+					ex
+				);
 			}
 		});
 		
@@ -178,7 +175,9 @@ public abstract class BatchProcessor<S, D> implements AutoCloseable
 			}
 		}
 		catch ( InterruptedException ex ) {
-			throw new UnexpectedEventException ( "Internal error: " + ex.getMessage (), ex );
+			throw new UnexpectedEventException ( 
+				"Unexpected interruption while waiting for processor termination: " + ex.getMessage (), ex 
+			);
 		}
 	}
 	
