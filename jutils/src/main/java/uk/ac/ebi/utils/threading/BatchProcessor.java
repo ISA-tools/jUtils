@@ -1,7 +1,6 @@
 package uk.ac.ebi.utils.threading;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -12,10 +11,10 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
 
 
-/**
- * A simple class to manage processing of data in multi-thread mode.
+/**  
+ * <p>A simple class to manage processing of data in multi-thread mode.</p>
  * 
- * The idea implemented here is that {@link #process(Object)} runs a loop where: 
+ * <p>The idea implemented here is that {@link #process(Object, Object...)} runs a loop where: 
  * 
  * <ul>
  *   <li>gets a data item from its input source of type S</li>
@@ -24,35 +23,37 @@ import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
  *   {@link #decideNewTask(Object) decides} if it's time to issue a new {@link #getConsumer() processing thread}.
  *   The latter possibly create a new destination object, via {@link #getDestinationSupplier()} and hence
  *   the caller should assign the current destination to it.</li>
- * </ul> 
+ * </ul></p>
  *
- * Each new invocation performed by {@link #handleNewTask(Object, boolean)} consists of the creation of a new
+ * <p>Each new invocation performed by {@link #handleNewTask(Object, boolean)} consists of the creation of a new
  * task which is submitted an {@link #getExecutor() executor service} and hence the processing can happen in 
- * multi-thread mode.
+ * multi-thread mode.</p>
  * 
- * You can find a usage example of this class in the <a href = "TODO">rdf-utils-jena package</a>.
+ * <p>{@link #process(Object, Object...)} should invoke {@link #waitExecutor(String)} after the loop above, to make
+ * the parallel task executions complete.</p> This also resets the internal {@link ExecutorService}, which will be 
+ * recreated (once) upon the first invocation of {@link #getExecutor()}. This behaviour ensures that {@link #process(Object)}
+ * can be invoked multiple times reusing the same processor instance (normally that's not possible for 
+ * an {@link ExecutorService} which of method {@link ExecutorService#awaitTermination(long, TimeUnit)} was called).</p> 
+ * 
+ * <p>You can find a usage example of this class in the <a href = "TODO">rdf-utils-jena package</a>.
  *  
  * @author brandizi
  * <dl><dt>Date:</dt><dd>1 Dec 2017</dd></dl>
  *
  */
-public abstract class BatchProcessor<S, D> implements AutoCloseable
+public abstract class BatchProcessor<S, D>
 {
 	private Consumer<D> consumer;
 	private Supplier<D> destinationSupplier;
 	
+	private Supplier<ExecutorService> executorFactory = HackedBlockingQueue::createExecutor;
 	private ExecutorService executor;
 		
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
-	
-	public BatchProcessor ()
-	{
-		this.executor = HackedBlockingQueue.createExecutor ();
-	}
-	
+		
 	/**
 	 * <b>WARNING</b>: in addition to the behaviour explained above, this method should also invoke 
-	 * {@link #waitExecutor(String)}.
+	 * {@link #waitExecutor(String)} and possibly {@link #reset()}.
 	 */
 	public abstract void process ( S source, Object... opts );
 
@@ -75,7 +76,7 @@ public abstract class BatchProcessor<S, D> implements AutoCloseable
 	{
 		if ( !( forceFlush || this.decideNewTask ( currentDest ) ) ) return currentDest;
 
-		executor.submit ( () -> 
+		getExecutor ().submit ( () -> 
 		{
 			try {
 				consumer.accept ( currentDest );
@@ -135,34 +136,46 @@ public abstract class BatchProcessor<S, D> implements AutoCloseable
 
 
 	/**
-	 * The thread pool manager used by {@link #process(Object, Object...)}. 
+	 * <p>The factory for the thread pool manager used by {@link #process(Object, Object...)}.</p>
 	 * 
-	 * By default this is {@link HackedBlockingQueue#createExecutor()}. Normally you shouldn't need to 
-	 * change this parameter, unless you want some particular execution policy.
+	 * <p>By default this is {@link HackedBlockingQueue#createExecutor()}. Normally you shouldn't need to 
+	 * change this parameter, unless you want some particular execution policy.</p>
 	 * 
-	 * Note that you can change the service's size by casting the default value returned by this method
-	 * to {@link ThreadPoolExecutor} and then using the methods of this class. 
-	 * 
+	 */
+	public Supplier<ExecutorService> getExecutorFactory ()
+	{
+		return executorFactory;
+	}
+
+	public void setExecutorFactory ( Supplier<ExecutorService> executorFactory )
+	{
+		this.executorFactory = executorFactory;
+	}
+	
+	/**
+	 * This is initialised using the first time you call it, by means of {@link #getExecutorFactory()}. If you 
+	 * invoke {@link #waitExecutor(String)}, in {@link #process(Object, Object...)}, as recommended, the internal 
+	 * {@link ExecutorService} returned by this is made to null again and then re-initialised by this method upon its
+	 * next call.
 	 */
 	public ExecutorService getExecutor ()
 	{
+		if ( executor == null ) executor = this.executorFactory.get ();
 		return executor;
 	}
 
-	public BatchProcessor<S, D> setExecutor ( ExecutorService executor )
-	{
-		this.executor = executor;
-		return this;
-	}
-			
 	/**
-	 * Waits that all the parallel jobs submitted to the processor are finished. It keeps polling
-	 * {@link ExecutorService#isTerminated()} and invoking {@link ExecutorService#awaitTermination(long, TimeUnit)}.
+	 * <p>Waits that all the parallel jobs submitted to the processor are finished. It keeps polling
+	 * {@link ExecutorService#isTerminated()} and invoking {@link ExecutorService#awaitTermination(long, TimeUnit)}.</p>
+	 * 
+	 * <p>As explained above, this resets the {@link ExecutorService} that is returned by {@link #getExecutor()}, so that
+	 * the next time that method is invoked, it will get a new executor from {@link #getExecutorFactory()}.</p>
 	 * 
 	 * @param pleaseWaitMessage the message to be reported (via logger/INFO level) while waiting.
 	 */
 	protected void waitExecutor ( String pleaseWaitMessage )
 	{
+		ExecutorService executor = getExecutor ();
 		executor.shutdown (); 
 
 		// Wait to finish
@@ -179,16 +192,7 @@ public abstract class BatchProcessor<S, D> implements AutoCloseable
 				"Unexpected interruption while waiting for processor termination: " + ex.getMessage (), ex 
 			);
 		}
+		
+		this.executor = null;
 	}
-	
-	/**
-	 * If the {@link #getConsumer() consumer} is {@link AutoCloseable}, invokes its {@link AutoCloseable#close()}
-	 * method.
-	 */
-	@Override
-	public void close () throws Exception
-	{
-		Consumer<?> consumer = this.getConsumer ();
-		if ( consumer != null && consumer instanceof AutoCloseable ) ((AutoCloseable) consumer).close ();
-	}	
 }
