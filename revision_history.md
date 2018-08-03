@@ -2,11 +2,11 @@
 
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
-## 7.0.1-SNAPSHOT
+## 7.0.1-SNAPSHOT (should become 8, non backward-compatible changes).
   * Additions to `uk.ac.ebi.utils.exceptions`. 
   * `uk.ac.ebi.utils.xml.XPathReader` interface enhanced and unit-tested.
   * Additions to `uk.ac.ebi.utils.string.StringSearchUtils`.
-  * `uk.ac.ebi.utils.threading.BatchProcessor` is not `AutoCloseable` anymore.
+  * Changes to `uk.ac.ebi.utils.threading.BatchProcessor`.
 
 ## 7.0
   * (jutils-io) `uk.ac.ebi.utils.io.Unix4jUtils` added.
