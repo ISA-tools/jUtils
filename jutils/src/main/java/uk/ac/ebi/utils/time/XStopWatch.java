@@ -1,5 +1,7 @@
 package uk.ac.ebi.utils.time;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.time.StopWatch;
 
 /**
@@ -35,4 +37,24 @@ public class XStopWatch extends StopWatch
 		this.start ();
 	}
 
+	/**
+	 * Facility to profile (i.e., to time) a task.
+	 * 
+	 * @return the time elapsed between before and after {@link Runnable#run() task.run()}. 
+	 */
+	public static long profileNano ( Runnable task ) 
+	{
+		XStopWatch timer = new XStopWatch ();
+		timer.start ();
+		task.run ();
+		return timer.getNanoTime ();
+	}
+
+	/**
+	 * Wrapper of {@link #profileNano(Runnable)} returning time in ms.
+	 */
+	public static long profile ( Runnable task ) 
+	{
+		return TimeUnit.NANOSECONDS.toMillis ( profileNano ( task ) );
+	}
 }

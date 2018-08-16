@@ -7,6 +7,7 @@
   * `uk.ac.ebi.utils.xml.XPathReader` interface enhanced and unit-tested.
   * Additions to `uk.ac.ebi.utils.string.StringSearchUtils`.
   * Changes to `uk.ac.ebi.utils.threading.BatchProcessor`.
+  * Additions to `uk.ac.ebi.utils.time.XStopWatch`.
 
 ## 7.0
   * (jutils-io) `uk.ac.ebi.utils.io.Unix4jUtils` added.
