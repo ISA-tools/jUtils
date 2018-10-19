@@ -15,7 +15,7 @@ public class XPathReaderTest
 	public void testBasics ()
 	{
 		String xml =
-			"<Person>\n" + 
+			"<Person id = '123'>\n" + 
 			"  <name>John</name>\n" + 
 			"  <surname>Smith</surname>\n" + 
 			"  <age>28</age>\n" + 
@@ -25,5 +25,6 @@ public class XPathReaderTest
 		
 		Assert.assertEquals ( "Wrong name fetched!", "John", xr.readString ( "/Person/name" ) );
 		Assert.assertEquals ( "Wrong age fetched!", (Integer) 28, (Integer) xr.readInt ( "/Person/age" ) );
+		Assert.assertEquals ( "Wrong id fetched!", (Integer) 123, (Integer) xr.readInt ( "/Person/@id" ) );
 	}
 }

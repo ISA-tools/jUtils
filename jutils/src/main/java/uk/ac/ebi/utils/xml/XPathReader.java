@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.util.Optional;
 
 import javax.xml.namespace.QName;
@@ -62,6 +63,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import uk.ac.ebi.utils.exceptions.ExceptionUtils;
+import uk.ac.ebi.utils.exceptions.UnexpectedValueException;
 
 /**
  * Created by the ISA team Modified from example here:
@@ -91,26 +95,21 @@ public class XPathReader
 	
 	public XPathReader ( InputSource xmlSource )
 	{
-		Exception xmlEx = null;
 		try
 		{
 			xmlDocument = DocumentBuilderFactory.newInstance ().newDocumentBuilder ().parse ( xmlSource );
 			xPath = XPathFactory.newInstance ().newXPath ();
 		} 
-		catch ( SAXException ex ) {
-			xmlEx = ex;
+		catch ( SAXException | ParserConfigurationException ex ) {
+			ExceptionUtils.throwEx ( UnexpectedValueException.class, ex,
+				"I/O error while using XPath: %s", ex.getMessage ()
+			);
 		} 
-		catch ( IOException ex ){
-			xmlEx = ex;
+		catch ( IOException ex ) {
+			ExceptionUtils.throwEx ( UncheckedIOException.class, ex,
+				"I/O error while using XPath: %s", ex.getMessage ()
+			);
 		} 
-		catch ( ParserConfigurationException ex ) {
-			xmlEx = ex;
-		} 
-		finally {
-			// TODO: Better exception handling
-			if ( xmlEx != null )
-				throw new RuntimeException ( "Internal error with the XPath Reader: " + xmlEx.getMessage (), xmlEx );
-		}
 	}
 
 	@SuppressWarnings ( "unchecked" )
