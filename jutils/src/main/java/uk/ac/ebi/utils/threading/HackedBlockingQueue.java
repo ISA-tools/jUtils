@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * <p>Tricks the behaviour of {@link LinkedBlockingQueue} so that methods like {@link #offer(Object)}
  * and {@link #poll()} actually invoke {@link #put(Object)} and {@link #take()}, i.e., the queue always 
- * waits for it to be free-of/filled-with-some value/s.</p>
+ * waits for itself to be free-of/filled-with-some value/s.</p>
  * 
  * <p>This can be used in {@link ThreadPoolExecutor}, which of {@link ThreadPoolExecutor#submit(Runnable)}
  * methods can raise {@link RejectedExecutionException} by calling offer(). By passing this class to its
