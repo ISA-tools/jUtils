@@ -2,6 +2,7 @@ package uk.ac.ebi.utils.threading;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -48,9 +49,16 @@ public abstract class BatchProcessor<S, D>
 	
 	private Supplier<ExecutorService> executorFactory = HackedBlockingQueue::createExecutor;
 	private ExecutorService executor;
+	
+	private long submittedTasks = 0;
+	private AtomicLong completedTasks = new AtomicLong ();
+
+	/** @see {@link #wrapTask(Runnable)} */
+	protected long taskLogPeriod = 1000;
 		
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
 		
+	
 	/**
 	 * <b>WARNING</b>: in addition to the behaviour explained above, this method should also invoke 
 	 * {@link #waitExecutor(String)} and possibly {@link #reset()}.
@@ -61,7 +69,7 @@ public abstract class BatchProcessor<S, D>
 		this.process ( source, new Object [ 0 ] );
 	}
 
-	
+		
 	protected D handleNewTask ( D currentDest ) {
 		return handleNewTask ( currentDest, false );
 	}
@@ -76,22 +84,10 @@ public abstract class BatchProcessor<S, D>
 	{
 		if ( !( forceFlush || this.decideNewTask ( currentDest ) ) ) return currentDest;
 
-		getExecutor ().submit ( () -> 
-		{
-			try {
-				consumer.accept ( currentDest );
-			}
-			catch ( Exception ex ) {
-				// TODO: keep track of exceptions and make them available in the processor.
-				log.error ( 
-					String.format ( 
-						"Error while running batch processor thread %s: %s", 
-						Thread.currentThread ().getName (), ex.getMessage () 
-					),
-					ex
-				);
-			}
-		});
+		getExecutor ().submit ( wrapTask ( () -> consumer.accept ( currentDest ) ) );
+		
+		if ( ++this.submittedTasks % this.taskLogPeriod == 0 ) 
+			log.info ( "{} tasks submitted", this.submittedTasks );
 		
 		return this.destinationSupplier.get ();
 	}
@@ -142,13 +138,11 @@ public abstract class BatchProcessor<S, D>
 	 * change this parameter, unless you want some particular execution policy.</p>
 	 * 
 	 */
-	public Supplier<ExecutorService> getExecutorFactory ()
-	{
+	public Supplier<ExecutorService> getExecutorFactory () {
 		return executorFactory;
 	}
 
-	public void setExecutorFactory ( Supplier<ExecutorService> executorFactory )
-	{
+	public void setExecutorFactory ( Supplier<ExecutorService> executorFactory ) {
 		this.executorFactory = executorFactory;
 	}
 	
@@ -194,5 +188,38 @@ public abstract class BatchProcessor<S, D>
 		}
 		
 		this.executor = null;
+	}
+	
+	/**
+	 * Wraps the task into some common operations. At the moment,
+	 * 
+	 * <ul> 
+	 *   <li>wraps exception,</li>
+	 *   <li>logs the progress of completed tasks every {@link #taskLogPeriod} completed tasks.</li>
+	 * </ul>
+	 */
+	protected Runnable wrapTask ( Runnable task )
+	{
+		return () -> 
+		{
+			try {
+				task.run ();
+			}
+			catch ( Exception ex )
+			{
+				log.error ( 
+					String.format ( 
+						"Error while running batch processor thread %s: %s", 
+						Thread.currentThread ().getName (), ex.getMessage () 
+					),
+					ex
+				);
+			}
+			finally {
+				long completed = this.completedTasks.incrementAndGet ();
+				if ( completed % this.taskLogPeriod == 0 || completed == this.submittedTasks && this.getExecutor ().isShutdown () )
+					log.info ( "{}/{} tasks completed", completed, this.submittedTasks );
+			}
+		};
 	}
 }
