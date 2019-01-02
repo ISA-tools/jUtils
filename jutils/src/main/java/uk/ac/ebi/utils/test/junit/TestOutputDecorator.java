@@ -13,15 +13,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * # An output decorator for JUnit
  *
- * An output decorator for JUnit. Logs a nice header with the test name before the test and a similar trailer 
- * afterward. This can be used in two ways. One is as a {@link TestRule}, pretty much the same way you would use 
- * {@link ExternalResource}. Another option is to add this listener to your runner of choice in order to be invoked 
- * automatically for all the tests run via that runner. For instance, see
- * <a href = 'http://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html#Using_custom_listeners_and_reporters'>here</a>
- * for what concerns Maven/Surefire. The JUtils's POM is itself another example of that.
+ * Logs a nice header with the test name before the test and a similar trailer 
+ * afterward.  
  * 
- * WARNING: this uses SLF4J, you need to enable the INFO level to see anything.
+ * This can be used in two ways. One is as a {@link TestRule}, pretty much the same way you would use 
+ * {@link ExternalResource}. Another option is to add this listener to your runner of choice in order to be invoked 
+ * automatically for all the tests run via that runner.  
+ * 
+ * For instance, see
+ * [here](http://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html#Using_custom_listeners_and_reporters)
+ * for what concerns Maven/Surefire. The JUtils's POM is itself another example of that.  
+ * 
+ * **WARNING**: this uses SLF4J, you need to enable the INFO level to see anything.  
  * 
  * <dl><dt>date</dt><dd>Jan 27, 2012</dd></dl>
  * @author brandizi
