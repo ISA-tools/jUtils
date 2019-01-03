@@ -1,6 +1,6 @@
 function show(type)
 {
-    count = 0; // Test 1.
+    count = 0; // Test 2.
     for (var key in methods) {
         var row = document.getElementById(key);
         if ((methods[key] &  type) != 0) {

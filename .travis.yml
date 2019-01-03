@@ -5,4 +5,6 @@ script:
   - mvn deploy --settings settings.xml
   - ./mk-javadocs.sh
 after_success:
-  - mvn scm:checkin -DpushChanges=true -Dmessage="Updating Javadocs from Travis."
+  - git remote set-url origin https://marco-brandizi:$REPO_PWD@github.com/ISA-tools/jUtils 
+  - git commit -a -m 'Updating auto-generated files from Travis'
+  - git push
