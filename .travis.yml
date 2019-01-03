@@ -4,7 +4,6 @@ jdk:
 script: 
   - mvn deploy --settings settings.xml
   - ./mk-javadocs.sh
-after_success:
   - git remote set-url origin https://marco-brandizi:$REPO_PWD@github.com/ISA-tools/jUtils 
-  - git commit -a -m 'Updating auto-generated files from Travis'
+  - git commit -a -m 'Updating auto-generated files from Travis [ci skip]'
   - git push origin HEAD:master
