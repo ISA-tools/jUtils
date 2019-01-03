@@ -7,4 +7,4 @@ script:
 after_success:
   - git remote set-url origin https://marco-brandizi:$REPO_PWD@github.com/ISA-tools/jUtils 
   - git commit -a -m 'Updating auto-generated files from Travis'
-  - git push
+  - git push origin HEAD:master
