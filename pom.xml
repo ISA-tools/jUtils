@@ -168,6 +168,8 @@
 						<version>1.3</version>
 					</docletArtifact>
 					<useStandardDocletOptions>true</useStandardDocletOptions>
+					<!-- We use Travis command to redirect reportOutputDirectory into <main dir>/docs/javadocs -->
+          <destDir>${project.artifactId}</destDir>
 				</configuration>
 			</plugin>
 		  		

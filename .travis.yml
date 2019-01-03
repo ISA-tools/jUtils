@@ -1,4 +1,8 @@
 language: java
 jdk:
   - oraclejdk8  
-script: mvn deploy --settings settings.xml
+script: 
+  - mvn deploy --settings settings.xml
+  - ./mk-javadocs.sh
+after_success:
+  - mvn scm:checkin -DpushChanges=true -Dmessage="Updating Javadocs from Travis."
