@@ -76,9 +76,13 @@ public abstract class BatchProcessor<S, D>
 
 	/**
 	 * This is the method that possibly issues a new task, via the {@link #getExecutor()}, which runs 
-	 * the {@link #consumer} against the current {@link #getDestinationSupplier() destination}. 
+	 * the {@link #consumer} against the current {@link #getDestinationSupplier() destination}.   
 	 * 
-	 * @param forceFlush if true it flushes the data independently of {@link #getChunkSize()}.	 
+	 * Note that your {@link #getConsumer() task handler} will be executed under the 
+	 * {@link #wrapTask(Runnable) default wrapper}.  
+	 * 
+	 * @param forceFlush if true it flushes the data independently of {@link #getChunkSize()}.  
+	 * 
 	 */
 	protected D handleNewTask ( D currentDest, boolean forceFlush )
 	{
@@ -193,10 +197,9 @@ public abstract class BatchProcessor<S, D>
 	/**
 	 * Wraps the task into some common operations. At the moment,
 	 * 
-	 * <ul> 
-	 *   <li>wraps exception,</li>
-	 *   <li>logs the progress of completed tasks every {@link #taskLogPeriod} completed tasks.</li>
-	 * </ul>
+	 *   * wraps exception,
+	 *   * logs the progress of completed tasks every {@link #taskLogPeriod} completed tasks.
+	 *   
 	 */
 	protected Runnable wrapTask ( Runnable task )
 	{

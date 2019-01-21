@@ -117,7 +117,7 @@ public class MultipleAttemptsExecutor implements Executor
 				} // catch attempt
 			} // attempts
 			
-			if ( attempts == 0 ) {
+			if ( attempts == 0 && lastInterceptedEx != null ) {
 				log.error ( "Operation failed after {} attempts, rethrowing exception", this.maxAttempts );
 				throw lastInterceptedEx;
 			}
