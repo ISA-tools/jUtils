@@ -11,16 +11,6 @@ public class TooManyValuesException extends UnexpectedValueException
 {
 	private static final long serialVersionUID = -8507636676141906245L;
 
-	public TooManyValuesException () {
-		super ();
-	}
-
-	public TooManyValuesException ( String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace )
-	{
-		super ( message, cause, enableSuppression, writableStackTrace );
-	}
-
 	public TooManyValuesException ( String message, Throwable cause ) {
 		super ( message, cause );
 	}
@@ -28,9 +18,4 @@ public class TooManyValuesException extends UnexpectedValueException
 	public TooManyValuesException ( String message ) {
 		super ( message );
 	}
-
-	public TooManyValuesException ( Throwable cause ) {
-		super ( cause );
-	}
-
 }

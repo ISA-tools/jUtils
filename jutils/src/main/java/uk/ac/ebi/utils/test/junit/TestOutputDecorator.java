@@ -54,6 +54,7 @@ public class TestOutputDecorator extends RunListener implements TestRule
 	 * You can use this class either as a listener, or a {@link Rule}, so we have this method too, to be called by
 	 * JUnit in the second case.
 	 */
+	@Override
 	public Statement apply ( final Statement base, final Description description )
 	{
 		return new Statement() {

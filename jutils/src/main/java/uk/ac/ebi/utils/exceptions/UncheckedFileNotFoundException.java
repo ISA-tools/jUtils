@@ -20,9 +20,9 @@ public class UncheckedFileNotFoundException extends UncheckedIOException
 		super ( message, cause );
 	}
 
-	public UncheckedFileNotFoundException ( IOException cause )
-	{
-		super ( cause );
+	public UncheckedFileNotFoundException ( String message ) {
+		this ( message, new FileNotFoundException ( "<No root cause>" ) );
 	}
+
 
 }
