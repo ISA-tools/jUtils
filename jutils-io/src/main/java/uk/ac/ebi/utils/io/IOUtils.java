@@ -42,8 +42,13 @@
  */
 package uk.ac.ebi.utils.io;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static uk.ac.ebi.utils.exceptions.ExceptionUtils.throwEx;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -54,12 +59,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.io.input.ReaderInputStream;
 
 import com.google.common.io.Resources;
+
+import uk.ac.ebi.utils.exceptions.ExceptionUtils;
 
 /**
  * Miscellanea of small IO utilities 
@@ -73,20 +81,72 @@ public class IOUtils
 	private IOUtils () {}
 		
 	/**
-	 * A wrapper of {@link org.apache.commons.io.IOUtils#toString(InputStream, String)} which opens an input stream
-	 * from a file path.
+	 * @see #readFile(String, Charset)
 	 */
 	public static String readFile ( String path, String charSet ) throws IOException {
+		return readFile ( path, Charset.forName ( charSet ) );
+	}
+
+	/**
+	 * A wrapper of {@link org.apache.commons.io.IOUtils#toString(InputStream, Charset)}, 
+	 * which opens an input stream from a file path.
+	 */	
+	public static String readFile ( String path, Charset charSet ) throws IOException {
 		return org.apache.commons.io.IOUtils.toString ( new FileInputStream ( path ), charSet );
 	}
 
+	
 	/**
 	 * Defaults to UTF-8
 	 */
 	public static String readFile ( String path ) throws IOException { 
-		return readFile ( path, "UTF-8" );
+		return readFile ( path, UTF_8 );
 	}
 
+	/**
+	 * Invokes {@link #readFile(String, Charset)} upon all the files in a directory and return an array of
+	 * file contents. 
+	 */
+	public static String[] readFiles ( String dirPath, FilenameFilter filter, Charset charSet ) throws IOException 
+	{
+		File dir = new File ( dirPath );
+		if ( !dir.isDirectory () ) throwEx ( 
+			FileNotFoundException.class, 
+			"Directory '%s' not found",
+			dirPath 
+		);
+		
+		File[] files = filter == null ? dir.listFiles () : dir.listFiles ( filter );
+		if ( files == null ) return null;
+		
+		String[] result = new String [ files.length ];
+		for ( int i = 0; i < files.length; i++ )
+			result [ i ] = readFile ( files [ i ].getAbsolutePath (), charSet );
+		return result;
+	}
+	
+	/**
+	 * Defaults to `UTF-8`.
+	 */
+	public static String[] readFiles ( String dirPath, FilenameFilter filter ) throws IOException {
+		return readFiles ( dirPath, filter, UTF_8 );
+	}
+	
+	/**
+	 * Defaults to any file in `dirPath`. 
+	 */
+	public static String[] readFiles ( String dirPath, Charset charSet ) throws IOException {
+		return readFiles ( dirPath, null, charSet );
+	}
+
+	/**
+	 * Defaults to any file in `dirPath` and `UTF-8`. 
+	 */
+	public static String[] readFiles ( String dirPath ) throws IOException {
+		return readFiles ( dirPath, UTF_8 );
+	}
+
+	
 	/**
 	 * Facility to get a reader from a resource, uses {@link Resources#getResource(Class, String)} and
 	 * {@link URL#openStream()}.
@@ -96,17 +156,13 @@ public class IOUtils
 		return new InputStreamReader ( Resources.getResource ( clazz, path ).openStream (), charset );
 	}	
 
-	public static Reader openResourceReader ( Class<?> clazz, String path, String charset ) throws IOException
-	{
-		return openResourceReader ( clazz, path, Charset.forName ( charset ) );
-	}	
 
 	/**
 	 * Defaults to "UTF-8"
 	 */
 	public static Reader openResourceReader ( Class<?> clazz, String path ) throws IOException
 	{
-		return openResourceReader ( clazz, path, "UTF-8" );
+		return openResourceReader ( clazz, path, UTF_8 );
 	}
 	
 	
@@ -115,17 +171,13 @@ public class IOUtils
 		return new InputStreamReader ( Resources.getResource ( path ).openStream (), charset );
 	}
 
-	public static Reader openResourceReader ( String path, String charset ) throws IOException
-	{
-		return openResourceReader ( path, Charset.forName ( charset ) );
-	}	
 	
 	/**
-	 * Defaults to "UTF-8"
+	 * Defaults to UTF-8
 	 */
 	public static Reader openResourceReader ( String path ) throws IOException
 	{
-		return openResourceReader ( path, "UTF-8" );
+		return openResourceReader ( path, UTF_8 );
 	}
 	
 	
@@ -139,17 +191,13 @@ public class IOUtils
 		return readResource ( clazz.getClassLoader (), path, charset );
 	}
 
-	public static String readResource ( Class<?> clazz, String path, String charset ) throws IOException 
-	{
-		return readResource ( clazz, path, Charset.forName ( charset ) );
-	}
 
 	/** 
 	 * <b>WARNING</b>: after 5.0 this uses UTF-8 as default and not the system default!
 	 */
 	public static String readResource ( Class<?> clazz, String path ) throws IOException
 	{
-		return readResource ( clazz, path, "UTF-8" );
+		return readResource ( clazz, path, UTF_8 );
 	}
 	
 	
@@ -162,17 +210,13 @@ public class IOUtils
 		return Resources.toString ( url, charset );
 	}
 
-	public static String readResource ( String path, String charset ) throws IOException
-	{
-		return readResource ( path, Charset.forName ( charset ) );
-	}
 
 	/**
 	 * Defaults to UTF-8 
 	 */
 	public static String readResource ( String path ) throws IOException
 	{
-		return readResource ( path, "UTF-8" );
+		return readResource ( path, UTF_8 );
 	}
 	
 	
@@ -186,18 +230,13 @@ public class IOUtils
 		URL url = classLoader.getResource ( path );
 		return Resources.toString ( url, charset );
 	}
-
-	public static String readResource ( ClassLoader classLoader, String path, String charset ) throws IOException
-	{
-		return readResource ( classLoader, path, Charset.forName ( charset ) );
-	}
 	
 	/**
 	 * Defaults to UTF-8
 	 */
 	public static String readResource ( ClassLoader classLoader, String path ) throws IOException
 	{
-		return readResource ( classLoader, path, "UTF-8" );
+		return readResource ( classLoader, path, UTF_8 );
 	}
 
 	

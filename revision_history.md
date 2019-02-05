@@ -9,6 +9,7 @@
   * Changes to `uk.ac.ebi.utils.threading.BatchProcessor`.
   * Additions to `uk.ac.ebi.utils.time.XStopWatch`.
   * Javadocs (with Markdown support) added to the build
+  * (jutils-io) `readFiles()` methods added.
 
 ## 7.0
   * (jutils-io) `uk.ac.ebi.utils.io.Unix4jUtils` added.
