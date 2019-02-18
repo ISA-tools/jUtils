@@ -31,6 +31,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <slf4j.version>1.7.5</slf4j.version>
   </properties>
 
   <scm>
@@ -52,7 +53,14 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.5</version>
+				<version>${slf4j.version}</version>
+			</dependency>
+
+			<!-- The policy is to use these bridges where needed, due to transitive deps -->			
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
 			</dependency>
 			
 			<!-- An SLF4J extension, which allows for log levels (http://projects.lidalia.org.uk/lidalia-slf4j-ext/) -->
@@ -103,6 +111,18 @@
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.5.2</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20180130</version>
 			</dependency>
 	
 			

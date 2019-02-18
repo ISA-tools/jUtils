@@ -27,6 +27,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
@@ -35,18 +40,23 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.unix4j</groupId>
 			<artifactId>unix4j-command</artifactId>
 			<version>0.4</version>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jsignature.io-tools</groupId>
 			<artifactId>easystream</artifactId>
 			<version>1.2.15</version>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 
 		
