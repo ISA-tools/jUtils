@@ -59,15 +59,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.io.input.ReaderInputStream;
 
 import com.google.common.io.Resources;
-
-import uk.ac.ebi.utils.exceptions.ExceptionUtils;
 
 /**
  * Miscellanea of small IO utilities 
