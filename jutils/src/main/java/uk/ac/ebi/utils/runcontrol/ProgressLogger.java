@@ -42,10 +42,13 @@ public class ProgressLogger
 	 */
 	public void update ( long newProgress )
 	{
-		this.progressReport ( this.progress, newProgress );
-		synchronized ( this ) {
+		long oldProgress;
+		synchronized ( this )
+		{
+			oldProgress = this.progress;
 			this.progress = newProgress;
 		}
+		this.progressReport ( oldProgress, newProgress );
 	}
 
 	/**
