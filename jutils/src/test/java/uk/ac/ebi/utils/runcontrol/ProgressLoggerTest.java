@@ -33,6 +33,8 @@ public class ProgressLoggerTest
 		progTracker.updateWithIncrement (); // 101
 		progTracker.updateWithIncrement ( 100 ); // 201
 		progTracker.updateWithIncrement ( 50 ); // 251
+		
+		for ( int i = 1; i <= 49; i++ ) progTracker.updateWithIncrement (); // 300 
 
 		System.setOut ( outBkp );  // restore the original output
 		
@@ -44,6 +46,8 @@ public class ProgressLoggerTest
 		Assert.assertFalse ( "101 shouldn't be reported!", outStr.contains ( "101 items processed" ) );
 		Assert.assertTrue ( "201 not reported!", outStr.contains ( "201 items processed" ) );
 		Assert.assertFalse ( "101 shouldn't be reported!", outStr.contains ( "251 items processed" ) );
+		Assert.assertFalse ( "270 shouldn't be reported!", outStr.contains ( "270 items processed" ) );
+		Assert.assertTrue ( "300 not reported!", outStr.contains ( "300 items processed" ) );
 	}
 
 

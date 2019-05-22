@@ -72,8 +72,9 @@ public class ProgressLogger
 	 */
 	protected void progressReport ( long oldProgress, long newProgress )
 	{
-		long delta = newProgress - oldProgress;
-		if ( delta < progressResolution ) return;  
+		long oldCheckPt = oldProgress / progressResolution;
+		long newCheckPt = newProgress / progressResolution;
+		if ( newCheckPt - oldCheckPt == 0 ) return;  
 		log.log ( loggingLevel, logMessageTemplate, newProgress );
 	}
 	
