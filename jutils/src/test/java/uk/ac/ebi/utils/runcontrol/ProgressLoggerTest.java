@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import junit.framework.Assert;
 
 /**
- * TODO: comment me!
- *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>22 May 2019</dd></dl>
  *
