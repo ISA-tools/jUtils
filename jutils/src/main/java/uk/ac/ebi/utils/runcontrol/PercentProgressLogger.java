@@ -37,7 +37,7 @@ public class PercentProgressLogger extends ProgressLogger
 
 	/**
 	 * Every progress is reported in integer percentage points calculated with respect to this max 
-	 * value. Methods like {@link #update(long)} should keep updating with the absolute progess and
+	 * value. Methods like {@link #update(long)} should keep updating with the absolute progress and
 	 * then {@link #progressReport(long, long)} will convert everything as needed.
 	 */
 	public long getMaxProgress ()
