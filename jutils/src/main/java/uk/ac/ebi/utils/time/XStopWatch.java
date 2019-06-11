@@ -19,8 +19,9 @@ public class XStopWatch extends StopWatch
 	 */
 	public void resumeOrStart ()
 	{
-		if ( isStopped () )
-		{
+		if ( !isStarted () )
+			this.start ();
+		else if ( isStopped () ) {
 			this.reset ();
 			this.start ();
 		}
