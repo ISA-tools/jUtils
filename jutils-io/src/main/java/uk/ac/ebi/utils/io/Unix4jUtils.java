@@ -60,8 +60,11 @@ public class Unix4jUtils
 	}
 	
 	/**
-	 * Just a wrapper that uses {@link #unixFilter(To, InputStream)} to use of 
-	 * {@link Unix4jCommandBuilder#sed(String, String)} as an input stream filter.  
+	 * Just a wrapper that uses {@link #unixFilter(To, InputStream)} process the inStream via 
+	 * {@link Unix4jCommandBuilder#sed(String, String)} and replace text based on a regular expression.
+	 * 
+	 * @return the filter that does the replacement, as {@link InputStream} in which the filtering operation is 
+	 * invoked dynamically while, the stream is read.
 	 */
 	public static InputStream sedFilter ( final InputStream inStream, String regex, String repl ) {
 		return unixFilter (  Unix4j.from ( inStream ).sed ( regex, repl ), inStream );
