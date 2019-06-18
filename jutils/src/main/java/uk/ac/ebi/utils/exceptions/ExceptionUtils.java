@@ -36,12 +36,12 @@ public class ExceptionUtils
 	 * 
 	 */
 	public static <E extends Throwable> E buildEx (
-		Class<E> exType, Throwable cause, String messsgeTemplate, Object... params
+		Class<E> exType, Throwable cause, String messageTemplate, Object... params
 	)
 	{		
 		try
 		{
-			String msg = String.format ( messsgeTemplate, params );
+			String msg = String.format ( messageTemplate, params );
 			return cause == null
 				?	ConstructorUtils.invokeConstructor ( exType, msg )
 				: ConstructorUtils.invokeConstructor ( exType, msg, cause );
@@ -53,7 +53,7 @@ public class ExceptionUtils
 				IllegalArgumentException.class,
 				ex,
 				"Error while throwing exception for the message \"%s\": %s",
-				messsgeTemplate,
+				messageTemplate,
 				ex.getMessage ()
 			);
 		}
@@ -64,11 +64,23 @@ public class ExceptionUtils
 	 * 
 	 */
 	public static <E extends Throwable> E buildEx (
-		Class<E> exType, String messsgeTemplate, Object... params
+		Class<E> exType, String messageTemplate, Object... params
 	)
 	{
-		return buildEx ( exType, null, messsgeTemplate, params );
+		return buildEx ( exType, null, messageTemplate, params );
 	}
+	
+	/**
+	 * Wrapper that uses {@code cause.getClass()} as exception type.
+	 */
+	@SuppressWarnings ( "unchecked" )
+	public static <E extends Throwable> E buildEx (
+		E cause, String messageTemplate, Object... params
+	) throws E
+	{
+		return buildEx ( (Class<E>) cause.getClass (), cause, messageTemplate, params );
+	}
+
 	
 	/**
 	 * This calls {@link #buildEx(Class, Throwable, String, Object...)} and then throws the built exception. 
@@ -79,19 +91,30 @@ public class ExceptionUtils
 	 * Java will think that you are not returning any value after the catch clause. 
 	 */
 	public static <E extends Throwable> void throwEx (
-		Class<E> exType, Throwable cause, String messsgeTemplate, Object... params
+		Class<E> exType, Throwable cause, String messageTemplate, Object... params
 	) throws E
 	{
-		throw buildEx ( exType, cause, messsgeTemplate, params );
+		throw buildEx ( exType, cause, messageTemplate, params );
 	}	
 
 	/**
 	 * A wrapper with no cause.
 	 */
 	public static <E extends Throwable> void throwEx (
-		Class<E> exType, String messsgeTemplate, Object... params
+		Class<E> exType, String messageTemplate, Object... params
 	) throws E
 	{
-		throwEx ( exType, null, messsgeTemplate, params );
-	}	
+		throwEx ( exType, null, messageTemplate, params );
+	}
+	
+	/**
+	 * Wrapper that uses {@code cause.getClass()} as exception type.
+	 */
+	@SuppressWarnings ( "unchecked" )
+	public static <E extends Throwable> void throwEx (
+		E cause, String messageTemplate, Object... params
+	) throws E
+	{
+		throwEx ( ( Class<E> ) cause.getClass (), cause, messageTemplate, params );
+	}
 }
