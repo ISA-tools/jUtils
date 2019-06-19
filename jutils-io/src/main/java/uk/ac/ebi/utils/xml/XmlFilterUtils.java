@@ -23,7 +23,7 @@ public class XmlFilterUtils
 	 * while reading and we don't stuff memory with all the data coming from the original stream (but you may want
 	 * to buffer it).</p>
 	 * 
-	 *	 <p><b>WARNING</b>: In order to avoid too many dependency for jUtils, you have to declare the dependency on
+	 * <p><b>WARNING</b>: In order to avoid too many dependency for jUtils, you have to declare the dependency on
 	 * both Unix4j and EasyStream (copy-paste them from the junit-io's pom).</p>
 	 * 
 	 * <b>TODO</b>: this doesn't work when tags are nested, like in:

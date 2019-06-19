@@ -13,7 +13,7 @@ import com.gc.iotools.stream.is.InputStreamFromOutputStream;
 /**
  * <p>Utilities for the great <a href = 'https://github.com/tools4j/unix4j'>Unix4j</a> library.</p>
  *
- *	 <p><b>WARNING</b>: In order to avoid too many dependency for jUtils, you have to declare the dependency on
+ * <p><b>WARNING</b>: In order to avoid too many dependency for jUtils, you have to declare the dependency on
  * both Unix4j and EasyStream (copy-paste them from the junit-io's pom).</p>
  *
  * @author brandizi
@@ -52,18 +52,18 @@ public class Unix4jUtils
 	}
 	
 	/**
-	 * Just a wrapper that uses {@link #unixFilter(To, InputStream)} to use of 
-	 * {@link Unix4jCommandBuilder#sed(String)} as an input stream filter.  
+	 * Just a wrapper that uses {@link #unixFilter(To, InputStream)} to process an input stream via the  
+	 * {@link Unix4jCommandBuilder#sed(String) sed command}.  
 	 */
 	public static InputStream sedFilter ( final InputStream inStream, String sedScript ) {
 		return unixFilter (  Unix4j.from ( inStream ).sed ( sedScript ), inStream );
 	}
 	
 	/**
-	 * Just a wrapper that uses {@link #unixFilter(To, InputStream)} process the inStream via 
-	 * {@link Unix4jCommandBuilder#sed(String, String)} and replace text based on a regular expression.
+	 * Just a wrapper of {@link #sedFilter(InputStream, String)} that tweaks a stream dynamically, to replace text
+	 * based on a regular expression. The repl parameter accepts backreferences like {@code \1}.
 	 * 
-	 * @return the filter that does the replacement, as {@link InputStream} in which the filtering operation is 
+	 * @return the filter that does the replacement, as an {@link InputStream} in which the filtering operation is 
 	 * invoked dynamically while, the stream is read.
 	 */
 	public static InputStream sedFilter ( final InputStream inStream, String regex, String repl ) {
