@@ -1,5 +1,9 @@
 package uk.ac.ebi.utils.exceptions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.IOException;
 
 import org.junit.Assert;
@@ -49,5 +53,18 @@ public class ExceptionUtilsTest
 		ExceptionUtils.throwEx ( 
 			RuntimeException.class, new IOException (), "Test Exception with %s param", "foo" 
 		);
+	}
+	
+	@Test
+	public void testExceptionWithoutCause ()
+	{
+		NumberFormatException ex = new NumberFormatException ( "Exception that doesn't accept a cause" );
+		String msgTpl = "Parent Exception. Child message is: %s";
+		NumberFormatException parentEx = ExceptionUtils.buildEx (
+			ex, msgTpl, ex.getMessage ()
+		);
+		
+		assertNull ( "Cause isn't null!", parentEx.getCause () );
+		assertEquals ( "Wrong parent's messsage!", String.format ( msgTpl, ex.getMessage () ), parentEx.getMessage () );
 	}
 }

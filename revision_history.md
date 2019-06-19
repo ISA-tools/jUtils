@@ -9,8 +9,10 @@
   * Additions to `uk.ac.ebi.utils.string.StringSearchUtils`.
   * Changes to `uk.ac.ebi.utils.threading.BatchProcessor`.
   * Additions to `uk.ac.ebi.utils.time.XStopWatch`.
-  * Javadocs (with Markdown support) added to the build
+  * Javadocs (with Markdown support) added to the build.
   * (jutils-io) `readFiles()` methods added.
+  * `uk.ac.ebi.utils.exceptions.ExceptionUtils.ExceptionUtils` now is able to generate wrapping exceptions even if the 
+  base one doesn't accept a cause (but there are caveats, see the Javadoc).
 
 ## 7.0
   * (jutils-io) `uk.ac.ebi.utils.io.Unix4jUtils` added.

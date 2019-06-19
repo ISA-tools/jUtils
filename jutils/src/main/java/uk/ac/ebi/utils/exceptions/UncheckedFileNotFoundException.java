@@ -24,5 +24,4 @@ public class UncheckedFileNotFoundException extends UncheckedIOException
 		this ( message, new FileNotFoundException ( "<No root cause>" ) );
 	}
 
-
 }
