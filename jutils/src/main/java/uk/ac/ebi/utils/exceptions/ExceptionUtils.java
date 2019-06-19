@@ -36,10 +36,10 @@ public class ExceptionUtils
 	 * The new exception is assigned a cause, if the corresponding parameter is non-null.
 	 * 
 	 * <b>WARNING</b>: if exType hasn't a proper constructor, either accepting a message + cause, or just a message, 
-	 * a constructor with fewer parameters is selected instead (eg, just the message, without parameter). This means that
-	 * you might see exceptions created by this method that DON'T contain a parent cause. In such cases, you should  
-	 * a different wrapping exception (possibly write code to define a new one, eg, as we've done for 
-	 * {@link NumberFormatException}).
+	 * a constructor with fewer parameters is selected instead (eg, accepting just the message, or without parameters 
+	 * at all). This means that you might see exceptions created by this method that DON'T contain a parent cause.
+	 * In such cases, you should a different wrapping exception (possibly write code to define a new one, eg, as we've 
+	 * done for {@link CausalNumberFormatException}).
 	 * 
 	 */
 	public static <E extends Throwable> E buildEx (
@@ -50,7 +50,7 @@ public class ExceptionUtils
 		{
 			String msg = String.format ( messageTemplate, params );
 						
-			// Not all exceptions accept a parent cause
+			// Not all exceptions accept an underlining cause
 			if ( cause != null ) {
 				Constructor<E> constructor = ConstructorUtils.getMatchingAccessibleConstructor ( exType, String.class, cause.getClass () );
 				if ( constructor != null ) return constructor.newInstance ( msg, cause ); 
@@ -59,7 +59,7 @@ public class ExceptionUtils
 			Constructor<E> constructor = ConstructorUtils.getMatchingAccessibleConstructor ( exType, String.class );
 			if ( constructor != null ) return constructor.newInstance ( msg ); 
 
-			// Maybe some don't even accept a message 
+			// Maybe some don't even accept a message? Unlikely, but just in case. 
 			return ConstructorUtils.invokeConstructor ( exType );
 		}
 		catch ( NoSuchMethodException | SecurityException | InstantiationException 
