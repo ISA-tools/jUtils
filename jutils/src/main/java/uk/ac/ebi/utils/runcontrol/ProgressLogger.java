@@ -6,6 +6,7 @@ import uk.org.lidalia.slf4jext.LoggerFactory;
 
 /**
  * Reports (using the logger) the progress of some process, represented by a long number.
+ * The progress update operations in this class are thread-safe.
  *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>22 May 2019</dd></dl>
@@ -15,7 +16,7 @@ public class ProgressLogger
 {
 	private Logger log = LoggerFactory.getLogger ( this.getClass () );
 	
-	private long progress;
+	private long progress = 0;
 	private long progressResolution = 1000;
 	
 	private String logMessageTemplate = "{} items processed";
