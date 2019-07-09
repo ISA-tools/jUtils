@@ -1,5 +1,9 @@
 package uk.ac.ebi.utils.runcontrol;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jext.Logger;
 import uk.org.lidalia.slf4jext.LoggerFactory;
@@ -22,6 +26,7 @@ public class ProgressLogger
 	private String logMessageTemplate = "{} items processed";
 	private Level loggingLevel = Level.INFO;
 		
+	private ReadWriteLock lock = new ReentrantReadWriteLock ();
 		
 	public ProgressLogger ( String logMessageTemplate, long progressResolution )
 	{
@@ -44,10 +49,16 @@ public class ProgressLogger
 	public void update ( long newProgress )
 	{
 		long oldProgress;
-		synchronized ( this )
+		
+		Lock wlock = lock.writeLock ();
+		wlock.lock ();
+		try
 		{
 			oldProgress = this.progress;
 			this.progress = newProgress;
+		}
+		finally { 
+			wlock.unlock ();
 		}
 		this.progressReport ( oldProgress, newProgress );
 	}
@@ -57,7 +68,14 @@ public class ProgressLogger
 	 */
 	public void updateWithIncrement ( long increment )
 	{
-		this.update ( this.progress + increment );
+		Lock wlock = lock.writeLock ();
+		wlock.lock ();
+		try {
+			this.update ( this.progress + increment );
+		}
+		finally { 
+			wlock.unlock (); 
+		}
 	}
 
 	/**
@@ -73,10 +91,17 @@ public class ProgressLogger
 	 */
 	protected void progressReport ( long oldProgress, long newProgress )
 	{
-		long oldCheckPt = oldProgress / progressResolution;
-		long newCheckPt = newProgress / progressResolution;
-		if ( newCheckPt - oldCheckPt == 0 ) return;  
-		log.log ( loggingLevel, logMessageTemplate, newProgress );
+		Lock rlock = lock.readLock ();
+		rlock.lock ();
+		try {
+			long oldCheckPt = oldProgress / progressResolution;
+			long newCheckPt = newProgress / progressResolution;
+			if ( newCheckPt - oldCheckPt == 0 ) return;
+			log.log ( loggingLevel, logMessageTemplate, newProgress );
+		}
+		finally {
+			rlock.unlock ();
+		}
 	}
 	
 	/**
