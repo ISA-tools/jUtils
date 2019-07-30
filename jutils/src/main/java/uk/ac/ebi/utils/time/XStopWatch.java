@@ -41,14 +41,13 @@ public class XStopWatch extends StopWatch
 	/**
 	 * Facility to profile (i.e., to time) a task.
 	 * 
-	 * @return the time elapsed between before and after {@link Runnable#run() task.run()}. 
+	 * @return the time elapsed between before and after {@link Runnable#run() task.run()}.
+	 * 
+	 * This uses {@link #trackNano(Runnable)}.
 	 */
 	public static long profileNano ( Runnable task ) 
 	{
-		XStopWatch timer = new XStopWatch ();
-		timer.start ();
-		task.run ();
-		return timer.getNanoTime ();
+		return new XStopWatch ().track ( task );
 	}
 
 	/**
@@ -57,5 +56,34 @@ public class XStopWatch extends StopWatch
 	public static long profile ( Runnable task ) 
 	{
 		return TimeUnit.NANOSECONDS.toMillis ( profileNano ( task ) );
+	}
+	
+	/**
+	 * This is similar to {@link #profileNano(Runnable)}, but uses the current watch to time the parameter task.
+	 * 
+	 * At the end of this method, the current watch will be suspended, every new call to this method will 
+	 * resume the watch and hence the times measured for multiple tasks are added up.
+	 * 
+	 * @return the time elapsed since the call to this method and the end of the task parameter.
+	 * 
+	 * Note that timing a task in a multi-thread context might give wrong results, since here we simply measure 
+	 * the time elapsed from start to end, we don't consider the parallelism in between.
+	 */
+	public long trackNano ( Runnable task )
+	{
+		long t = this.getNanoTime ();
+		if ( !this.isStarted () ) this.start ();
+		if ( this.isSuspended () ) this.resume ();
+		try {
+			task.run ();
+			return this.getNanoTime () - t;
+		}
+		finally {			
+			this.suspend ();
+		}
+	}
+
+	public long track ( Runnable task ) {
+		return TimeUnit.NANOSECONDS.toMillis ( trackNano ( task ) );
 	}
 }

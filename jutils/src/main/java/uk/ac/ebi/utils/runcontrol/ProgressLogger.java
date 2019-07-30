@@ -106,7 +106,7 @@ public class ProgressLogger
 	
 	/**
 	 * When {@link #update(long)} and similar methods increment an old value, a logging message is generated
-	 * if the new progress is equal or greater than the resolution.
+	 * if the difference between new and old progress is &gt;= the resolution.
 	 */
 	public long getProgressResolution ()
 	{

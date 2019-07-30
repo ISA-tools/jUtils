@@ -100,7 +100,7 @@ public class ExceptionUtils
 	
 	/**
 	 * This calls {@link #buildEx(Class, Throwable, String, Object...)} and then throws the built exception. 
-	 * Note that jave will consider this method as throwing checked/unchecked exception code, depending on
+	 * Note that Java will consider this method as throwing checked/unchecked exception code, depending on
 	 * the type of E.
 	 * 
 	 * Note that you cannot always use this to wrap the body of a function, since, if you do for a checked exception,
