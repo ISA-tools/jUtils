@@ -47,7 +47,7 @@ public class XStopWatch extends StopWatch
 	 */
 	public static long profileNano ( Runnable task ) 
 	{
-		return new XStopWatch ().track ( task );
+		return new XStopWatch ().trackNano ( task );
 	}
 
 	/**
