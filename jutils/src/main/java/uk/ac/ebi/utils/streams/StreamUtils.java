@@ -20,7 +20,7 @@ public class StreamUtils
 {
 	/**
 	 * Returns a stream of tuples built from base streams, by populating each tuple item with one item from the underlining
-	 * streams. This is basically a wrapper of {@link TupleIterator}, made by means of 
+	 * streams. This is basically a wrapper of {@link TupleSpliterator}, made by means of 
 	 * {@link Spliterators#spliteratorUnknownSize(Iterator, int)} and 
 	 * {@link StreamSupport#stream(Spliterator, boolean)}. 
 	 * 

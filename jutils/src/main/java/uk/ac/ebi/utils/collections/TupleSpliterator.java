@@ -64,9 +64,10 @@ public class TupleSpliterator<T> implements Spliterator<T[]>
 	/**
 	 * Just a facility to avoid too much genetics fiddling.
 	 */
+	@SafeVarargs
 	@SuppressWarnings ( "unchecked" )
 	public static <TT> TupleSpliterator<TT> of ( Spliterator<? extends TT> ...spliterators ) {
-		return new TupleSpliterator<TT> ( spliterators );
+		return new TupleSpliterator<> ( spliterators );
 	}
 
 	/**
@@ -149,7 +150,7 @@ public class TupleSpliterator<T> implements Spliterator<T[]>
 			if ( newReturnedSize != result [ i ].estimateSize () ) 
 				return null;
 		}
-		return new TupleSpliterator<T> ( result );
+		return new TupleSpliterator<> ( result );
 	}
 
 	/**
