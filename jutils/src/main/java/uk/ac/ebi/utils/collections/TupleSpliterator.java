@@ -9,7 +9,7 @@ import uk.ac.ebi.utils.streams.StreamUtils;
 /**
  * <p>Takes an array of spliterators and returns a spliterator of tuples. Each tuple is built by taking the 
  * {@link Spliterator#tryAdvance(Consumer) next element} of each spliterator. 
- * The iteration stops as son as there is at least one spliterator which of {@link Spliterator#tryAdvance(Consumer)} 
+ * The iteration stops as soon as there is at least one spliterator which of {@link Spliterator#tryAdvance(Consumer)} 
  * method returns false.</p>
  * 
  * Parallelism support is limited: {@link #trySplit()} succeeds as long as all the underlining spliterators are able
@@ -171,8 +171,8 @@ public class TupleSpliterator<T> implements Spliterator<T[]>
 	 *  
 	 * <ul>
 	 *   <li>SORTED, we don't currently provide a {@link #getComparator()} and hence this is not set.</li>
-	 *   <li>DISTINCT, this is set, we return arrays and they're all technically distinct (we the default implementation
-	 *   of {@link #equals(Object)})</li>
+	 *   <li>DISTINCT, this is set, we return arrays and they're all technically distinct (as per the default 
+	 *   {@link #equals(Object)})</li>
 	 *   <li>CONCURRENT, is not set, we're IMMUTABLE</li>
 	 *   <li>IMMUTABLE, this is set, we expect base spliterator to be immutable too (or that you know what you're doing)</li>
 	 *   <li>SIZED, SUBSIZED, ORDERED, are set for the result if all the base spliterators have these flags</li>
