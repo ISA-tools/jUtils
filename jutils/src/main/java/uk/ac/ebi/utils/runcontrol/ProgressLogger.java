@@ -3,6 +3,7 @@ package uk.ac.ebi.utils.runcontrol;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiConsumer;
 
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jext.Logger;
@@ -26,6 +27,10 @@ public class ProgressLogger
 	private String logMessageTemplate = "{} items processed";
 	private Level loggingLevel = Level.INFO;
 		
+	private BiConsumer<Long, Long> progressReportAction =
+		(oldProgress, newProgress) -> log.log ( loggingLevel, logMessageTemplate, newProgress );
+
+	
 	private ReadWriteLock lock = new ReentrantReadWriteLock ();
 		
 	public ProgressLogger ( String logMessageTemplate, long progressResolution )
@@ -88,6 +93,7 @@ public class ProgressLogger
 		
 	/**
 	 * Invoked by {@link #update(long)}, decides if we have to log the new progress and possibly does it.
+	 * If yes, it invokes {@link #getProgressReportAction()}.
 	 */
 	protected void progressReport ( long oldProgress, long newProgress )
 	{
@@ -97,7 +103,7 @@ public class ProgressLogger
 			long oldCheckPt = oldProgress / progressResolution;
 			long newCheckPt = newProgress / progressResolution;
 			if ( newCheckPt - oldCheckPt == 0 ) return;
-			log.log ( loggingLevel, logMessageTemplate, newProgress );
+			progressReportAction.accept ( oldProgress, newProgress );
 		}
 		finally {
 			rlock.unlock ();
@@ -151,4 +157,42 @@ public class ProgressLogger
 	{
 		return progress;
 	}
+
+	/**
+	 * <p>This is invoked when the progress reaches a multiple of {@link #getProgressResolution()}, as per
+	 * {@link #update(long)} implementation.</p>
+	 * 
+	 * <p>The default action logs with {@link #getLogMessageTemplate()} and {@link #getLoggingLevel()}.
+	 * Typically, you will want to use such default action and then chain yours via {@link BiConsumer#andThen(BiConsumer)}
+	 * (or the other way around, whatever you prefer). BEWARE that, without such a chaining, you'll lose (replace) the logging
+	 * step. Consider {@link #appendProgressReportAction(BiConsumer)} instead of the regular setter.</p>
+	 * 
+	 */
+	public BiConsumer<Long, Long> getProgressReportAction ()
+	{
+		return progressReportAction;
+	}
+
+	/**
+	 * @see #appendProgressReportAction(BiConsumer).
+	 */
+	public void setProgressReportAction ( BiConsumer<Long, Long> progressReportAction )
+	{
+		this.progressReportAction = progressReportAction;
+	}
+	
+	/**
+	 * Facility to append the action to the {@link #getProgressReportAction()}. This can be useful when 
+	 * you want to add something to the default logging action. @see {@link #getProgressReportAction()}
+	 */
+	public void appendProgressReportAction ( BiConsumer<Long, Long> progressReportAction )
+	{
+		BiConsumer<Long, Long> currentAction = this.getProgressReportAction ();
+		if ( currentAction == null ) {
+			this.setProgressReportAction ( progressReportAction );
+			return;
+		}
+		this.setProgressReportAction ( currentAction.andThen ( progressReportAction ) );
+	}
+
 }

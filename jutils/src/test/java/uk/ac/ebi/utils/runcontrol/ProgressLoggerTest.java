@@ -62,6 +62,7 @@ public class ProgressLoggerTest
 		progTracker.updateWithIncrement ( 50 ); // 150
 		progTracker.updateWithIncrement ( 300 ); // 450
 		progTracker.updateWithIncrement ( 5 ); // 455
+		progTracker.updateWithIncrement ( 545 ); // 1000
 
 		System.setOut ( outBkp );  // restore the original output
 		
@@ -69,10 +70,34 @@ public class ProgressLoggerTest
 		
 		log.info ( "Output from the progress logger:\n\n-------------------\n{}-------------------\n", outStr );
 		
-		Assert.assertTrue ( "100 not reported!", outStr.contains ( "10% of items processed" ) );
-		Assert.assertFalse ( "150 shouldn't be reported!", outStr.contains ( "150% of items processed" ) );
-		Assert.assertTrue ( "450 not reported!", outStr.contains ( "45% of items processed" ) );
-		Assert.assertFalse ( "455 shouldn't be reported!", outStr.contains ( "46% of items processed" ) );
+		Assert.assertTrue ( "10% not reported!", outStr.contains ( "10% of items processed" ) );
+		Assert.assertFalse ( "15% shouldn't be reported!", outStr.contains ( "15% of items processed" ) );
+		Assert.assertTrue ( "45% not reported!", outStr.contains ( "45% of items processed" ) );
+		Assert.assertTrue ( "100% not reported!", outStr.contains ( "100% of items processed" ) );
 	}
+	
+	@Test
+	public void testCustomReportAction ()
+	{
+		// Stdout redirection
+		PrintStream outBkp = System.out;
+		ByteArrayOutputStream outBuf = new ByteArrayOutputStream ();
+		System.setOut ( new PrintStream ( outBuf ) );
+		
+		PercentProgressLogger progTracker = new PercentProgressLogger ( "{}% of items processed", 1000 );
+		progTracker.appendProgressReportAction ( 
+			(oldp, newp) -> log.info ( "custom progress report action: {}%", newp )
+		);
+		progTracker.update ( 100 );
 
+		System.setOut ( outBkp );  // restore the original output
+		
+		String outStr = outBuf.toString ();
+		
+		log.info ( "Output from the progress logger:\n\n-------------------\n{}-------------------\n", outStr );
+		
+		Assert.assertTrue ( "10% not reported!", outStr.contains ( "10% of items processed" ) );
+		Assert.assertTrue ( "custom 10% not reported!", outStr.contains ( "custom progress report action: 10%" ) );
+	}
+	
 }
