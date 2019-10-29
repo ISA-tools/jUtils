@@ -6,7 +6,6 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import uk.ac.ebi.utils.collections.TupleIterator;
 import uk.ac.ebi.utils.collections.TupleSpliterator;
 
 /**
@@ -52,7 +51,6 @@ public class StreamUtils
 			strmSpltrs [ i ] = (Spliterator<Object>) streams [ i ].spliterator ();
 		
 		TupleSpliterator<T> tupleItr = new TupleSpliterator<> ( (Spliterator<T>[]) strmSpltrs );
-		
 		return StreamSupport.stream ( tupleItr, isParallel );
 	}
 	
