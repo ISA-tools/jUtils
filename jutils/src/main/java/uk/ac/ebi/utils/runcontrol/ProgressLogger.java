@@ -103,11 +103,11 @@ public class ProgressLogger
 			long oldCheckPt = oldProgress / progressResolution;
 			long newCheckPt = newProgress / progressResolution;
 			if ( newCheckPt - oldCheckPt == 0 ) return;
-			progressReportAction.accept ( oldProgress, newProgress );
 		}
 		finally {
 			rlock.unlock ();
 		}
+		progressReportAction.accept ( oldProgress, newProgress );
 	}
 	
 	/**
@@ -194,5 +194,4 @@ public class ProgressLogger
 		}
 		this.setProgressReportAction ( currentAction.andThen ( progressReportAction ) );
 	}
-
 }

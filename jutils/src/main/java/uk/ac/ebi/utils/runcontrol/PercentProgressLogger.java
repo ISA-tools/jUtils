@@ -1,7 +1,7 @@
 package uk.ac.ebi.utils.runcontrol;
 
 /**
- * <p>It's like {@link ProgressLogger} but works and reports percentages, given a max value that you set initially.</p> 
+ * <p>It's like {@link ProgressLogger} but reports percentages, given a max value that you set initially.</p> 
  * 
  * <p>Note that the {@link #getProgressReportAction() prog report action} receives the progress percentages, not
  * the absolute values.</p>
