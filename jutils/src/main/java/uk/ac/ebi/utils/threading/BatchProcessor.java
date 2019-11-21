@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
+import uk.ac.ebi.utils.runcontrol.ProgressLogger;
 
 
 /**  
@@ -18,23 +19,30 @@ import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
  * <p>The idea implemented here is that {@link #process(Object, Object...)} runs a loop where: 
  * 
  * <ul>
- *   <li>gets a data item from its input source of type S</li>
- *   <li>optionally transforms the data item and sends the result to the current destination of type D</li>
- *   <li>invokes {@link #handleNewTask(Object, boolean)}, which 
- *   {@link #decideNewTask(Object) decides} if it's time to issue a new {@link #getConsumer() processing thread}.
- *   The latter possibly create a new destination object, via {@link #getDestinationSupplier()} and hence
- *   the caller should assign the current destination to it.</li>
+ *   <li>gets a data item from its input source of type S, for instance S might be a list of records</li>
+ *   <li>optionally transforms the data item and sends the result to the current batch collector of type B, for instance
+ *   		 B might be of type {@code Set<S>}</li>
+ *   <li>invokes {@link #handleNewBatch(Object, boolean)}, which 
+ *   {@link #decideNewBatch(Object) decides} if it's time to issue a new {@link #getBatchJob() batch processing job}.
+ *   For example, the job might save the records in a single transaction. If a new job is actually issued by 
+ *   {@link #handleNewBatch(Object, boolean)}, this also asks {@link #getBatchFactory()} for a new (eg, empty) batch, 
+ *   and hence the hereby process() method should assign this new batch to the current batch being filled with items 
+ *   from S. For instance, {@link #handleNewBatch(Object, boolean)} might decide to issue a new job when the current 
+ *   set of records has enough elements and then {@link #getBatchFactory()} might be used to get a new empty set of 
+ *   records.</li>
  * </ul></p>
  *
- * <p>Each new invocation performed by {@link #handleNewTask(Object, boolean)} consists of the creation of a new
- * task which is submitted an {@link #getExecutor() executor service} and hence the processing can happen in 
- * multi-thread mode.</p>
+ * <p>Each invocation of {@link #handleNewBatch(Object, boolean)} might spawn the creation of a new
+ * batch job, via {@link #getBatchJob()}, which is then submitted to the {@link #getExecutor() executor service}, 
+ * and hence the batch processing happens in multi-thread mode.</p>
  * 
- * <p>{@link #process(Object, Object...)} should invoke {@link #waitExecutor(String)} after the loop above, to make
- * the parallel task executions complete.</p> This also resets the internal {@link ExecutorService}, which will be 
- * recreated (once) upon the first invocation of {@link #getExecutor()}. This behaviour ensures that {@link #process(Object)}
- * can be invoked multiple times reusing the same processor instance (normally that's not possible for 
- * an {@link ExecutorService} which of method {@link ExecutorService#awaitTermination(long, TimeUnit)} was called).</p> 
+ * <p>After the main loop described above, {@link #process(Object, Object...)} should invoke {@link #waitExecutor(String)},
+ * to wait for the completion of the that the parallel jobs execution.</p>
+ * 
+ * <p>The call to {@link #waitExecutor(String)} also resets the internal {@link ExecutorService}, which will be 
+ * recreated (once) upon the first invocation of {@link #getExecutor()}. This behaviour ensures that {@link #process(Object, Object...)}
+ * can be invoked multiple times reusing the same batchJob instance (normally that's not possible for 
+ * an {@link ExecutorService} after its {@link ExecutorService#awaitTermination(long, TimeUnit)} method is called).</p> 
  * 
  * <p>You can find a usage example of this class in the <a href = "TODO">rdf-utils-jena package</a>.
  *  
@@ -42,26 +50,28 @@ import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
  * <dl><dt>Date:</dt><dd>1 Dec 2017</dd></dl>
  *
  */
-public abstract class BatchProcessor<S, D>
+public abstract class BatchProcessor<S, B>
 {
-	private Consumer<D> consumer;
-	private Supplier<D> destinationSupplier;
+	private Consumer<B> batchJob;
+	private Supplier<B> batchFactory;
 	
 	private Supplier<ExecutorService> executorFactory = HackedBlockingQueue::createExecutor;
 	private ExecutorService executor;
 	
-	private long submittedTasks = 0;
-	private AtomicLong completedTasks = new AtomicLong ();
+	private long submittedBatches = 0;
+	private AtomicLong completedBatches = new AtomicLong ();
 
-	/** @see {@link #wrapTask(Runnable)} */
-	protected long taskLogPeriod = 1000;
-		
+	/** @see {@link #wrapBatchJob(Runnable)} */
+	protected long jobLogPeriod = 1000;
+	
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
-		
+	
 	
 	/**
 	 * <b>WARNING</b>: in addition to the behaviour explained above, this method should also invoke 
-	 * {@link #waitExecutor(String)} and possibly {@link #reset()}.
+	 * {@link #waitExecutor(String)}.
+	 * 
+	 * @param opts possible options you might want to pass to the processor.
 	 */
 	public abstract void process ( S source, Object... opts );
 
@@ -70,67 +80,67 @@ public abstract class BatchProcessor<S, D>
 	}
 
 		
-	protected D handleNewTask ( D currentDest ) {
-		return handleNewTask ( currentDest, false );
+	protected B handleNewBatch ( B currentBatch ) {
+		return handleNewBatch ( currentBatch, false );
 	}
 
 	/**
 	 * This is the method that possibly issues a new task, via the {@link #getExecutor()}, which runs 
-	 * the {@link #consumer} against the current {@link #getDestinationSupplier() destination}.   
+	 * the {@link #batchJob} against the current {@link #getBatchFactory() destination}.   
 	 * 
-	 * Note that your {@link #getConsumer() task handler} will be executed under the 
-	 * {@link #wrapTask(Runnable) default wrapper}.  
+	 * Note that your {@link #getBatchJob() task handler} will be executed under the 
+	 * {@link #wrapBatchJob(Runnable) default wrapper}.  
 	 * 
 	 * @param forceFlush if true it flushes the data independently of {@link #getChunkSize()}.  
 	 * 
 	 */
-	protected D handleNewTask ( D currentDest, boolean forceFlush )
+	protected B handleNewBatch ( B currentBatch, boolean forceFlush )
 	{
-		if ( !( forceFlush || this.decideNewTask ( currentDest ) ) ) return currentDest;
+		if ( !( forceFlush || this.decideNewBatch ( currentBatch ) ) ) return currentBatch;
 
-		getExecutor ().submit ( wrapTask ( () -> consumer.accept ( currentDest ) ) );
+		getExecutor ().submit ( wrapBatchJob ( () -> batchJob.accept ( currentBatch ) ) );
 		
-		if ( ++this.submittedTasks % this.taskLogPeriod == 0 ) 
-			log.info ( "{} tasks submitted", this.submittedTasks );
+		if ( ++this.submittedBatches % this.jobLogPeriod == 0 ) 
+			log.info ( "{} batch jobs submitted", this.submittedBatches );
 		
-		return this.destinationSupplier.get ();
+		return this.batchFactory.get ();
 	}
 	
 	/**
-	 * {@link #handleNewTask(Object, boolean)} decides to generate a new task based on the value returned
+	 * {@link #handleNewBatch(Object, boolean)} decides to generate a new task based on the value returned
 	 * by this.
 	 * 
 	 */
-	protected abstract boolean decideNewTask ( D dest );
+	protected abstract boolean decideNewBatch ( B batch );
 
 	/**
-	 * Every new parallel task that is generated by {@link #process(Object)} and {@link #handleNewTask(Object, boolean)}
-	 * runs this consumer.
+	 * Every new parallel task that is generated by {@link #process(Object)} and {@link #handleNewBatch(Object, boolean)}
+	 * runs this batchJob.
 	 */
-	public Consumer<D> getConsumer ()
+	public Consumer<B> getBatchJob ()
 	{
-		return consumer;
+		return batchJob;
 	}
 
-	public BatchProcessor<S, D> setConsumer ( Consumer<D> consumer )
+	public BatchProcessor<S, B> setBatchJob ( Consumer<B> batchJob )
 	{
-		this.consumer = consumer;
+		this.batchJob = batchJob;
 		return this;
 	}
 
 	/**
-	 * Every time that {@link #handleNewTask(Object, boolean)} decides it's time to work on a new 
-	 * {@link #getConsumer() task} and destination D, this supplier is used to generate such new destination.
+	 * Every time that {@link #handleNewBatch(Object, boolean)} decides it's time to work on a new 
+	 * {@link #getBatchJob() task} and destination D, this supplier is used to generate such new destination.
 	 * 
 	 */
-	public Supplier<D> getDestinationSupplier ()
+	public Supplier<B> getBatchFactory ()
 	{
-		return destinationSupplier;
+		return batchFactory;
 	}
 
-	public BatchProcessor<S, D> setDestinationSupplier ( Supplier<D> destinationSupplier )
+	public BatchProcessor<S, B> setBatchFactory ( Supplier<B> batchFactory )
 	{
-		this.destinationSupplier = destinationSupplier;
+		this.batchFactory = batchFactory;
 		return this;
 	}
 
@@ -163,7 +173,7 @@ public abstract class BatchProcessor<S, D>
 	}
 
 	/**
-	 * <p>Waits that all the parallel jobs submitted to the processor are finished. It keeps polling
+	 * <p>Waits that all the parallel jobs submitted to the batchJob are finished. It keeps polling
 	 * {@link ExecutorService#isTerminated()} and invoking {@link ExecutorService#awaitTermination(long, TimeUnit)}.</p>
 	 * 
 	 * <p>As explained above, this resets the {@link ExecutorService} that is returned by {@link #getExecutor()}, so that
@@ -187,7 +197,7 @@ public abstract class BatchProcessor<S, D>
 		}
 		catch ( InterruptedException ex ) {
 			throw new UnexpectedEventException ( 
-				"Unexpected interruption while waiting for processor termination: " + ex.getMessage (), ex 
+				"Unexpected interruption while waiting for batchJob termination: " + ex.getMessage (), ex 
 			);
 		}
 		
@@ -198,30 +208,30 @@ public abstract class BatchProcessor<S, D>
 	 * Wraps the task into some common operations. At the moment,
 	 * 
 	 *   * wraps exception,
-	 *   * logs the progress of completed tasks every {@link #taskLogPeriod} completed tasks.
+	 *   * logs the progress of completed tasks every {@link #jobLogPeriod} completed tasks.
 	 *   
 	 */
-	protected Runnable wrapTask ( Runnable task )
+	protected Runnable wrapBatchJob ( Runnable batchJob )
 	{
 		return () -> 
 		{
 			try {
-				task.run ();
+				batchJob.run ();
 			}
 			catch ( Exception ex )
 			{
 				log.error ( 
 					String.format ( 
-						"Error while running batch processor thread %s: %s", 
+						"Error while running batch batchJob thread %s: %s", 
 						Thread.currentThread ().getName (), ex.getMessage () 
 					),
 					ex
 				);
 			}
 			finally {
-				long completed = this.completedTasks.incrementAndGet ();
-				if ( completed % this.taskLogPeriod == 0 || completed == this.submittedTasks && this.getExecutor ().isShutdown () )
-					log.info ( "{}/{} tasks completed", completed, this.submittedTasks );
+				long completed = this.completedBatches.incrementAndGet ();
+				if ( completed % this.jobLogPeriod == 0 || completed == this.submittedBatches && this.getExecutor ().isShutdown () )
+					log.info ( "{}/{} batch jobs completed", completed, this.submittedBatches );
 			}
 		};
 	}

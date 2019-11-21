@@ -1,45 +1,45 @@
 package uk.ac.ebi.utils.threading;
 
 /**
- * A {@link BatchProcessor} where {@link #decideNewTask(Object)} is based on some 
- * {@link #getDestinationSize(Object) size measurement} of the current destination D object.   
+ * A {@link BatchProcessor} where {@link #decideNewBatch(Object)} is based on some 
+ * {@link #getCurrentBatchSize(Object) size measurement} of the current batch B object.   
  *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>1 Dec 2017</dd></dl>
  *
  */
-public abstract class SizeBasedBatchProcessor<S, D> extends BatchProcessor<S, D>
+public abstract class SizeBasedBatchProcessor<S, B> extends BatchProcessor<S, B>
 {
-	private long destinationMaxSize;
+	private long batchMaxSize;
 	
 	/**
-	 * The max destination size that the destination D can have on each new processing thread.
+	 * The max batch size that the current batch B can have on each new processing job.
 	 * 
-	 * The idea is to issue a new thread when this number of items have been submitted to the processor via 
+	 * The idea is to issue a new job when this number of items have been submitted to the processor via 
 	 * {@link #process(Object, Object...)}.
 	 * 
 	 */
-	public long getDestinationMaxSize ()
+	public long getBatchMaxSize ()
 	{
-		return destinationMaxSize;
+		return batchMaxSize;
 	}
 
-	public SizeBasedBatchProcessor<S, D> setDestinationMaxSize ( long destinationMaxSize )
+	public SizeBasedBatchProcessor<S, B> setBatchMaxSize ( long batchMaxSize )
 	{
-		this.destinationMaxSize = destinationMaxSize;
+		this.batchMaxSize = batchMaxSize;
 		return this;
 	}
 
 	/**
 	 * Tells the size of dest.
 	 */
-	protected abstract long getDestinationSize ( D dest );
+	protected abstract long getCurrentBatchSize ( B dest );
 
 	/**
-	 * Decides to switch to a new task based on {@link #getDestinationSize(Object)} and {@link #getDestinationMaxSize()}.
+	 * Decides to switch to a new task based on {@link #getCurrentBatchSize(Object)} and {@link #getBatchMaxSize()}.
 	 */
 	@Override
-	protected boolean decideNewTask ( D dest ) {
-		return this.getDestinationSize ( dest ) >= this.getDestinationMaxSize ();
+	protected boolean decideNewBatch ( B dest ) {
+		return this.getCurrentBatchSize ( dest ) >= this.getBatchMaxSize ();
 	}	
 }

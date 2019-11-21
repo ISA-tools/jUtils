@@ -3,6 +3,7 @@
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
 ## 7.0.1-SNAPSHOT (should become 8, non backward-compatible changes).
+  * Big and clearer renaming for `BatchProcessor` and its subclasses.  
   * `uk.ac.ebi.utils.runcontrol.ProgressLogger` and percent logger added.
   * Additions to `uk.ac.ebi.utils.exceptions`. 
   * `uk.ac.ebi.utils.xml.XPathReader` interface enhanced and unit-tested.
