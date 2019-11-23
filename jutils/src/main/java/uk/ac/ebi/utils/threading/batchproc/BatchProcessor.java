@@ -1,4 +1,4 @@
-package uk.ac.ebi.utils.threading;
+package uk.ac.ebi.utils.threading.batchproc;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
-import uk.ac.ebi.utils.runcontrol.ProgressLogger;
+import uk.ac.ebi.utils.threading.HackedBlockingQueue;
 
 
 /**  
@@ -86,16 +86,15 @@ public abstract class BatchProcessor<S, B>
 
 	/**
 	 * This is the method that possibly issues a new task, via the {@link #getExecutor()}, which runs 
-	 * the {@link #batchJob} against the current {@link #getBatchFactory() destination}.   
+	 * the {@link #getBatchJob()} against the current batch. 
 	 * 
-	 * Note that your {@link #getBatchJob() task handler} will be executed under the 
-	 * {@link #wrapBatchJob(Runnable) default wrapper}.  
+	 * Note that the batch job will be executed under the {@link #wrapBatchJob(Runnable) default wrapper}.  
 	 * 
-	 * @param forceFlush if true it flushes the data independently of {@link #getChunkSize()}.  
+	 * @param forceFlush if true it flushes the data independently of {@link #decideNewBatch(Object)}.
 	 * 
 	 */
 	protected B handleNewBatch ( B currentBatch, boolean forceFlush )
-	{
+	{		
 		if ( !( forceFlush || this.decideNewBatch ( currentBatch ) ) ) return currentBatch;
 
 		getExecutor ().submit ( wrapBatchJob ( () -> batchJob.accept ( currentBatch ) ) );

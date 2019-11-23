@@ -1,4 +1,4 @@
-package uk.ac.ebi.utils.threading;
+package uk.ac.ebi.utils.threading.batchproc;
 
 /**
  * A {@link BatchProcessor} where {@link #decideNewBatch(Object)} is based on some 
@@ -33,13 +33,13 @@ public abstract class SizeBasedBatchProcessor<S, B> extends BatchProcessor<S, B>
 	/**
 	 * Tells the size of dest.
 	 */
-	protected abstract long getCurrentBatchSize ( B dest );
+	protected abstract long getCurrentBatchSize ( B batch );
 
 	/**
 	 * Decides to switch to a new task based on {@link #getCurrentBatchSize(Object)} and {@link #getBatchMaxSize()}.
 	 */
 	@Override
-	protected boolean decideNewBatch ( B dest ) {
-		return this.getCurrentBatchSize ( dest ) >= this.getBatchMaxSize ();
+	protected boolean decideNewBatch ( B batch ) {
+		return this.getCurrentBatchSize ( batch ) >= this.getBatchMaxSize ();
 	}	
 }
