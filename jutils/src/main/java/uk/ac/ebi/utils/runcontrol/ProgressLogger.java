@@ -48,8 +48,16 @@ public class ProgressLogger
 	{
 	}
 
+	
+	public void reset () {
+		this.update ( 0 );
+	}
+	
 	/**
-	 * Updates the current progress and possibly generates a new log message, according to {@link #getProgressResolution()}, as
+	 * Updates the current progress and possibly generates a new log message, according to {@link #getProgressResolution()}.
+	 * The new progress should be greater than the existing one, except for the value 0, which resets the logger for a new
+	 * run of items. 
+	 * 
 	 */
 	public void update ( long newProgress )
 	{
@@ -65,6 +73,8 @@ public class ProgressLogger
 		finally { 
 			wlock.unlock ();
 		}
+		if ( newProgress == 0 ) return;
+		
 		this.progressReport ( oldProgress, newProgress );
 	}
 
