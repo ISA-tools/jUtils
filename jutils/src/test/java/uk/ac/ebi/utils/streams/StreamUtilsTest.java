@@ -41,7 +41,7 @@ public class StreamUtilsTest
 			new String [] { "C", "Z", "2" }
 		};
 		
-		verify ( 
+		verifyStreamOfStringArrays ( 
 			StreamUtils.tupleStream ( streams ),
 			expResults
 		);
@@ -65,7 +65,7 @@ public class StreamUtilsTest
 			new String [] { "B", "Y", "1" }
 		};
 		
-		verify ( 
+		verifyStreamOfStringArrays ( 
 			StreamUtils.tupleStream ( streams ),
 			expResults
 		);
@@ -93,7 +93,7 @@ public class StreamUtilsTest
 			new String [] { "F", "Y", "5" }
 		};
 		
-		verify ( 
+		verifyStreamOfStringArrays ( 
 			StreamUtils.tupleStream ( 0, true, streams ),
 			expResults
 		);
@@ -124,13 +124,14 @@ public class StreamUtilsTest
 			new String [] { "D", "R", "3" }
 		};
 		
-		verify ( 
+		verifyStreamOfStringArrays ( 
 			StreamUtils.tupleStream ( 0, true, streams ),
 			expResults
 		);
 	}
 	
-	private void verify ( Stream<String[]> input, String[][] expectedResults )
+	
+	private void verifyStreamOfStringArrays ( Stream<String[]> input, String[][] expectedResults )
 	{
 		Object[] results = input
 			.collect ( Collectors.toList () )
