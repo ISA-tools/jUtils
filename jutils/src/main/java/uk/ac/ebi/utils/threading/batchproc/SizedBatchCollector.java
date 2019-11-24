@@ -17,8 +17,10 @@ public interface SizedBatchCollector<B> extends BatchCollector<B>
 	@Override
 	public default Predicate<B> batchReadyFlag ()
 	{
-		return b -> this.batchSizer ().apply ( b ) >= this.getMaxBatchSize ();
+		return b -> this.batchSizer ().apply ( b ) >= this.maxBatchSize ();
 	}
 
-	public long getMaxBatchSize ();	
+	public default long maxBatchSize () {
+		return 1000;
+	}	
 }
