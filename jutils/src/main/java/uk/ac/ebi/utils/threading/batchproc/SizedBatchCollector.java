@@ -4,7 +4,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * TODO: comment me!
+ * A batch collector such that the {@link #batchReadyFlag() batch ready flag} can be based on a 
+ * {@link #batchSizer() batch size} and a {@link #maxBatchSize() max size parameter}.    
  *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>23 Nov 2019</dd></dl>

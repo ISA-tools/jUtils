@@ -4,47 +4,62 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
 import uk.ac.ebi.utils.threading.HackedBlockingQueue;
+import uk.ac.ebi.utils.threading.batchproc.collectors.CollectionBatchCollector;
+import uk.ac.ebi.utils.threading.batchproc.processors.CollectionBasedBatchProcessor;
 
 
 /**  
- * <p>A simple class to manage processing of data in multi-thread mode.</p>
+ * ## Batch Processor Skeleton 
  * 
- * <p>The idea implemented here is that {@link #process(Object, Object...)} runs a loop where: 
+ * A simple skeleton to manage processing of data in multi-thread mode.  
  * 
- * <ul>
- *   <li>gets a data item from its input source of type S, for instance S might be a list of records</li>
- *   <li>optionally transforms the data item and sends the result to the current batch collector of type B, for instance
- *   		 B might be of type {@code Set<S>}</li>
- *   <li>invokes {@link #handleNewBatch(Object, boolean)}, which 
- *   {@link #decideNewBatch(Object) decides} if it's time to issue a new {@link #getBatchJob() batch processing job}.
- *   For example, the job might save the records in a single transaction. If a new job is actually issued by 
- *   {@link #handleNewBatch(Object, boolean)}, this also asks {@link #getBatchFactory()} for a new (eg, empty) batch, 
- *   and hence the hereby process() method should assign this new batch to the current batch being filled with items 
- *   from S. For instance, {@link #handleNewBatch(Object, boolean)} might decide to issue a new job when the current 
- *   set of records has enough elements and then {@link #getBatchFactory()} might be used to get a new empty set of 
- *   records.</li>
- * </ul></p>
- *
- * <p>Each invocation of {@link #handleNewBatch(Object, boolean)} might spawn the creation of a new
- * batch job, via {@link #getBatchJob()}, which is then submitted to the {@link #getExecutor() executor service}, 
- * and hence the batch processing happens in multi-thread mode.</p>
+ * The idea for which this class and {@link BatchCollector batch collectors} provide scaffolding for
+ * is that a data source is used to build `B` batches and, when 
+ * {@link BatchCollector#batchReadyFlag() a batch is ready to be processed}, it is submitted to a `BJ`
+ * job and run in parallel by an {@link #getExecutor()}.   
  * 
- * <p>After the main loop described above, {@link #process(Object, Object...)} should invoke {@link #waitExecutor(String)},
- * to wait for the completion of the that the parallel jobs execution.</p>
+ * This class is just a skeleton, for a concrete implementation you need to realise the above source
+ * processing loop on your own. In order to facilitate that, {@link #handleNewBatch(Object, boolean)}
+ * is provided. You should call it periodically, and it checks if the current batch (that you're filling)
+ * is ready for submission and, if yes, it submits the current batch to a new parallel job, 
+ * {@link BatchCollector#batchFactory() creates a new batch} and returns it (normally it returns the current
+ * batch).  
  * 
- * <p>The call to {@link #waitExecutor(String)} also resets the internal {@link ExecutorService}, which will be 
- * recreated (once) upon the first invocation of {@link #getExecutor()}. This behaviour ensures that {@link #process(Object, Object...)}
- * can be invoked multiple times reusing the same batchJob instance (normally that's not possible for 
- * an {@link ExecutorService} after its {@link ExecutorService#awaitTermination(long, TimeUnit)} method is called).</p> 
+ * At the end of such a loop, you should call {@link #waitExecutor(String)}, so that the final batch you were building
+ * is forced into processing and other close-up operations are performed.  
  * 
- * <p>You can find a usage example of this class in the <a href = "TODO">rdf-utils-jena package</a>.
+ * As you can see above, {@link BatchCollector} is another facility to manage batch creation and decide if a
+ * batch is ready to be processed.   
+ * 
+ * Specific implementations are provided for both {@link BatchCollector} and this processor class.
+ * For instance, We have an {@link ItemizedBatchProcessor item-based processor}, which 
+ * {@link ItemizedBatchProcessor#process(Consumer, Object...) implements} the above-described source dispatching loop
+ * as the fetch from a stream of items, which are sent to batches.  
+ * 
+ * This specific processor uses {@link ItemizedSizedBatchCollector item-based collectors}, which of default implementation
+ * decides if a batch is ready to go on the basis of the {@link ItemizedSizedBatchCollector#batchSizer() number of items}
+ * it has. Other specific processors are those {@link CollectionBasedBatchProcessor based on Java collections}, which 
+ * makes use of corresponding {@link CollectionBatchCollector}.  
+ * 
+ * Note that, while we consider sychronisation issues for the {@link #getBatchJob() batch processing jobs}, we assume that
+ * the initiation and submission operations are run by a single thread (eg, `main`), so the code about that isn't 
+ * thread-safe. For instance, {@link #waitExecutor(String)} won't synchronise over the {@link #getExecutor() current executor}
+ * and {@link #setBatchJob(Consumer)} won't synchronise over the current job. Instantiating multiple processors is a 
+ * safe way to deal with such a multi-multi-thread scenario. Likely, you'll want to share the executor job in such a case.
+ * 
+ * 
+ *  
+ * @param <B> the type of batch to be handled
+ * @param <BC> the type of {@link BatchCollector} to use for batch operations
+ * @param <BJ> the type of job that is able to process a batch of type `B`
  *  
  * @author brandizi
  * <dl><dt>Date:</dt><dd>1 Dec 2017</dd></dl>
@@ -55,12 +70,24 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	private BJ batchJob;
 	private BC batchCollector;
 	
-	private Supplier<ExecutorService> executorFactory = HackedBlockingQueue::createExecutor;
-	private ExecutorService executor;
+	private ExecutorService executor = HackedBlockingQueue.createExecutor ();
 	
 	private AtomicLong submittedBatches = new AtomicLong ( 0 );
 	private AtomicLong completedBatches = new AtomicLong ( 0 );
 
+	/**
+	 * Set to true by {@link #waitExecutor(String)}, when it needs to wait for the 
+	 * completion of all {@link #submittedBatches}, and {@link Object#notify() notified} by 
+	 * {@link #wrapBatchJob(Runnable)}, when it sees that {@link #completedBatches} == {@link #submittedBatches}.
+	 * 
+	 * It's a mutable because it's also used in `synchronized` blocks. Moreover, it's not a simple
+	 * void object, cause {@link #wrapBatchJob(Runnable)} reports how many jobs it completed when this is 
+	 * true. 
+	 * 
+	 */
+	private Mutable<Boolean> waitingCompletion = new MutableBoolean ();
+	
+	
 	/** @see {@link #wrapBatchJob(Runnable)} */
 	protected long jobLogPeriod = 1000;
 	
@@ -93,6 +120,11 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	 * 
 	 * Note that the batch job will be executed under the {@link #wrapBatchJob(Runnable) default wrapper}.  
 	 * 
+	 * This method also resets the internal {@link ExecutorService}, which will be recreated (once) upon the first 
+	 * invocation of {@link #getExecutor()}. This behaviour ensures that a processor can be invoked multiple times 
+	 * reusing the same batchJob instance (normally that's not possible for an {@link ExecutorService} after its 
+	 * {@link ExecutorService#awaitTermination(long, TimeUnit)} method is called).   
+	 * 
 	 * @param forceFlush if true it flushes the data independently of {@link #decideNewBatch(Object)}.
 	 * 
 	 */
@@ -109,7 +141,11 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 		return bcoll.batchFactory ().get ();
 	}
 	
-	
+	/**
+	 * As explained in {@link BatchCollector}, this is used to create a new batch and decide if it's ready for submission
+	 * to a new {@link #getBatchJob() job}.
+	 * @return
+	 */
 	public BC getBatchCollector () {
 		return batchCollector;
 	}
@@ -120,8 +156,10 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 
 	
 	/**
-	 * Every new parallel task that is generated by {@link #process(Object)} and {@link #handleNewBatch(Object, boolean)}
-	 * runs this batchJob.
+	 * {@link #handleNewBatch(Object, boolean)} launches this job every time the current batch being considered is 
+	 * {@link BatchCollector#batchReadyFlag() ready for processing}.  
+	 * 
+	 * Note that your job is wrapped into {@link #wrapBatchJob(Runnable)}.
 	 */
 	public BJ getBatchJob () {
 		return batchJob;
@@ -130,34 +168,29 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	public void setBatchJob ( BJ batchJob ) {
 		this.batchJob = batchJob;
 	}
-
-
-	/**
-	 * <p>The factory for the thread pool manager used by {@link #process(Object, Object...)}.</p>
-	 * 
-	 * <p>By default this is {@link HackedBlockingQueue#createExecutor()}. Normally you shouldn't need to 
-	 * change this parameter, unless you want some particular execution policy.</p>
-	 * 
-	 */
-	public Supplier<ExecutorService> getExecutorFactory () {
-		return executorFactory;
-	}
-
-	public void setExecutorFactory ( Supplier<ExecutorService> executorFactory ) {
-		this.executorFactory = executorFactory;
-	}
 	
 	/**
-	 * This is initialised using the first time you call it, by means of {@link #getExecutorFactory()}. If you 
-	 * invoke {@link #waitExecutor(String)}, in {@link #process(Object, Object...)}, as recommended, the internal 
-	 * {@link ExecutorService} returned by this is made to null again and then re-initialised by this method upon its
-	 * next call.
+	 *
+	 * The executor service used by {@link #handleNewBatch(Object)} to submit {@link #getBatchJob() batch jobs and 
+	 * run them in parallel}.   
+	 * 
+	 * By default this is {@link HackedBlockingQueue#createExecutor()}, ie, a fixed size executor
+	 * pool, which is able to block and wait when it's full.    
+	 * 
+	 * Normally you shouldn't need to change this parameter, unless you want some particular execution policy. A 
+	 * situation where you want to use the {@link #setExecutor(ExecutorService) setter for this property} is when 
+	 * you want to hook multiple batch processors to the same executor, to avoid recreating threads too many times, and/or
+	 * to decide an overall thread management policy.
+	 * 
 	 */
-	public ExecutorService getExecutor ()
-	{
-		if ( executor == null ) executor = this.executorFactory.get ();
-		return executor;
+	public ExecutorService getExecutor () {
+		return this.executor;
 	}
+
+	public void setExecutor ( ExecutorService executor ) {
+		this.executor = executor;
+	}
+
 
 	/**
 	 * <p>Waits that all the parallel jobs submitted to the batchJob are finished. It keeps polling
@@ -170,16 +203,22 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	 */
 	protected void waitExecutor ( String pleaseWaitMessage )
 	{
-		ExecutorService executor = getExecutor ();
-		executor.shutdown (); 
-
-		// Wait to finish
 		try
 		{
-			while ( !executor.isTerminated () ) 
+			while ( true )
 			{
-				log.info ( pleaseWaitMessage ); 
-				executor.awaitTermination ( 5, TimeUnit.MINUTES );
+				log.info ( pleaseWaitMessage );
+				synchronized ( this.waitingCompletion )
+				{
+					this.waitingCompletion.setValue ( true );
+					try {
+						if ( this.getCompletedBatches () == this.getSubmittedBatches () ) break;
+						this.waitingCompletion.wait ( 5 * 60 * 1000 );
+					}
+					finally {
+						this.waitingCompletion.setValue ( false );
+					}
+				}
 			}
 		}
 		catch ( InterruptedException ex ) {
@@ -187,8 +226,6 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 				"Unexpected interruption while waiting for batchJob termination: " + ex.getMessage (), ex 
 			);
 		}
-		
-		this.executor = null;
 	}
 	
 	/**
@@ -215,13 +252,19 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 					ex
 				);
 			}
-			finally {
+			finally 
+			{
 				long completed = this.completedBatches.incrementAndGet ();
 				long submitted = this.submittedBatches.get ();
-				if ( completed % this.jobLogPeriod == 0 
-						 || completed == submitted
-						 && this.getExecutor ().isShutdown () )
-					log.info ( "{}/{} batch jobs completed", completed, submitted );
+				synchronized ( this.waitingCompletion )
+				{
+					if ( completed % this.jobLogPeriod == 0 
+							 || completed == submitted && this.waitingCompletion.getValue () )
+					{
+						log.info ( "{}/{} batch jobs completed", completed, submitted );
+						this.waitingCompletion.notify ();
+					}
+				}
 			}
 		};
 	}
