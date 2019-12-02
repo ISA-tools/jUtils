@@ -69,7 +69,7 @@ public abstract class ItemizedBatchProcessor<E, B, BC extends ItemizedBatchColle
 
 		if ( !waitCompletion ) return;
 		this.waitExecutor ( "Waiting for the batch processor to finish" );
-		log.info ( "Batch processor finished" );
+		if ( this.jobLogPeriod > -1 ) log.info ( "Batch processor finished" );
 	}
 	
 	/**

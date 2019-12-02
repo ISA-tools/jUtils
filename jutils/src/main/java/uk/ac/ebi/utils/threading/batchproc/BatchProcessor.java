@@ -135,8 +135,9 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 
 		getExecutor ().submit ( wrapBatchJob ( () -> batchJob.accept ( currentBatch ) ) );
 		
-		if ( this.submittedBatches.incrementAndGet () % this.jobLogPeriod == 0 ) 
-			log.info ( "{} batch jobs submitted", this.submittedBatches.get () );
+		long submitted = this.submittedBatches.incrementAndGet ();
+		if ( this.jobLogPeriod > 0 && submitted % this.jobLogPeriod == 0 ) 
+			log.info ( "{} batch jobs submitted", submitted );
 		
 		return bcoll.batchFactory ().get ();
 	}
@@ -207,7 +208,7 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 		{
 			while ( true )
 			{
-				log.info ( pleaseWaitMessage );
+				if ( this.jobLogPeriod > -1 ) log.info ( pleaseWaitMessage );
 				synchronized ( this.waitingCompletion )
 				{
 					this.waitingCompletion.setValue ( true );
@@ -258,12 +259,13 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 				long submitted = this.submittedBatches.get ();
 				synchronized ( this.waitingCompletion )
 				{
-					if ( completed % this.jobLogPeriod == 0 
-							 || completed == submitted && this.waitingCompletion.getValue () )
-					{
-						log.info ( "{}/{} batch jobs completed", completed, submitted );
+					if ( this.jobLogPeriod > 0 ) 
+						if ( completed == submitted && this.waitingCompletion.getValue ()
+						     || ( completed % this.jobLogPeriod == 0 ) )
+							log.info ( "{}/{} batch jobs completed", completed, submitted );
+					
+					if ( completed == submitted )
 						this.waitingCompletion.notify ();
-					}
 				}
 			}
 		};
@@ -279,5 +281,28 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	public long getCompletedBatches ()
 	{
 		return completedBatches.get ();
+	}
+
+
+	/**
+	 * If &gt; 0, methods like {@link #handleNewBatch(Object, boolean)} and {@link #waitExecutor(String)} log messages 
+	 * about how many submitted and completed {@link #getBatchJob() jobs} the processor is dealing with, and does it every
+	 * a number of submitted jobs equal to this property. Additionally, {@link #waitExecutor(String)} logs the parameter it
+	 * receives.  
+	 * 
+	 * If it's 0, just does the latter.  
+	 * 
+	 * If it's -1, none of such logging happens.  
+	 * 
+	 * It might be useful to disable these messages with 0 or -1 if the caller wants to use its own logging about similar
+	 * events. In particular, it might be useful when you use mukltiple processors in parallel, or the same for multiple
+	 * times.
+	 * 
+	 * **WARNING**: implementors of this class's subclasses should comply with the above semantics for this parameter, at 
+	 * least if those classes are general purpose and meant to be reused by third parties.
+	 */
+	public void setJobLogPeriod ( long jobLogPeriod )
+	{
+		this.jobLogPeriod = jobLogPeriod;
 	}
 }
