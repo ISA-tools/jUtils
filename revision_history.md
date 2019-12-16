@@ -3,12 +3,12 @@
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
 ## 8.0 (should become 8, non backward-compatible changes).
-  * Big and clearer renaming for `BatchProcessor` and its subclasses.  
+  * Big changes to `uk.ac.ebi.utils.threading.BatchProcessor` and related components, with clearer 
+  naming, better abstraction of the notion of batches their collection.   
   * `uk.ac.ebi.utils.runcontrol.ProgressLogger` and percent logger added.
   * Additions to `uk.ac.ebi.utils.exceptions`. 
   * `uk.ac.ebi.utils.xml.XPathReader` interface enhanced and unit-tested.
   * Additions to `uk.ac.ebi.utils.string.StringSearchUtils`.
-  * Changes to `uk.ac.ebi.utils.threading.BatchProcessor`.
   * Additions to `uk.ac.ebi.utils.time.XStopWatch`.
   * Javadocs (with Markdown support) added to the build.
   * (jutils-io) `readFiles()` methods added.

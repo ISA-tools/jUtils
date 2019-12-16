@@ -22,13 +22,11 @@ public class SetBatchCollector<E> extends CollectionBatchCollector<Set<E>, E>
 		super ( batchFactory, maxBatchSize );
 	}
 
-	public SetBatchCollector ( int maxBatchSize )
-	{
+	public SetBatchCollector ( int maxBatchSize ) {
 		this ( HashSet::new, maxBatchSize );
 	}
 	
-	public SetBatchCollector ()
-	{
+	public SetBatchCollector () {
 		super ( HashSet::new );
 	}
 

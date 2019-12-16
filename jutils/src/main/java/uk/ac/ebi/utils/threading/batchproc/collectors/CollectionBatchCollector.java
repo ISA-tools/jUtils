@@ -26,7 +26,8 @@ public abstract class CollectionBatchCollector<C extends Collection<E>, E>
 	/**
 	 * Default size is inherited by {@link AbstractSizedBatchCollector}.
 	 */
-	public CollectionBatchCollector ( Supplier<C> batchFactory ) {
+	public CollectionBatchCollector ( Supplier<C> batchFactory )
+	{
 		super ();
 		this.batchFactory = batchFactory;
 	}
@@ -43,8 +44,7 @@ public abstract class CollectionBatchCollector<C extends Collection<E>, E>
 	}
 	
 	@Override
-	public BiConsumer<C, E> accumulator ()
-	{
+	public BiConsumer<C, E> accumulator () {
 		return (coll,elem) -> coll.add ( elem );
 	}
 

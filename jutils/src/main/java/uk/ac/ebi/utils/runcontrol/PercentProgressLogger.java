@@ -5,6 +5,12 @@ package uk.ac.ebi.utils.runcontrol;
  * 
  * <p>Note that the {@link #getProgressReportAction() prog report action} receives the progress percentages, not
  * the absolute values.</p>
+ * 
+ * <p>Instead, {@link #update(long)} and its variants receives an absolute increment, as it is for the the 
+ * {@link #getProgressResolution() progressResolution property}.</p>
+ * 
+ * <p>{@link #getProgress()} reports the absolute progress too, while {@link #getPercentProgress()} is provided as 
+ * a shortcut to the percent progress.</p>
  *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>22 May 2019</dd></dl>
@@ -51,6 +57,15 @@ public class PercentProgressLogger extends ProgressLogger
 	public void setMaxProgress ( long maxProgress )
 	{
 		this.maxProgress = maxProgress;
+	}
+
+	/**
+	 * Uses {@link #getProgress() the absolute progress} and {@link #getMaxProgress()} to 
+	 * report the 0-100 progress 
+	 */
+	public double getPercentProgress ()
+	{
+		return 100d * this.getProgress () / this.maxProgress;
 	}
 	
 }

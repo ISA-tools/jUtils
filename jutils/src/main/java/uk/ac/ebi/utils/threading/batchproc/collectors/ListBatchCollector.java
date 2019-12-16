@@ -25,16 +25,14 @@ public class ListBatchCollector<E> extends CollectionBatchCollector<List<E>, E>
 	/**
 	 * {@link ArrayList} as default.
 	 */
-	public ListBatchCollector ( int maxBatchSize )
-	{
+	public ListBatchCollector ( int maxBatchSize ) {
 		this ( ArrayList::new, maxBatchSize );
 	}
 
 	/**
 	 * {@link ArrayList} as default.
 	 */
-	public ListBatchCollector ()
-	{
+	public ListBatchCollector () {
 		super ( ArrayList::new );
 	}
 }

@@ -94,7 +94,8 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
 	
 		
-	public BatchProcessor ( BJ batchJob, BC batchCollector ) {
+	public BatchProcessor ( BJ batchJob, BC batchCollector )
+	{
 		super ();
 		this.batchJob = batchJob;
 		this.batchCollector = batchCollector;
