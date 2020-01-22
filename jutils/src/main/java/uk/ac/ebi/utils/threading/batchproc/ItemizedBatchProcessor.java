@@ -37,8 +37,9 @@ public abstract class ItemizedBatchProcessor<E, B, BC extends ItemizedBatchColle
 	 * Gets an input flow of items and dispatches them to batches and batch jobs, as explained in the 
 	 * {@link BatchProcessor} super-class.
 	 * 
-	 * @param sourceItemConsumer this yields all the items to be processed and passes it to the consumer that we provide
-	 * in this method. Examples of methods compatible with this parameter are {@link Stream#forEach(Consumer)}
+	 * @param sourceItemConsumer this yields all the items to be processed and passes each of them to the single-item 
+	 * consumer that we provide hereby. The latter collects the item in the current batch and handles the batch dispatch
+	 * logics explained above. Examples of methods compatible with this parameter are {@link Stream#forEach(Consumer)}
 	 * and {@link Iterator#forEachRemaining(Consumer)}.
 	 * 
 	 * @param waitCompletion if true (default), {@link #waitExecutor(String) waits} for all the submitted batch jobs to 
