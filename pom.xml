@@ -197,14 +197,9 @@
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-					<!-- This allows the Javadoc tool to recognise Markdown syntax in Javadoc comments -->
-					<doclet>ch.raffael.doclets.pegdown.PegdownDoclet</doclet>
-					<docletArtifact>
-						<groupId>ch.raffael.pegdown-doclet</groupId>
-						<artifactId>pegdown-doclet</artifactId>
-						<version>1.3</version>
-					</docletArtifact>
-					<useStandardDocletOptions>true</useStandardDocletOptions>
+					<!-- TODO: the Markdown doclet doesn't work with JDK11 -->
+					<useStandardDocletOptions>false</useStandardDocletOptions>
+          <additionalOptions>-Xdoclint:none</additionalOptions>
 					<!-- We use a Travis command to redirect reportOutputDirectory into <main dir>/docs/javadocs -->
           <destDir>${project.artifactId}</destDir>
 				</configuration>
