@@ -2,7 +2,9 @@
 
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
-## 8.0 (should become 8, non backward-compatible changes).
+# 8.0.1-SNAPSHOT
+
+## 8.0
   * Big changes to `uk.ac.ebi.utils.threading.BatchProcessor` and related components, with clearer 
   naming, better abstraction of the notion of batches their collection.   
   * `uk.ac.ebi.utils.runcontrol.ProgressLogger` and percent logger added.
