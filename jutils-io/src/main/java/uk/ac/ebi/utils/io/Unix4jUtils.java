@@ -36,7 +36,7 @@ public class Unix4jUtils
 	 * library</p>
 	 *  
 	 */
-	public static InputStream unixFilter ( To command, final InputStream inStream )
+	public static InputStream unixFilter ( final To command, final InputStream inStream )
 	{
 		InputStreamFromOutputStream<Void> pipeIn = new InputStreamFromOutputStream<Void> () 
 		{
