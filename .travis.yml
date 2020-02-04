@@ -6,4 +6,4 @@ script:
   - ./mk-javadocs.sh
   - git remote set-url origin https://marco-brandizi:$REPO_PWD@github.com/ISA-tools/jUtils 
   - git commit -a -m 'Updating auto-generated files from Travis [ci skip]'
-  - git push origin HEAD:master
+  - git push origin HEAD
