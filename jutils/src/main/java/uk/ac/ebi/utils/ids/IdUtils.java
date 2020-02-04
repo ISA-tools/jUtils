@@ -8,9 +8,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.BaseEncoding;
+
+import java.util.Base64;
 
 /**
  * Utilities about management of identifiers.
@@ -52,7 +55,7 @@ public class IdUtils
 		buf.putLong ( uuid.getLeastSignificantBits () );
 		byte[] hash = buf.array ();
 
-		return DatatypeConverter.printBase64Binary ( hash ).substring ( 0, 22 );
+		return Base64.getEncoder ().encodeToString ( hash ).substring ( 0, 22 ); 
 	}
 	
 	/**
@@ -72,9 +75,10 @@ public class IdUtils
 		catch ( NoSuchAlgorithmException ex ) {
 			throw new IllegalArgumentException ( "Internal error, cannot get the MD5 digester from the JVM", ex );
 		}
+		
 	
-		String hash = DatatypeConverter.printHexBinary ( messageDigest.digest ( sig.getBytes () ) );
-		hash = hash.toLowerCase ();
+		byte hashBytes[] = messageDigest.digest ( sig.getBytes ( Charsets.UTF_8 ) );
+		String hash = BaseEncoding.base16 ().lowerCase ().encode ( hashBytes );
 		
 		// log.trace ( "Returning hash '{}' from input '{}'", hash, sig );
 		
