@@ -1,0 +1,16 @@
+uk.ac.ebi.utils.collections
+uk.ac.ebi.utils.exceptions
+uk.ac.ebi.utils.ids
+uk.ac.ebi.utils.memory
+uk.ac.ebi.utils.reflection
+uk.ac.ebi.utils.regex
+uk.ac.ebi.utils.runcontrol
+uk.ac.ebi.utils.streams
+uk.ac.ebi.utils.string
+uk.ac.ebi.utils.test.junit
+uk.ac.ebi.utils.threading
+uk.ac.ebi.utils.threading.batchproc
+uk.ac.ebi.utils.threading.batchproc.collectors
+uk.ac.ebi.utils.threading.batchproc.processors
+uk.ac.ebi.utils.time
+uk.ac.ebi.utils.xml

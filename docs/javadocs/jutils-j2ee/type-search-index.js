@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"uk.ac.ebi.utils.sql","l":"HqlUtils"},{"p":"uk.ac.ebi.utils.orm","l":"Many2ManyUtils"},{"p":"uk.ac.ebi.utils.test.junit","l":"TestEntityMgrProvider"}]
