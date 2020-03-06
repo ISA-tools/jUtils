@@ -7,12 +7,12 @@ import java.util.stream.Collector;
 /**
  * ## The Batch Collector
  * 
- * A batch collector is a container of methods to manage matches during the operations of 
+ * A batch collector is a container of methods to manage batches during the operations of a
  * {@link BatchProcessor}. This default interface offers a {@link #batchFactory() batch factory}, used
  * to obtain a new batch when needed, and a {@link #batchReadyFlag() ready flag}, which establishes if
- * a batch is ready for being processed (eg, it's full wrt o a given size).  
+ * a batch is ready for being processed (eg, it's full wrt a given size).  
  * 
- * Significant specific sub-interface are the {@link SizedBatchCollector sized-based collectors}, the
+ * Significant specific sub-interfaces are the {@link SizedBatchCollector sized-based collectors}, the
  * {@link ItemizedSizedBatchCollector item-based one} and their {@link ItemizedSizedBatchCollector intersection}.  
  *
  * Due to some similarity, batch collectors are named after {@link Collector Java stream collectors}.
