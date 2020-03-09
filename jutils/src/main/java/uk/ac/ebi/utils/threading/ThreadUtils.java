@@ -26,7 +26,6 @@ public class ThreadUtils
 			.setNameFormat ( prefix + "%d" );
 		if ( baseFactory != null ) builder.setThreadFactory ( baseFactory );
 		return builder.build ();
-		
 	}
 
 	/**
