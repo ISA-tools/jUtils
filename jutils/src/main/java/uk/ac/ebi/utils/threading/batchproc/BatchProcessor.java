@@ -52,10 +52,11 @@ import uk.ac.ebi.utils.threading.batchproc.processors.CollectionBasedBatchProces
  * makes use of corresponding {@link CollectionBatchCollector}.  
  * 
  * Note that, while we consider sychronisation issues for the {@link #getBatchJob() batch processing jobs}, we assume that
- * the initiation and submission operations are run by a single thread (eg, `main`), so the code about that isn't 
+ * the initialisation and submission operations are run by a single thread (eg, `main`), so the code about that isn't 
  * thread-safe. For instance, {@link #waitExecutor(String)} won't synchronise over the {@link #getExecutor() current executor}
  * and {@link #setBatchJob(Consumer)} won't synchronise over the current job. Instantiating multiple processors is a 
  * safe way to deal with such a multi-multi-thread scenario. Likely, you'll want to share the executor job in such a case.
+ * 
  *  
  * @param <B> the type of batch to be handled
  * @param <BC> the type of {@link BatchCollector} to use for batch operations
@@ -129,7 +130,8 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	 * reusing the same batchJob instance (normally that's not possible for an {@link ExecutorService} after its 
 	 * {@link ExecutorService#awaitTermination(long, TimeUnit)} method is called).   
 	 * 
-	 * @param forceFlush if true it flushes the data independently of {@link #decideNewBatch(Object)}.
+	 * @param forceFlush if true it flushes the data independently of {@link BatchCollector#batchReadyFlag()}. Which is
+	 * typically needed when you've exhausted a stream of data and you have a last partially-filled batch to process.
 	 * 
 	 */
 	protected B handleNewBatch ( B currentBatch, boolean forceFlush )
