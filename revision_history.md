@@ -6,9 +6,11 @@
   * **FROM NOW ON, JDK < 11 IS NO LONGER SUPPORTED**. jutils will possibly work with 1.8 for a
   while (until we start introducing incompatible changes), but that's not officially 
   supported.
+  * Class-based thread names in `uk.ac.ebi.utils.threading.batchproc.BatchProcessor`.
 
 ## 9.0.1-SNAPSHOT
   * Just started
+  * This isn't for release, many changes in here are in 10.0-SNAPSHOT 
 
 ## 9.0
   * Big changes to `uk.ac.ebi.utils.threading.BatchProcessor` and related components, with clearer 
