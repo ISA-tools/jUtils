@@ -1,6 +1,7 @@
 package uk.ac.ebi.utils.threading.batchproc;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.utils.exceptions.UnexpectedEventException;
 import uk.ac.ebi.utils.threading.HackedBlockingQueue;
+import uk.ac.ebi.utils.threading.ThreadUtils;
 import uk.ac.ebi.utils.threading.batchproc.collectors.CollectionBatchCollector;
 import uk.ac.ebi.utils.threading.batchproc.processors.CollectionBasedBatchProcessor;
 
@@ -92,7 +94,10 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	
 	protected Logger log = LoggerFactory.getLogger ( this.getClass () );
 	
-		
+	{
+		ThreadUtils.setNamingThreadFactory ( this.getClass (), executor );
+	}
+			
 	public BatchProcessor ( BJ batchJob, BC batchCollector )
 	{
 		super ();
@@ -177,7 +182,9 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	 * run them in parallel}.   
 	 * 
 	 * By default this is {@link HackedBlockingQueue#createExecutor()}, ie, a fixed size executor
-	 * pool, which is able to block and wait when it's full.    
+	 * pool, which is able to block and wait when it's full. Moreover, such executor is equipped with a convenient 
+	 * {@link ThreadUtils#setNamingThreadFactory(Class, ThreadPoolExecutor) naming thread factory}, which names the 
+	 * threads based on the processor class (ie, myself or one extension of mine).     
 	 * 
 	 * Normally you shouldn't need to change this parameter, unless you want some particular execution policy. A 
 	 * situation where you want to use the {@link #setExecutor(ExecutorService) setter for this property} is when 
@@ -306,4 +313,5 @@ public abstract class BatchProcessor<B, BC extends BatchCollector<B>, BJ extends
 	{
 		this.jobLogPeriod = jobLogPeriod;
 	}
+	
 }
