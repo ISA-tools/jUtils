@@ -73,10 +73,6 @@ public class HackedBlockingQueue<E> extends LinkedBlockingQueue<E>
 		return null;
 	}
 
-	@Override
-	public E peek () {
-		return super.peek ();
-	}
 	
 	/**
 	 * Using an instance of this class, returns a fixed size {@link ThreadPoolExecutor} that blocks 

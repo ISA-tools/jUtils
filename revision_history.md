@@ -7,6 +7,8 @@
   while (until we start introducing incompatible changes), but that's not officially 
   supported.
   * Class-based thread names in `uk.ac.ebi.utils.threading.batchproc.BatchProcessor`.
+  * Helpers added to `uk.ac.ebi.utils.memory` to support the migration of the 
+  now-deprecated `finalize()` method.
 
 ## 9.0.1-SNAPSHOT
   * Just started

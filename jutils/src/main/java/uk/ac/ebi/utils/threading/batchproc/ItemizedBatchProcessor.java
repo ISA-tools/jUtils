@@ -59,7 +59,7 @@ public abstract class ItemizedBatchProcessor<E, B, BC extends ItemizedBatchColle
 		sourceItemConsumer.accept ( item -> 
 		{
 			B currentBatch = currentBatchWrp.getValue ();
-			this.consumeItem ( item, currentBatch );
+			this.consumeItem ( currentBatch, item );
 			B newBatch = this.handleNewBatch ( currentBatch );
 			if ( newBatch == currentBatch ) return;
 			currentBatchWrp.setValue ( newBatch );
@@ -87,7 +87,7 @@ public abstract class ItemizedBatchProcessor<E, B, BC extends ItemizedBatchColle
 	 * you want to decorate with some pre/post fetching actions, without needing to change {@link #process(Consumer)}.
 	 * 
 	 */
-	protected void consumeItem ( E item, B currentBatch ) {
+	protected void consumeItem ( B currentBatch, E item ) {
 		this.getBatchCollector ().accumulator ().accept ( currentBatch, item );
 	}
 	
