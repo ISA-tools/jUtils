@@ -10,8 +10,8 @@ import uk.org.lidalia.slf4jext.Logger;
 import uk.org.lidalia.slf4jext.LoggerFactory;
 
 /**
- * Reports (using the logger) the progress of some process, represented by a long number.
- * The progress update operations in this class are thread-safe.
+ * Reports (using a logger) the progress of some process, represented by a long number.
+ * The progress-update operations in this class are thread-safe.
  *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>22 May 2019</dd></dl>
@@ -170,7 +170,7 @@ public class ProgressLogger
 
 	/**
 	 * <p>This is invoked when the progress reaches a multiple of {@link #getProgressResolution()}, as per
-	 * {@link #update(long)} implementation.</p>
+	 * {@link #update(long)} implementation. The bi-consumer receives the before and after-update progresses so far.</p>
 	 * 
 	 * <p>The default action logs with {@link #getLogMessageTemplate()} and {@link #getLoggingLevel()}.
 	 * Typically, you will want to use such default action and then chain yours via {@link BiConsumer#andThen(BiConsumer)}

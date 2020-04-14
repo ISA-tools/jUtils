@@ -6,7 +6,7 @@ package uk.ac.ebi.utils.runcontrol;
  * <p>Note that the {@link #getProgressReportAction() prog report action} receives the progress percentages, not
  * the absolute values.</p>
  * 
- * <p>Instead, {@link #update(long)} and its variants receives an absolute increment, as it is for the the 
+ * <p>Instead, {@link #update(long)} and its variants receives an absolute increment, as this is  to be used with the 
  * {@link #getProgressResolution() progressResolution property}.</p>
  * 
  * <p>{@link #getProgress()} reports the absolute progress too, while {@link #getPercentProgress()} is provided as 
