@@ -82,10 +82,7 @@ public class HackedBlockingQueue<E> extends LinkedBlockingQueue<E>
 	public static ThreadPoolExecutor createExecutor ( int poolSize, int queueSize )
 	{
 		return new ThreadPoolExecutor (
-			poolSize, 
-			poolSize, 
-			0L, TimeUnit.MILLISECONDS, 
-			new HackedBlockingQueue<> ( queueSize ) 
+			poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, new HackedBlockingQueue<> ( queueSize ) 
 		);		
 	}
 	
