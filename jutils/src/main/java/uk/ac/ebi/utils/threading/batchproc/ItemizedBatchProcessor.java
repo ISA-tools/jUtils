@@ -1,6 +1,7 @@
 package uk.ac.ebi.utils.threading.batchproc;
 
 import java.util.Iterator;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -37,10 +38,13 @@ public abstract class ItemizedBatchProcessor<E, B, BC extends ItemizedBatchColle
 	 * Gets an input flow of items and dispatches them to batches and batch jobs, as explained in the 
 	 * {@link BatchProcessor} super-class.
 	 * 
-	 * @param sourceItemConsumer this yields all the items to be processed and passes each of them to the single-item 
-	 * consumer that we provide hereby. The latter collects the item in the current batch and handles the batch dispatch
-	 * logics explained above. Examples of methods compatible with this parameter are {@link Stream#forEach(Consumer)}
-	 * and {@link Iterator#forEachRemaining(Consumer)}.
+	 * @param sourceItemsGenerator this is a consumer of an item consumer, which should yield all the items to be processed 
+	 * and passe each of them to the single-item consumer that we pass it from here. This allows us to collect the 
+	 * generated item, save it the current batch and decide if this has to be dispatched to a new job and a new batch
+	 * should be generated. In other words, such generator will receive the code that realises the per-item iteration 
+	 * of our hereby processor. This is a generalisation for {@link #process(Stream, boolean) streams} and
+	 * {@link #process(Iterator, boolean) iterators}, we suggest that you use those variants if they fit into your specific 
+	 * case.
 	 * 
 	 * @param waitCompletion if true (default), {@link #waitExecutor(String) waits} for all the submitted batch jobs to 
 	 * complete. You might want this to be false when you use this method to send multiple item sources. **WARNING**: if
@@ -49,17 +53,20 @@ public abstract class ItemizedBatchProcessor<E, B, BC extends ItemizedBatchColle
 	 * bound to the older job.  
 	 * 
 	 */
-	protected void process ( Consumer<Consumer<E>> sourceItemConsumer, boolean waitCompletion )
+	protected void process ( Consumer<Consumer<E>> sourceItemsGenerator, boolean waitCompletion )
 	{
 		ItemizedBatchCollector<B,E> bcoll = this.getBatchCollector ();
 		Supplier<B> bfact = bcoll.batchFactory ();
+		BiConsumer<B, E> baccumulator = bcoll.accumulator ();
+		
 		// The lambda below wants final vars, so this does the trick
 		MutableObject<B> currentBatchWrp = new MutableObject<> ( bfact.get () );
 		
-		sourceItemConsumer.accept ( item -> 
+		sourceItemsGenerator.accept ( item -> 
 		{
 			B currentBatch = currentBatchWrp.getValue ();
-			this.consumeItem ( currentBatch, item );
+			baccumulator.accept ( currentBatch, item );
+			
 			B newBatch = this.handleNewBatch ( currentBatch );
 			if ( newBatch == currentBatch ) return;
 			currentBatchWrp.setValue ( newBatch );
@@ -77,18 +84,34 @@ public abstract class ItemizedBatchProcessor<E, B, BC extends ItemizedBatchColle
 	 * Defaults to true, ie, it waits for all the batches submitted from the source items to be completed.
 	 * 
 	 */
-	protected void process ( Consumer<Consumer<E>> sourceItemConsumer ) {
-		process ( sourceItemConsumer, true );
+	protected void process ( Consumer<Consumer<E>> sourceItemsGenerator ) {
+		process ( sourceItemsGenerator, true );
 	}
-
 	
 	/**
-	 * This simply invokes {@link ItemizedSizedBatchCollector#accumulator()}. It's provided as a separated method, in case
-	 * you want to decorate with some pre/post fetching actions, without needing to change {@link #process(Consumer)}.
-	 * 
+	 * Uses {@link Stream#forEach(Consumer)} as generator.
 	 */
-	protected void consumeItem ( B currentBatch, E item ) {
-		this.getBatchCollector ().accumulator ().accept ( currentBatch, item );
+	protected void process ( Stream<E> sourceItemsGenerator, boolean waitCompletion )
+	{
+		this.process ( sourceItemsGenerator::forEach, waitCompletion );
+	}
+
+	protected void process ( Stream<E> sourceItemsGenerator )
+	{
+		this.process ( sourceItemsGenerator, true );
+	}
+	
+	/**
+	 * Uses {@link Iterator#forEachRemaining(Consumer)} as generator.
+	 */
+	protected void process ( Iterator<E> sourceItemsGenerator, boolean waitCompletion )
+	{
+		this.process ( sourceItemsGenerator::forEachRemaining, waitCompletion );
+	}
+
+	protected void process ( Iterator<E> sourceItemsGenerator )
+	{
+		this.process ( sourceItemsGenerator, true );
 	}
 	
 }
