@@ -130,7 +130,7 @@ public class MemoryUtils
 	 * the old {@code finalize()} method.
 	 * 
 	 * @param cleanAction is the old finalize method, something you want to do when 
-	 * the object isn't reachable anymore. This is {@link Cleaner#register(Object, Runnable) registered }
+	 * the object isn't reachable anymore. This is {@link Cleaner#register(Object, Runnable) registered}
 	 * into a new cleaner and hence set to be auto-invoked when necessary.
 	 * 
 	 * @see CleaningObject

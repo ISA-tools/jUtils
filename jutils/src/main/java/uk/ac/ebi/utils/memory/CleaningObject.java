@@ -2,12 +2,13 @@ package uk.ac.ebi.utils.memory;
 
 /**
  * Simulates the old {@code finalize()} method in Java >= 9.
- * This is based on {@link MemoryUtils#registerCleaner(Object, Runnable) registering a new cleaner}
- * when an instance of this class (or subclasses) is created, such cleaner invokes {@link #close()}, 
- * which plays the same role of the old finalizer method.
  * 
- * This can be useful when you have a set of classes with an old finalize method, which you can 
- * subclass, after having renamed {@code finalize()} into {@code close()}.
+ * <p>This is based on {@link MemoryUtils#registerCleaner(Object, Runnable) registering a new cleaner}
+ * when an instance of this class (or subclasses) is created, such cleaner invokes {@link #close()}, 
+ * which plays the same role of the old finalizer method.</p>
+ * 
+ * <p>This can be useful when you have a set of classes with an old finalize method, which you can 
+ * subclass, after having renamed {@code finalize()} into {@code close()}.</p>
  *
  * @author brandizi
  * <dl><dt>Date:</dt><dd>31 Mar 2020</dd></dl>
