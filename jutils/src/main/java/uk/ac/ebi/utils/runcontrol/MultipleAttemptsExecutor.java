@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RandomUtils;
 
 import com.machinezoo.noexception.throwing.ThrowingRunnable;
 
+import uk.ac.ebi.utils.exceptions.UncheckedInterruptedException;
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jext.Logger;
 import uk.org.lidalia.slf4jext.LoggerFactory;
@@ -124,7 +125,7 @@ public class MultipleAttemptsExecutor implements Executor
 		
 		} // outer try
 		catch ( InterruptedException ex ) {
-			throw new RuntimeException ( "Internal error: " + ex.getMessage (), ex );
+			throw new UncheckedInterruptedException ( "Internal error: " + ex.getMessage (), ex );
 		}
 	} // execute ( action )
 
