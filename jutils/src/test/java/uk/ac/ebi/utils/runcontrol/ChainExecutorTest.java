@@ -17,7 +17,7 @@ import uk.ac.ebi.utils.time.XStopWatch;
  * <dl><dt>Date:</dt><dd>6 Oct 2015</dd></dl>
  *
  */
-public class ChainedExecutorTest
+public class ChainExecutorTest
 {
 	private Logger log = LoggerFactory.getLogger ( this.getClass () );
 
@@ -37,15 +37,12 @@ public class ChainedExecutorTest
 			.setPopUpExceptions ( false ); 
 		
 		// Calls are first logged by the statistics executor, then considered by the rate limiter.
-		// In this case the action passed to the final executor is run after the rate-limiting step, and 
-		// the statistics step is run after the action. This is because of the sequence implemented by these 
-		// two executors internally. The two executors are run in a nested way.
-		Executor executor = new ChainExecutor 
-		( 
-			rateExecutor, 
-				statsExecutor 
-		);
-
+		// Because of how these two executors are implemented, the whole seq is:
+		//   rate-limit step <-- statsExecutor 
+		//     action        <-- rateExecutor
+		//     stats
+		Executor executor = new ChainExecutor ( statsExecutor ).wrap ( rateExecutor );
+	
 		for ( timer.start (); timer.getTime () < testTime; )
 			executor.execute ( tester );
 		

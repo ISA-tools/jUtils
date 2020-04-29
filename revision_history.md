@@ -9,6 +9,7 @@
   * Class-based thread names in `uk.ac.ebi.utils.threading.batchproc.BatchProcessor`.
   * Helpers added to `uk.ac.ebi.utils.memory` to support the migration of the 
   now-deprecated `finalize()` method.
+  * More exceptions added to `uk.ac.ebi.utils.exceptions`.
 
 ## 9.0.1-SNAPSHOT
   * Just started
