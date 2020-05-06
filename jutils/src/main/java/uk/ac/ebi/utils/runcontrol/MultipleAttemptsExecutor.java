@@ -23,8 +23,8 @@ import uk.org.lidalia.slf4jext.LoggerFactory;
 public class MultipleAttemptsExecutor implements Executor
 {
 	private int maxAttempts = 3;
-	private long maxPauseTime = 3000;
-	private long minPauseTime = 0;
+	private long maxPauseTimeMs = 3000;
+	private long minPauseTimeMs = 0;
 	
 	private Class<Exception>[] interceptedExceptions;
 	
@@ -34,11 +34,12 @@ public class MultipleAttemptsExecutor implements Executor
 	@SafeVarargs
 	@SuppressWarnings ( "unchecked" )
 	public MultipleAttemptsExecutor ( 
-		int maxAttempts, long minPauseTime, long maxPauseTime, Class<? extends Exception> ...interceptedExceptions 
+		int maxAttempts, long minPauseTimeMs, long maxPauseTimeMs, Class<? extends Exception> ...interceptedExceptions 
 	)
 	{
 		this.maxAttempts = maxAttempts;
-		this.maxPauseTime = maxPauseTime;
+		this.minPauseTimeMs = minPauseTimeMs;
+		this.maxPauseTimeMs = maxPauseTimeMs;
 		this.interceptedExceptions = ( Class<Exception>[] ) interceptedExceptions;
 	}
 
@@ -112,8 +113,8 @@ public class MultipleAttemptsExecutor implements Executor
 						throw ex;
 
 					// Let's pause
-					if ( this.maxPauseTime - this.minPauseTime > 0 )
-						Thread.sleep ( RandomUtils.nextLong ( this.minPauseTime, this.maxPauseTime + 1 ) );
+					if ( this.maxPauseTimeMs - this.minPauseTimeMs > 0 )
+						Thread.sleep ( RandomUtils.nextLong ( this.minPauseTimeMs, this.maxPauseTimeMs + 1 ) );
 					
 				} // catch attempt
 			} // attempts
@@ -154,13 +155,13 @@ public class MultipleAttemptsExecutor implements Executor
 	 */
 	public long getMinPauseTime ()
 	{
-		return minPauseTime;
+		return minPauseTimeMs;
 	}
 
 
 	public void setMinPauseTime ( long minPauseTime )
 	{
-		this.minPauseTime = minPauseTime;
+		this.minPauseTimeMs = minPauseTime;
 	}
 
 	/**
@@ -168,13 +169,13 @@ public class MultipleAttemptsExecutor implements Executor
 	 */
 	public long getMaxPauseTime ()
 	{
-		return maxPauseTime;
+		return maxPauseTimeMs;
 	}
 
 
 	public void setMaxPauseTime ( long maxPauseTime )
 	{
-		this.maxPauseTime = maxPauseTime;
+		this.maxPauseTimeMs = maxPauseTime;
 	}
 
 	/**
