@@ -23,8 +23,8 @@ import uk.org.lidalia.slf4jext.LoggerFactory;
 public class MultipleAttemptsExecutor implements Executor
 {
 	private int maxAttempts = 3;
-	private long maxPauseTimeMs = 3000;
-	private long minPauseTimeMs = 0;
+	private long maxPauseTime = 3000;
+	private long minPauseTime = 0;
 	
 	private Class<Exception>[] interceptedExceptions;
 	
@@ -38,8 +38,8 @@ public class MultipleAttemptsExecutor implements Executor
 	)
 	{
 		this.maxAttempts = maxAttempts;
-		this.minPauseTimeMs = minPauseTimeMs;
-		this.maxPauseTimeMs = maxPauseTimeMs;
+		this.minPauseTime = minPauseTimeMs;
+		this.maxPauseTime = maxPauseTimeMs;
 		this.interceptedExceptions = ( Class<Exception>[] ) interceptedExceptions;
 	}
 
@@ -113,8 +113,8 @@ public class MultipleAttemptsExecutor implements Executor
 						throw ex;
 
 					// Let's pause
-					if ( this.maxPauseTimeMs - this.minPauseTimeMs > 0 )
-						Thread.sleep ( RandomUtils.nextLong ( this.minPauseTimeMs, this.maxPauseTimeMs + 1 ) );
+					if ( this.maxPauseTime - this.minPauseTime > 0 )
+						Thread.sleep ( RandomUtils.nextLong ( this.minPauseTime, this.maxPauseTime + 1 ) );
 					
 				} // catch attempt
 			} // attempts
@@ -155,13 +155,13 @@ public class MultipleAttemptsExecutor implements Executor
 	 */
 	public long getMinPauseTime ()
 	{
-		return minPauseTimeMs;
+		return minPauseTime;
 	}
 
 
-	public void setMinPauseTime ( long minPauseTime )
+	public void setMinPauseTime ( long minPauseTimeMs )
 	{
-		this.minPauseTimeMs = minPauseTime;
+		this.minPauseTime = minPauseTimeMs;
 	}
 
 	/**
@@ -169,13 +169,13 @@ public class MultipleAttemptsExecutor implements Executor
 	 */
 	public long getMaxPauseTime ()
 	{
-		return maxPauseTimeMs;
+		return maxPauseTime;
 	}
 
 
-	public void setMaxPauseTime ( long maxPauseTime )
+	public void setMaxPauseTime ( long maxPauseTimeMs )
 	{
-		this.maxPauseTimeMs = maxPauseTime;
+		this.maxPauseTime = maxPauseTimeMs;
 	}
 
 	/**
