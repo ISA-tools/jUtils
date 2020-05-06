@@ -34,11 +34,12 @@ public class MultipleAttemptsExecutor implements Executor
 	@SafeVarargs
 	@SuppressWarnings ( "unchecked" )
 	public MultipleAttemptsExecutor ( 
-		int maxAttempts, long minPauseTime, long maxPauseTime, Class<? extends Exception> ...interceptedExceptions 
+		int maxAttempts, long minPauseTimeMs, long maxPauseTimeMs, Class<? extends Exception> ...interceptedExceptions 
 	)
 	{
 		this.maxAttempts = maxAttempts;
-		this.maxPauseTime = maxPauseTime;
+		this.minPauseTime = minPauseTimeMs;
+		this.maxPauseTime = maxPauseTimeMs;
 		this.interceptedExceptions = ( Class<Exception>[] ) interceptedExceptions;
 	}
 
@@ -158,9 +159,9 @@ public class MultipleAttemptsExecutor implements Executor
 	}
 
 
-	public void setMinPauseTime ( long minPauseTime )
+	public void setMinPauseTime ( long minPauseTimeMs )
 	{
-		this.minPauseTime = minPauseTime;
+		this.minPauseTime = minPauseTimeMs;
 	}
 
 	/**
@@ -172,9 +173,9 @@ public class MultipleAttemptsExecutor implements Executor
 	}
 
 
-	public void setMaxPauseTime ( long maxPauseTime )
+	public void setMaxPauseTime ( long maxPauseTimeMs )
 	{
-		this.maxPauseTime = maxPauseTime;
+		this.maxPauseTime = maxPauseTimeMs;
 	}
 
 	/**
