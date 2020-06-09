@@ -4,7 +4,7 @@
   
   <groupId>uk.ac.ebi</groupId>
   <artifactId>jutils-pom</artifactId>
-  <version>9.1</version>
+  <version>9.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
     
   <name>JUtils - Miscellanea of Java Utils</name>
