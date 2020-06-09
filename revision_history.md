@@ -11,9 +11,11 @@
   now-deprecated `finalize()` method.
   * More exceptions added to `uk.ac.ebi.utils.exceptions`.
 
-## 9.0.1-SNAPSHOT
-  * Just started
-  * This isn't for release, many changes in here are in 10.0-SNAPSHOT 
+## 9.1.1-SNAPSHOT
+  * Current snapshot
+  
+## 9.1
+  * Minor fixes/improvements to the batch processing package.
 
 ## 9.0
   * Big changes to `uk.ac.ebi.utils.threading.BatchProcessor` and related components, with clearer 
