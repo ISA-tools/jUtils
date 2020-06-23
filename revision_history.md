@@ -10,6 +10,7 @@
   * Helpers added to `uk.ac.ebi.utils.memory` to support the migration of the 
   now-deprecated `finalize()` method.
   * More exceptions added to `uk.ac.ebi.utils.exceptions`.
+  * More variants addes to `IOUtils.readFiles()`
 
 ## 9.1.1-SNAPSHOT
   * Current snapshot
