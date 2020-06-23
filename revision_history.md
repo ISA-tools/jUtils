@@ -2,7 +2,7 @@
 
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
-## 10.0-SNAPSHOT (being developed in the JDK11 branch) 
+## 10.0-SNAPSHOT (being developed in the JDK11 branch) 
   * **FROM NOW ON, JDK < 11 IS NO LONGER SUPPORTED**. jutils will possibly work with 1.8 for a
   while (until we start introducing incompatible changes), but that's not officially 
   supported.
