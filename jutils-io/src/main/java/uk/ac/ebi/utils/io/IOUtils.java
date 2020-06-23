@@ -63,6 +63,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.io.input.ReaderInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Resources;
 
@@ -75,6 +77,8 @@ import com.google.common.io.Resources;
  */
 public class IOUtils 
 {
+	private static Logger log = LoggerFactory.getLogger ( IOUtils.class );
+	
 	private IOUtils () {}
 		
 	/**
@@ -104,17 +108,20 @@ public class IOUtils
 	 * Invokes {@link #readFile(String, Charset)} upon all the files in a directory and return an array of
 	 * file contents. 
 	 */
-	public static String[] readFiles ( String dirPath, FilenameFilter filter, Charset charSet ) throws IOException 
+	public static String[] readFiles ( String dirPath, FilenameFilter filter, boolean ignoreMissingDir, Charset charSet ) throws IOException 
 	{
 		File dir = new File ( dirPath );
-		if ( !dir.isDirectory () ) throwEx ( 
-			FileNotFoundException.class, 
-			"Directory '%s' not found",
-			dirPath 
-		);
+		if ( !dir.isDirectory () ) 
+		{
+			if ( ignoreMissingDir ) {
+				log.warn ( "readFiles(), ignoring missing directory '{}'", dirPath );
+				return new String [ 0 ]; 
+			}
+			throwEx ( FileNotFoundException.class, "Directory '%s' not found", dirPath );
+		}
 		
 		File[] files = filter == null ? dir.listFiles () : dir.listFiles ( filter );
-		if ( files == null ) return null;
+		if ( files == null ) return new String [ 0 ];
 		
 		String[] result = new String [ files.length ];
 		for ( int i = 0; i < files.length; i++ )
@@ -123,24 +130,53 @@ public class IOUtils
 	}
 	
 	/**
-	 * Defaults to `UTF-8`.
+	 * Defaults to missingDir = false
 	 */
-	public static String[] readFiles ( String dirPath, FilenameFilter filter ) throws IOException {
-		return readFiles ( dirPath, filter, UTF_8 );
+	public static String[] readFiles ( String dirPath, FilenameFilter filter, Charset charSet ) throws IOException 
+	{
+		return readFiles ( dirPath, filter, false, charSet );
 	}
 	
 	/**
-	 * Defaults to any file in `dirPath`. 
+	 * Defaults to `UTF-8`.
 	 */
-	public static String[] readFiles ( String dirPath, Charset charSet ) throws IOException {
-		return readFiles ( dirPath, null, charSet );
+	public static String[] readFiles ( String dirPath, FilenameFilter filter, boolean ignoreMissingDir ) throws IOException {
+		return readFiles ( dirPath, filter, ignoreMissingDir, UTF_8 );
 	}
 
 	/**
-	 * Defaults to any file in `dirPath` and `UTF-8`. 
+	 * Defaults to missingDir = false, `UTF-8`.
+	 */
+	public static String[] readFiles ( String dirPath, FilenameFilter filter ) throws IOException {
+		return readFiles ( dirPath, filter, false, UTF_8 );
+	}
+
+	/**
+	 * Defaults to any file
+	 */
+	public static String[] readFiles ( String dirPath, boolean ignoreMissingDir, Charset charSet ) throws IOException {
+		return readFiles ( dirPath, null, ignoreMissingDir, charSet );
+	}
+
+	/**
+	 * Defaults to any file, UTF-8
+	 */
+	public static String[] readFiles ( String dirPath, boolean ignoreMissingDir ) throws IOException {
+		return readFiles ( dirPath, null, ignoreMissingDir, UTF_8 );
+	}
+
+	/**
+	 * Defaults to any file, ignoreMissingDir = false 
+	 */
+	public static String[] readFiles ( String dirPath, Charset charSet ) throws IOException {
+		return readFiles ( dirPath, null, false, charSet );
+	}
+	
+	/**
+	 * Defaults to any file, ignoreMissingDir = false, UTF-8
 	 */
 	public static String[] readFiles ( String dirPath ) throws IOException {
-		return readFiles ( dirPath, UTF_8 );
+		return readFiles ( dirPath, null, false, UTF_8 );
 	}
 
 	
