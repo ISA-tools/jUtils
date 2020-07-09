@@ -1,7 +1,7 @@
 set -e
 mvn deploy --settings settings.xml
 
-if [[ "$TRAVIS_PULL_REQUEST" == "false" ]] || [[ "$TRAVIS_BRANCH" != 'master' ]]; then
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]] || [[ "$TRAVIS_BRANCH" != 'master' ]]; then
 	echo -e "\nThis isn't main-repo/master, skipping Javadoc\n"
 	exit
 fi 
