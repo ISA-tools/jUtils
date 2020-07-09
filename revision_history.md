@@ -12,7 +12,7 @@
   * More exceptions added to `uk.ac.ebi.utils.exceptions`.
 
 ## 9.1.1-SNAPSHOT
-  * Current snapshot
+  * Current snapshot in 1.8 branch (unmaintained).
   
 ## 9.1
   * Minor fixes/improvements to the batch processing package.
