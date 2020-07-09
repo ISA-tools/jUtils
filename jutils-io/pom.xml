@@ -10,7 +10,7 @@
 		This is the IO module.  	
   
   </description>
-  <url>https://github.com/ISA-tools/jUtils</url>
+  <url>https://github.com/marco-brandizi/jutils</url>
 
 	<parent>
 	  <groupId>uk.ac.ebi</groupId>
