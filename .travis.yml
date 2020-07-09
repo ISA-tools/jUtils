@@ -1,15 +1,11 @@
 language: java
-jdk: openjdk8
+jdk: openjdk11
 
 install: echo "Skipping default installation step"
 
 script: 
-  - mvn deploy --settings settings.xml
-  - ./mk-javadocs.sh
-  - git remote set-url origin https://marco-brandizi:$REPO_PWD@github.com/ISA-tools/jUtils 
-  - git commit -a -m 'Updating auto-generated files from Travis [ci skip]'
-  - git push origin HEAD:"$TRAVIS_BRANCH"
-
+  - ./travis.sh
+  
 cache:
   directories:
     - $HOME/.m2

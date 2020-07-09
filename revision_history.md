@@ -2,7 +2,7 @@
 
 *If not otherwise specified, items refer to the base module (`jutils`)*. 
 
-## 10.0-SNAPSHOT (being developed in the JDK11 branch) 
+## 10.0-SNAPSHOT (being developed in the JDK11 branch) 
   * **FROM NOW ON, JDK < 11 IS NO LONGER SUPPORTED**. jutils will possibly work with 1.8 for a
   while (until we start introducing incompatible changes), but that's not officially 
   supported.
@@ -10,9 +10,10 @@
   * Helpers added to `uk.ac.ebi.utils.memory` to support the migration of the 
   now-deprecated `finalize()` method.
   * More exceptions added to `uk.ac.ebi.utils.exceptions`.
+  * More variants added to `IOUtils.readFiles()`
 
 ## 9.1.1-SNAPSHOT
-  * Current snapshot in 1.8 branch (unmaintained).
+  * More variants added to `IOUtils.readFiles()`
   
 ## 9.1
   * Minor fixes/improvements to the batch processing package.

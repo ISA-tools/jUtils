@@ -42,6 +42,9 @@
  */
 package uk.ac.ebi.utils.memory;
 
+import java.lang.ref.Cleaner;
+import java.lang.ref.Cleaner.Cleanable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,4 +124,19 @@ public class MemoryUtils
 		return checkMemory ( action, 0.2 );
 	}
 
+	
+	/**
+	 * Simple wrapper for the new J9 {@link Cleaner} interface, which replaces 
+	 * the old {@code finalize()} method.
+	 * 
+	 * @param cleanAction is the old finalize method, something you want to do when 
+	 * the object isn't reachable anymore. This is {@link Cleaner#register(Object, Runnable) registered}
+	 * into a new cleaner and hence set to be auto-invoked when necessary.
+	 * 
+	 * @see CleaningObject
+	 */
+	public static Cleanable registerCleaner ( Object obj, Runnable cleanAction )
+	{
+		return Cleaner.create ().register ( obj, cleanAction );
+	}
 }
