@@ -1,5 +1,3 @@
 # Javadocs for jutils
 
-  * [Core](jutils/index.html)
-  * [I/O](jutils-io/index.html)
-  * [Hibernate and J2EE](jutils-io/index.html)
+**The jutils project has a [new location](https://marco-brandizi.github.io/jutils/)*
